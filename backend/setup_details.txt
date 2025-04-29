@@ -1,0 +1,5 @@
+To setup this project in your local device, Run the following commands in your Terminal,,
+
+1. npm install
+2. npx playwright install
+3. npm start

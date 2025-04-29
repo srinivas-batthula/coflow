@@ -13,11 +13,14 @@
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
-    "express": "^5.1.0",
+    "express": "^4.21.2",
     "express-rate-limit": "^7.5.0",
     "helmet": "^8.1.0",
     "mongoose": "^8.13.3",
+    "node-cron": "^3.0.3",
     "nodemon": "^3.1.10",
+    "passport": "^0.7.0",
+    "pg": "^8.15.6",
     "playwright": "^1.52.0"
   }
 }
