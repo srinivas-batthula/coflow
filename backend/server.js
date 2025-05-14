@@ -15,6 +15,11 @@ require('dotenv').config({path:'./config.env'})
 // mongoose.connection.on('error', (err)=>{ console.log(`Error in MongoDB connection  -->  ${err}`) })
 // mongoose.connection.on('disconnected', ()=>{ console.log('MongoDB is disconnected & attempting to reconnect...'); ConnectDb(); })
 
+mongoose
+  .connect(process.env.Mongo_DB_URI, {})
+  .then(() => console.log("✅ Connected to MongoDB"))
+  .catch((err) => console.log("❌ MongoDB connection error:", err));
+
 
 const port = process.env.PORT || 8080                       //Don't set a PORT n.o after hosting.....
 app.listen(port, ()=>{ console.log(`Server started & listening at http://localhost:${port}/`) })
