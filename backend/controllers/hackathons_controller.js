@@ -1,5 +1,4 @@
 // hackathons_controller
-const pool = require('../configsql')
 const { scrapeHackathons } = require('../services/scrape/hackathons')
 const fs = require('fs').promises
 const path = require('path')
@@ -9,12 +8,12 @@ const path = require('path')
 const get_hackathons = async(req, res)=>{
     try {
         let data
-        const result = await pool.query('SELECT * FROM hackathons ORDER BY id DESC')
+        // const result = await pool.query('SELECT * FROM hackathons ORDER BY id DESC')
 
-        if(result.rowCount === 0)
+        // if(result.rowCount === 0)
             data = await readFallbackJson()
-        else
-            data = result.rows
+        // else
+        //     data = result.rows
 
         return res.status(200).json({status: 'Success', data})
     } catch (error) {
@@ -31,7 +30,7 @@ async function readFallbackJson() {
         const hackathons = JSON.parse(fileData) || []
         return hackathons
     } catch (err) {
-        // console.log('⚠️ Could not read fallback JSON:', err)
+        console.log('⚠️ Could not read fallback JSON:', err)
         return []
     }
 }

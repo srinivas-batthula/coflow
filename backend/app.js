@@ -7,7 +7,7 @@ const helmet = require("helmet");
 const errorHandler = require("./utils/errorHandler");
 require("./services/cron_jobs/hackathonsUpdater"); // Starting Cron-Jobs...
 const MainRouter = require("./routes/MainRouter");
-const authRouter = require("./routes/authRouter.js");
+
 
 const app = express();
 
@@ -28,13 +28,12 @@ const corsOptions = {
   maxAge: 600,
 };
 app.use(cors(corsOptions));
-
 app.options("*", cors(corsOptions));
 
 const limiter = rateLimit({
   //Must to be used in production to prevent attacks...
   windowMs: 1 * 60 * 1000, // 1 minute
-  max: 10, // limit each IP to 10 requests per windowMs
+  max: 8, // limit each IP to 10 requests per windowMs
   message: "Too many requests from this IP, please try again after 2 minutes",
   headers: true,
 });
@@ -43,14 +42,10 @@ app.use(limiter);
 app.use(helmet());
 
 app.get("/", async (req, res) => {
-  return res.status(200).json({
-    status: "success",
-    details: `You are Viewing a Non-API Route (${req.url}), Use '/api/' for all other endpoints to access them`,
-  });
+  return res.status(200).json({ status: "success", details: `You are Viewing a Non-API Route (${req.url}), Use '/api/' for all other endpoints to access them` });
 });
 
 // API Starter...
-app.use("/api/auth", authRouter);
 app.use("/api", MainRouter);
 
 app.use((req, res) => {

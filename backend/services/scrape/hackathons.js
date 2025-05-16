@@ -2,7 +2,6 @@
 const { getBrowserPage } = require('./browser')
 const fs = require('fs').promises
 const path = require('path')
-const pool = require('../../configsql')
 
 
 // Main Scraper-method for scraping all hackathons...
@@ -44,34 +43,25 @@ async function scrapeHackathons() {
             values.push(title, url, date, location, city, prize, host)
         })
 
-        const bulkInsertQuery = `
-        INSERT INTO hackathons (title, url, date, location, city, prize, host)
-        VALUES ${placeholders.join(', ')}
-        ON CONFLICT (url) DO NOTHING;`
-
-        await pool.query('BEGIN')
-
-        try {
-            await pool.query(bulkInsertQuery, values)
-            await pool.query('COMMIT')
+        // try {
+        //     // await pool.query(bulkInsertQuery, values)
+        //     // await pool.query('COMMIT')
             
             result = { status: 'success' }
-        } catch (insertError) {
-            await pool.query('ROLLBACK')
-            console.log('Bulk insert failed:', insertError)
+        // } catch (insertError) {
+        //     // await pool.query('ROLLBACK')
+        //     console.log('Bulk insert failed:', insertError)
 
             // Fallback: write to local JSON file
             await writeFallbackJson(hackathons)
 
-            result = { status: 'failed', error: insertError }
-        }
+            // result = { status: 'failed', error: insertError }
+        // }
 
     } catch (error) {
         result = { status: 'failed', error }
     } finally {
         await browser.close()
-        // console.log(hackathons)
-        // console.log("\n\n\n" + hackathons.length)
     }
 
     return result
