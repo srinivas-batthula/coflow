@@ -1,8 +1,8 @@
 // hackathons.js...
 const { getBrowserPage } = require('./browser')
+const Hackathon = require('../../models/hackathonsModel')
 const fs = require('fs').promises
 const path = require('path')
-const pool = require('../../configsql')
 
 
 // Main Scraper-method for scraping all hackathons...
@@ -15,63 +15,49 @@ async function scrapeHackathons() {
     try {
         // Scraping Hackathons...
         let data
-        data = await helper_Scrape(url, 'Global', 55, page)
+        data = await helper_Scrape(url, 'Global', 40, page)
         hackathons.push(...data)
 
-        data = await helper_Scrape(url + '?search=hyderabad&status[]=upcoming&status[]=open', 'Hyderabad', 15, page)
+        data = await helper_Scrape(url + '?search=hyderabad&status[]=upcoming&status[]=open', 'Hyderabad', 10, page)
         hackathons.push(...data)
 
-        data = await helper_Scrape(url + '?search=bengaluru&status[]=upcoming&status[]=open', 'Bengaluru', 15, page)
+        data = await helper_Scrape(url + '?search=bengaluru&status[]=upcoming&status[]=open', 'Bengaluru', 10, page)
         hackathons.push(...data)
 
-        data = await helper_Scrape(url + '?search=mumbai&status[]=upcoming&status[]=open', 'Mumbai', 15, page)
+        data = await helper_Scrape(url + '?search=mumbai&status[]=upcoming&status[]=open', 'Mumbai', 10, page)
         hackathons.push(...data)
-
-        // Preparing bulk insert
 
         // Filter out hackathons that have empty or invalid URLs
-        hackathons = hackathons.filter(hackathon => hackathon.url && hackathon.url.trim() !== '')
+        hackathons = hackathons.filter(hackathon => (hackathon.url && hackathon.url.trim() !== '') && (hackathon.title && hackathon.title.trim() !== ''))
 
-        const values = []
-        const placeholders = []
-
-        hackathons.forEach((hackathon, index) => {
-            const { title, url, date, location, city, prize, host } = hackathon
-            const baseIndex = index * 7
-            placeholders.push(
-                `($${baseIndex + 1}, $${baseIndex + 2}, $${baseIndex + 3}, $${baseIndex + 4}, $${baseIndex + 5}, $${baseIndex + 6}, $${baseIndex + 7})`
-            )
-            values.push(title, url, date, location, city, prize, host)
+        const seen = new Set()
+        hackathons = hackathons.filter(h => {
+            if (seen.has(h.url)) return false
+            seen.add(h.url)
+            return true
         })
 
-        const bulkInsertQuery = `
-        INSERT INTO hackathons (title, url, date, location, city, prize, host)
-        VALUES ${placeholders.join(', ')}
-        ON CONFLICT (url) DO NOTHING;`
+        const existing = await Hackathon.find({ url: { $in: hackathons.map(h => h.url) } }).select('url')
+        const existingUrls = new Set(existing.map(h => h.url))
+        hackathons = hackathons.filter(h => !existingUrls.has(h.url))
 
-        await pool.query('BEGIN')
 
         try {
-            await pool.query(bulkInsertQuery, values)
-            await pool.query('COMMIT')
-            
-            result = { status: 'success' }
-        } catch (insertError) {
-            await pool.query('ROLLBACK')
-            console.log('Bulk insert failed:', insertError)
-
-            // Fallback: write to local JSON file
-            await writeFallbackJson(hackathons)
-
-            result = { status: 'failed', error: insertError }
+            // Insert many, ignore duplicates
+            await Hackathon.insertMany(hackathons, { ordered: false })
+            result = { status: 'success', length: hackathons.length }
         }
-
+        catch (insertError) {
+            if (!(error.code === 11000 || error.writeErrors)) {
+                // Fallback: write to local JSON file
+                await writeFallbackJson(hackathons)
+                result = { status: 'success', length: hackathons.length }
+            }
+        }
     } catch (error) {
-        result = { status: 'failed', error }
+        result = { status: 'failed', length: 0, error }
     } finally {
         await browser.close()
-        // console.log(hackathons)
-        // console.log("\n\n\n" + hackathons.length)
     }
 
     return result
@@ -85,9 +71,9 @@ const helper_Scrape = async (url, city, limit, page) => {
 
     // Simulate User-Scroll (to fetch the dynamic content of list of hackathons on devpost.to)...
     if (city === 'Global')
-        await autoScroll(page, 20)
+        await autoScroll(page, 17)
     else
-        await autoScroll(page, 5)
+        await autoScroll(page, 4)
 
     await page.waitForSelector('.hackathon-tile')
 
@@ -159,9 +145,9 @@ async function writeFallbackJson(hackathons) {
     try {
         await fs.mkdir(path.dirname(filePath), { recursive: true }); // Ensure folder exists
         await fs.writeFile(filePath, JSON.stringify(hackathons, null, 2));
-        console.log('📁 Fallback JSON written successfully at:', filePath);
+        console.log('Fallback JSON written successfully at:', filePath);
     } catch (err) {
-        console.error('⚠️ Failed to write fallback JSON:', err);
+        console.error('Failed to write fallback JSON:', err);
     }
 }
 
