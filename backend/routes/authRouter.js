@@ -18,10 +18,12 @@ router.post("/login", login);
 // Logout — Clear Cookie
 router.post("/logout", logout);
 
-// ✅ Me - user Details
-router.get("/me", protectRoute, getUserDetails);
+// Validate User  { `/validateUser?q=true` }
+router.get('/validateUser', protectRoute);    // this route is called from frontend everytime user opens the site...
 
-//
-router.get("/update", protectRoute, updateUserDetails);
+// Me - user Details
+router.get("/user/:id", protectRoute, getUserDetails);
+
+router.patch("/update", protectRoute, updateUserDetails);
 
 module.exports = router;

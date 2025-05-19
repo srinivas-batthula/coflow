@@ -2,43 +2,6 @@ require("dotenv").config({ path: "./config.env" });
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel.js");
 
-const Authorization_Middleware = async (req, res, next) => {
-  // const token = req.cookies.jwt || ''
-  let token = req.headers.authorization?.split(" ")[1] || "";
-  // console.log(req.headers.authorization)
-
-  if (!token)
-    return res
-      .status(401)
-      .json({ success: false, auth: false, msg: "Cookies/Token Not Found!" });
-
-  try {
-    const decode = await jwt.verify(token, process.env.JWT_SECRET);
-    if (decode) {
-      const user = await User.findById(decode.userId).lean();
-      if (!user)
-        return res
-          .status(408)
-          .json({ success: false, auth: false, msg: "User Not Found!" });
-
-      req.user = { userId: user._id }; //Assigning user's details to req-obj for future use...
-      next();
-    } else {
-      return res
-        .status(403)
-        .json({ success: false, auth: false, msg: "Invalid Token!" });
-    }
-  } catch (err) {
-    console.log(err);
-    return res
-      .status(500)
-      .json({
-        success: false,
-        auth: false,
-        msg: "Error while Verifying Token!",
-      });
-  }
-};
 
 const generateToken = (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET, {
@@ -134,12 +97,14 @@ const logout = (req, res) => {
 };
 
 const protectRoute = async (req, res, next) => {
-  // Get the token from cookies
+  const { q } = req.query;
   const token = req.cookies?.token;
+  // let token = req.headers.authorization?.split(" ")[1] || "";
+  // console.log(req.headers.authorization)
 
   // If no token found, return 401 Unauthorized
   if (!token) {
-    return res.status(401).json({ msg: "Not authorized. No token found." });
+    return res.status(401).json({ success: false, auth: false, msg: "Cookies/Token Not Found!" });
   }
 
   try {
@@ -150,37 +115,35 @@ const protectRoute = async (req, res, next) => {
     const user = await User.findById(decoded.userId);
 
     if (!user) {
-      return res.status(404).json({ msg: "User not found." });
+      return res.status(404).json({ success: false, auth: false, msg: "User not found!" });
     }
 
     // Attach the user object to the request so it can be accessed in the next middleware or route handler
+    user.password = null;
     req.user = user;
 
-    next(); // Call the next middleware or route handler
+    if (q && q === 'true')
+      return res.status(200).json({ success: true, auth: true, user })
+    else
+      next(); // Call the next middleware or route handler
   } catch (err) {
     console.error("Token verification failed:", err.message);
-    res.status(401).json({ msg: "Invalid or expired token." });
+    res.status(401).json({ success: false, auth: false, msg: "Invalid or expired token." });
   }
-};
+}
 
 // Route handler to fetch user details
 const getUserDetails = async (req, res) => {
+  const id = req.params.id;
   try {
     // Find the user by userId which was added to the request object by the middleware
-    const user = await User.findById(req.user._id).select("-password"); // Exclude the password field
-
-    // If the user is not found, return a 404 error
-    if (!user) return res.status(404).json({ msg: "User not found" });
+    const user = await User.findById(id).select('-password');
 
     // Return the user details in the response
-    res.status(200).json({
-      userId: user._id,
-      fullName: user.fullName,
-      email: user.email,
-    });
+    return res.status(200).json({ success: true, user });
   } catch (err) {
     console.error("Profile fetch error:", err.message);
-    res.status(500).json({ msg: "Server error" });
+    return res.status(500).json({ success: false, msg: "Server error" });
   }
 };
 
@@ -188,27 +151,30 @@ const updateUserDetails = async (req, res) => {
   const { fullName, email } = req.body;
 
   if (!fullName && !email) {
-    return res.status(400).json({ msg: "Nothing to update." });
+    return res.status(400).json({ success: false, msg: "Nothing to update." });
   }
 
   try {
     // Update only provided fields
-    if (fullName) req.user.fullName = fullName;
-    if (email) req.user.email = email;
+    const updates = {};
+    if (fullName) updates.fullName = fullName;
+    if (email) updates.email = email;
 
     // Save changes
-    const updatedUser = await req.user.save();
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      { $set: updates },
+      { new: true, runValidators: true, context: 'query' }
+    ).select('-password');
 
-    // Exclude password from response
-    const { password, ...userWithoutPassword } = updatedUser.toObject();
-
-    res.status(200).json({
+    return res.status(200).json({
+      success: true,
       msg: "User updated successfully.",
-      user: userWithoutPassword,
+      user: updatedUser,
     });
   } catch (err) {
     console.error("Error updating user:", err.message);
-    res.status(500).json({ msg: "Server error." });
+    return res.status(500).json({ success: false, msg: "Server error." });
   }
 };
 
