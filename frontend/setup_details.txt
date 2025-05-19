@@ -1,0 +1,5 @@
+To setup this project in your local device, Run the following commands in your Terminal,,
+
+1. npm install
+Note:   This project is created using `npx create-next-app@^15.2.1 .`
+2. npm run dev
