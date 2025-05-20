@@ -1,13 +1,5 @@
-const express = require("express");
-const {
-  signup,
-  login,
-  logout,
-  protectRoute,
-  getUserDetails,
-  updateUserDetails,
-} = require("../controllers/auth_controller.js");
-const router = express.Router();
+const router = require("express").Router();
+const { signup, login, logout, protectRoute, getUserDetails, updateUserDetails } = require("../controllers/auth_controller.js");
 
 // Signup with Cookie
 router.post("/signup", signup);
@@ -25,5 +17,6 @@ router.get('/validateUser', protectRoute);    // this route is called from front
 router.get("/user/:id", protectRoute, getUserDetails);
 
 router.patch("/update", protectRoute, updateUserDetails);
+
 
 module.exports = router;
