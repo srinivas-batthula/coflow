@@ -8,7 +8,6 @@ const errorHandler = require("./utils/errorHandler");
 require("./services/cron_jobs/hackathonsUpdater"); // Starting Cron-Jobs...
 const MainRouter = require("./routes/MainRouter");
 
-
 const app = express();
 
 app.use(express.urlencoded({ extended: true }));
@@ -20,7 +19,7 @@ app.use(cookieParser());
 app.use(express.static("public"));
 
 const corsOptions = {
-  origin: ["*"], // Allow frontend domain
+  origin: ["http://localhost:3000"], // Allow frontend domain
   credentials: true, // Allow credentials (cookies)
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
@@ -42,7 +41,12 @@ app.use(limiter);
 app.use(helmet());
 
 app.get("/", async (req, res) => {
-  return res.status(200).json({ status: "success", details: `You are Viewing a Non-API Route (${req.url}), Use '/api/' for all other endpoints to access them` });
+  return res
+    .status(200)
+    .json({
+      status: "success",
+      details: `You are Viewing a Non-API Route (${req.url}), Use '/api/' for all other endpoints to access them`,
+    });
 });
 
 // API Starter...
