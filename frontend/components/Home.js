@@ -34,11 +34,7 @@ const features = [
 ];
 
 export default function HomePage() {
-  const { hackathons, loading, error, fetchHackathons } = useHackathonStore();
-
-  useEffect(() => {
-    fetchHackathons();
-  }, [fetchHackathons]);
+  const { hackathons, loading, error } = useHackathonStore();
 
   return (
     <div
