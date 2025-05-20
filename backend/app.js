@@ -1,5 +1,6 @@
 //app.js
 const express = require("express");
+const passport = require('passport')
 const cookieParser = require("cookie-parser");
 const rateLimit = require("express-rate-limit");
 const cors = require("cors");
@@ -33,12 +34,14 @@ const limiter = rateLimit({
   //Must to be used in production to prevent attacks...
   windowMs: 1 * 60 * 1000, // 1 minute
   max: 8, // limit each IP to 8 requests per windowMs
-  message: "Too many requests from this IP, please try again after 2 minutes",
+  message: "Too many requests from this IP, please try again after 1 minute",
   headers: true,
 });
 app.use(limiter);
 
 app.use(helmet());
+
+app.use(passport.initialize())      //Initialize OAuth2.0
 
 app.get("/", async (req, res) => {
   return res
