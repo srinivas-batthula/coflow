@@ -1,5 +1,6 @@
 //app.js
 const express = require("express");
+const passport = require('passport')
 const cookieParser = require("cookie-parser");
 const rateLimit = require("express-rate-limit");
 const cors = require("cors");
@@ -39,6 +40,8 @@ const limiter = rateLimit({
 app.use(limiter);
 
 app.use(helmet());
+
+app.use(passport.initialize())      //Initialize OAuth2.0
 
 app.get("/", async (req, res) => {
   return res

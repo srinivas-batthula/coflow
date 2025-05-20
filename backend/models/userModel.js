@@ -5,7 +5,8 @@ const bcrypt = require('bcryptjs')
 const userSchema = new mongoose.Schema({
   fullName: { type: String, required: true },
   email: { type: String, required: true, unique: true, lowercase: true },
-  password: { type: String, required: true},
+  password: { type: String},
+  is_from_google: { type: Boolean, default: false }
 }, {timestamps: true})
 
   // Auto-hashes password before saving it to DB
