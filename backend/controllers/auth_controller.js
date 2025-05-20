@@ -2,7 +2,6 @@ require("dotenv").config({ path: "./config.env" });
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel.js");
 
-
 const generateToken = (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET, {
     expiresIn: "7d",
@@ -63,7 +62,7 @@ const login = async (req, res) => {
     if (!user)
       return res.status(400).json({ success: false, msg: "User Not Found!" });
 
-    if (!user.comparePassword(password))
+    if (!(await user.comparePassword(password)))
       //Comparing Passwords...
       return res
         .status(401)
@@ -104,7 +103,9 @@ const protectRoute = async (req, res, next) => {
 
   // If no token found, return 401 Unauthorized
   if (!token) {
-    return res.status(401).json({ success: false, auth: false, msg: "Cookies/Token Not Found!" });
+    return res
+      .status(401)
+      .json({ success: false, auth: false, msg: "Cookies/Token Not Found!" });
   }
 
   try {
@@ -115,29 +116,32 @@ const protectRoute = async (req, res, next) => {
     const user = await User.findById(decoded.userId);
 
     if (!user) {
-      return res.status(404).json({ success: false, auth: false, msg: "User not found!" });
+      return res
+        .status(404)
+        .json({ success: false, auth: false, msg: "User not found!" });
     }
 
     // Attach the user object to the request so it can be accessed in the next middleware or route handler
     user.password = null;
     req.user = user;
 
-    if (q && q === 'true')
-      return res.status(200).json({ success: true, auth: true, user })
-    else
-      next(); // Call the next middleware or route handler
+    if (q && q === "true")
+      return res.status(200).json({ success: true, auth: true, user });
+    else next(); // Call the next middleware or route handler
   } catch (err) {
     console.error("Token verification failed:", err.message);
-    res.status(401).json({ success: false, auth: false, msg: "Invalid or expired token." });
+    res
+      .status(401)
+      .json({ success: false, auth: false, msg: "Invalid or expired token." });
   }
-}
+};
 
 // Route handler to fetch user details
 const getUserDetails = async (req, res) => {
   const id = req.params.id;
   try {
     // Find the user by userId which was added to the request object by the middleware
-    const user = await User.findById(id).select('-password');
+    const user = await User.findById(id).select("-password");
 
     // Return the user details in the response
     return res.status(200).json({ success: true, user });
@@ -164,8 +168,8 @@ const updateUserDetails = async (req, res) => {
     const updatedUser = await User.findByIdAndUpdate(
       req.user._id,
       { $set: updates },
-      { new: true, runValidators: true, context: 'query' }
-    ).select('-password');
+      { new: true, runValidators: true, context: "query" }
+    ).select("-password");
 
     return res.status(200).json({
       success: true,
