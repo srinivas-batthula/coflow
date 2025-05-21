@@ -36,21 +36,19 @@ const features = [
   },
 ];
 
-export default function HomePage() {
-  const { hackathons, loading, error, fetchHackathons } = useHackathonStore();
+export default function HomePage({ hackathonsList }) {
+  const { hackathons, loading, error, setHackathons } = useHackathonStore();
   const router = useRouter();
 
   // Auth store
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
   const authLoading = useAuthStore((s) => s.loading);
-  const validateUser = useAuthStore((s) => s.validateUser);
 
   // Validate user on mount (refresh or navigation)
   useEffect(() => {
-    validateUser();
-    fetchHackathons();
-  }, [validateUser, fetchHackathons]);
+    setHackathons(hackathonsList);
+  }, [hackathonsList]);
 
   // Show loading spinner if auth is loading (do not render nav/UI yet)
   if (authLoading) {
@@ -94,7 +92,8 @@ export default function HomePage() {
       {/* Navigation Bar */}
       <nav className="flex items-center justify-between px-10 py-5 bg-white shadow-md">
         <div
-          className="font-black text-3xl text-purple-700 tracking-tight"
+          onClick={()=>router.push('/')}
+          className="font-black text-3xl text-purple-700 tracking-tight cursor-pointer"
           style={{ fontFamily: "'Inter', sans-serif", fontWeight: 900 }}
         >
           HackPilot
@@ -102,7 +101,7 @@ export default function HomePage() {
         <div className="flex items-center gap-2">
           {!user && (
             <button
-              className="px-6 py-2 rounded-xl bg-purple-600 text-white font-semibold text-lg shadow hover:scale-105 hover:bg-purple-700 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-purple-400"
+              className="px-6 py-2 rounded-xl bg-purple-600 text-white font-semibold text-lg shadow hover:scale-105 hover:bg-purple-700 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-purple-400 cursor-pointer"
               onClick={() => router.push("/login")}
             >
               Signup / Login

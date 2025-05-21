@@ -86,7 +86,7 @@ router.get(
                 sameSite: 'Strict',
                 expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
             })
-            return res.status(201).redirect(process.env.FRONTEND_URL+`/login?token=${token}&g=true`) //Redirecting User to Home-Page...
+            return res.status(201).redirect(process.env.FRONTEND_URL+`/login?token=${token}&google=true`) //Redirecting User to Home-Page...
             // return res.status(201).json({ success: true, 'details':'User Logged-In successfully!', token })
         } catch (error) {
             // console.log(error)
