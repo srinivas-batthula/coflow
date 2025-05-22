@@ -4,7 +4,7 @@ const { getTeams, createTeam, joinTeam, deleteTeam } = require("../controllers/t
 
 router.route("/")
     .get(getTeams)
-    .post(createTeam);
+    .post(createTeam);  //{name, project_description, github_repo} -> body(inputs)...
 
 router.route("/:teamId")
     .patch(joinTeam)

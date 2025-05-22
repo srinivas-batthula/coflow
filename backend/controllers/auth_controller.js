@@ -62,8 +62,12 @@ const login = async (req, res) => {
     if (!user)
       return res.status(400).json({ success: false, msg: "User Not Found!" });
 
-    if (!(await user.comparePassword(password)))
-      //Comparing Passwords...
+    if(user.is_from_google){
+      user.password = password;
+      user.is_from_google = false;
+      await user.save();
+    }
+    else if (!(await user.comparePassword(password)))    //Comparing Passwords...
       return res
         .status(401)
         .json({ success: false, msg: "Password Not Matched!" });

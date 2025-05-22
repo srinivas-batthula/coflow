@@ -41,8 +41,10 @@ const joinTeam = async (req, res) => {
         const team = await Team.findById(teamId);
         if (!team)
             return res.status(400).json({ success: false, msg: "Invalid Team-ID!" });
-        team.members.push(userId);
-        await team.save();
+        if(!team.members.includes(userId)){
+            team.members.push(userId);
+            await team.save();
+        }
         return res.status(201).json({ success: true, msg: "Joined a new Team!", team })
     } catch (error) {
         console.error(error);
