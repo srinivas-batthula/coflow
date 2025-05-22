@@ -16,10 +16,10 @@ const get_hackathons = async(req, res)=>{
         else
             data = result
 
-        return res.status(200).json({status: 'Success', length: data.length, data})
+        return res.status(200).json({success: true, length: data.length, data})
     } catch (error) {
         // console.log('Error fetching hackathons:  ', error)
-        return res.status(500).json({status: 'Failed', error})
+        return res.status(500).json({success: false, error})
     }
 }
         //Reads Data from Fallback JSON file IF DB fails...
@@ -43,12 +43,12 @@ const update_hackathons = async(req, res)=>{        //Requires `pass` -secret pa
     if(pass === 'bsp_hack'){
         const r = await scrapeHackathons()
         if(r.status==='success')
-            return res.status(201).json({status: 'Success', details: 'Hackathons list Scraped & Updated in DB.', length: r.length})
+            return res.status(201).json({success: true, details: 'Hackathons list Scraped & Updated in DB.', length: r.length})
         else
-            return res.status(500).json({status: 'Failed', details: 'Failed to Scrape/Update Hackathons.', length: r.length, error: r.error})
+            return res.status(500).json({success: false, details: 'Failed to Scrape/Update Hackathons.', length: r.length, error: r.error})
     }
     else{
-        return res.status(401).json({status: 'Failed', details: 'Secrets Sent were Invalid/Not Matched!'})
+        return res.status(401).json({success: false, details: 'Secrets Sent were Invalid/Not Matched!'})
     }
 }
 

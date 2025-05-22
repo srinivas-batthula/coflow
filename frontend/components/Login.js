@@ -6,7 +6,6 @@ import { useRef, useState } from "react";
 
 
 export function LoginForm({ onSwitch }) {
-    const router = useRouter();
     const login = useAuthStore((s) => s.login);
     const error = useAuthStore((s) => s.error);
     const loading = useAuthStore((s) => s.loading);

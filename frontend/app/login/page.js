@@ -60,9 +60,9 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-100 px-4 py-8">
-      {/* Top-left Back to Home Button */}
+      {/* Top-left Back Button */}
       <button
-        onClick={() => router.push("/")}
+        onClick={() => router.back()}
         className="absolute top-6 left-6 px-5 py-2 rounded-xl bg-purple-100 text-purple-700 font-semibold shadow hover:bg-purple-200 transition-all duration-150 z-10 cursor-pointer"
         type="button"
       >
@@ -85,7 +85,7 @@ export default function AuthPage() {
           {/* Google OAuth2.0 */}
           <button
             onClick={handleOAuth}
-            className="mt-6 flex items-center justify-center gap-3 px-6 py-2 rounded-xl bg-white border border-gray-300 shadow hover:bg-gray-100 transition-all duration-150 text-black font-semibold text-lg"
+            className="mt-6 flex items-center justify-center gap-3 px-6 py-2 rounded-xl bg-white border border-gray-300 shadow hover:bg-gray-100 transition-all duration-150 text-black font-semibold text-lg cursor-pointer"
             style={{ minWidth: 260 }}
           >
             <svg

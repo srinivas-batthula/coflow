@@ -27,11 +27,11 @@ export default function Page() {
                 localStorage.removeItem('otp');
                 window.location.href = '/'    //Enables full page reload
             }
-            else{
+            else {
                 setError("Error while Creating New User!")
             }
         }
-        else{
+        else {
             setError("Invalid OTP/Timed Out!")
         }
         setLoading(false)
@@ -40,6 +40,14 @@ export default function Page() {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-100 px-4 py-8">
+            {/* Top-left Back Button */}
+            <button
+                onClick={() => router.back()}
+                className="absolute top-6 left-6 px-5 py-2 rounded-xl bg-purple-100 text-purple-700 font-semibold shadow hover:bg-purple-200 transition-all duration-150 z-10 cursor-pointer"
+                type="button"
+            >
+                ← Back
+            </button>
             <div className="w-full max-w-5xl h-[650px] flex flex-col md:flex-row bg-white rounded-3xl shadow-2xl overflow-hidden transition-all duration-700 ease-in-out">
                 <div className="w-full h-full flex items-center justify-center">
                     <form
@@ -56,7 +64,7 @@ export default function Page() {
                             <label className="block text-gray-700 mb-2 font-medium">Enter OTP: </label>
                             <input
                                 value={otp}
-                                onChange={(e)=>setOtp(e.target.value)}
+                                onChange={(e) => setOtp(e.target.value)}
                                 type="text"
                                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 text-black"
                                 required
