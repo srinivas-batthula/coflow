@@ -97,7 +97,6 @@ router.get(
 );
 
 router.get("/google/failure", (req, res) => {
-    // console.log("failed")
     // res.status(500).json({success: false, 'status': 'Un-Authorized', 'details': 'Please SignIn to continue...'})
     return res.status(500).redirect(process.env.FRONTEND_URL+'/login')
 });

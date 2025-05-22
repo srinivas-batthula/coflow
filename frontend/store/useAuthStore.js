@@ -80,7 +80,10 @@ export const useAuthStore = create((set) => ({
         {
           method: "GET",
           credentials: "include",
-          Authorization: token1
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token1}`,
+          },
         }
       );
       const data = await res.json();
