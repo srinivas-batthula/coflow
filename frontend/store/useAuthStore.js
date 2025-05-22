@@ -4,7 +4,7 @@ import { create } from "zustand";
 export const useAuthStore = create((set) => ({
   user: null,
   token: null,
-  loading: false,
+  loading: true,
   error: null,
 
   // Login action
@@ -20,8 +20,12 @@ export const useAuthStore = create((set) => ({
       const data = await res.json();
       if (!res.ok || !data.success) throw new Error(data.msg || "Login failed");
       set({ token: data.token, loading: false });
-      typeof window !== 'undefined' ? localStorage.setItem('login', true) : null
-      typeof window !== 'undefined' ? localStorage.setItem('token', data.token) : null
+      typeof window !== "undefined"
+        ? localStorage.setItem("login", true)
+        : null;
+      typeof window !== "undefined"
+        ? localStorage.setItem("token", data.token)
+        : null;
       return true;
     } catch (err) {
       set({ error: err.message, loading: false });
@@ -43,8 +47,12 @@ export const useAuthStore = create((set) => ({
       if (!res.ok || !data.success)
         throw new Error(data.msg || "Signup failed");
       set({ token: data.token, loading: false });
-      typeof window !== 'undefined' ? localStorage.setItem('login', true) : null
-      typeof window !== 'undefined' ? localStorage.setItem('token', data.token) : null
+      typeof window !== "undefined"
+        ? localStorage.setItem("login", true)
+        : null;
+      typeof window !== "undefined"
+        ? localStorage.setItem("token", data.token)
+        : null;
       return true;
     } catch (err) {
       set({ error: err.message, loading: false });
@@ -62,8 +70,10 @@ export const useAuthStore = create((set) => ({
       });
       if (!res.ok) throw new Error("Logout failed");
       set({ user: null, token: null, loading: false });
-      typeof window !== 'undefined' ? localStorage.setItem('login', false) : null
-      typeof window !== 'undefined' ? localStorage.removeItem('token') : null
+      typeof window !== "undefined"
+        ? localStorage.setItem("login", false)
+        : null;
+      typeof window !== "undefined" ? localStorage.removeItem("token") : null;
       return true;
     } catch (err) {
       set({ error: err.message, loading: false });
@@ -80,23 +90,24 @@ export const useAuthStore = create((set) => ({
         {
           method: "GET",
           credentials: "include",
-          Authorization: token1
+          Authorization: token1,
         }
       );
       const data = await res.json();
       if (data.success && data.auth && data.user) {
         set({ user: data.user, loading: false });
-        return true
+        console.log(data.user);
+        return true;
       } else {
         set({ user: null, loading: false });
-        return false
+        return false;
       }
     } catch (err) {
       set({ user: null, error: err.message, loading: false });
-      return false
+      return false;
     }
   },
   setToken: (token) => {
-    set({ token })
+    set({ token });
   },
 }));

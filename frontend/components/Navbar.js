@@ -81,6 +81,7 @@ export default function Navbar() {
                   onClick={() => {
                     setOpen(false);
                     logout();
+                    router.push("/");
                   }}
                 >
                   Logout
