@@ -2,17 +2,26 @@
 
 import { useEffect, useState } from "react";
 import { Users, User, CalendarDays, Plus } from "lucide-react";
+import {useAuthStore} from '@/store/useAuthStore'
+
 
 export default function TeamsPage() {
-  const [teams, setTeams] = useState([]);
+  const setTeams = useAuthStore((s) => s.setTeams);
+  const teams = useAuthStore((s) => s.teams);
+  const token = useAuthStore((s) => s.token);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     async function fetchTeams() {
       try {
-        const res = await fetch("http://localhost:8080/api/teams", {
+        const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL+"/api/teams", {
+          method: 'GET',
           credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
         });
         const data = await res.json();
         if (data.success) {
@@ -27,7 +36,12 @@ export default function TeamsPage() {
       }
     }
 
-    fetchTeams();
+    if(!teams || teams.length===0){
+      fetchTeams();
+    }
+    else{
+      setLoading(false);
+    }
   }, []);
 
   return (

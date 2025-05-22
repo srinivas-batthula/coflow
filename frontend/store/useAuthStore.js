@@ -3,6 +3,7 @@ import { create } from "zustand";
 
 export const useAuthStore = create((set) => ({
   user: null,
+  teams: [],
   token: null,
   loading: true,
   error: null,
@@ -92,14 +93,13 @@ export const useAuthStore = create((set) => ({
           credentials: "include",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token1}`,
+            "Authorization": `Bearer ${token1}`,
           },
         }
       );
       const data = await res.json();
       if (data.success && data.auth && data.user) {
         set({ user: data.user, loading: false });
-        console.log(data.user);
         return true;
       } else {
         set({ user: null, loading: false });
@@ -112,5 +112,8 @@ export const useAuthStore = create((set) => ({
   },
   setToken: (token) => {
     set({ token });
+  },
+  setTeams: (teams) => {
+    set({ teams });
   },
 }));
