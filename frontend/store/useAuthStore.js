@@ -3,9 +3,8 @@ import { create } from "zustand";
 
 export const useAuthStore = create((set) => ({
   user: null,
-  teams: [],
   token: null,
-  loading: true,
+  loading: false,
   error: null,
 
   // Login action
@@ -93,7 +92,7 @@ export const useAuthStore = create((set) => ({
           credentials: "include",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token1}`,
+            Authorization: `Bearer ${token1}`,
           },
         }
       );
@@ -112,8 +111,5 @@ export const useAuthStore = create((set) => ({
   },
   setToken: (token) => {
     set({ token });
-  },
-  setTeams: (teams) => {
-    set({ teams });
   },
 }));

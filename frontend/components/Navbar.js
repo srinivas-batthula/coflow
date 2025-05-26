@@ -36,7 +36,7 @@ export default function Navbar() {
         {user && (
           <>
             <button
-              className="px-2 py-2 rounded-xl bg-blue-50 text-blue-700 font-semibold text-lg shadow hover:bg-blue-100 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-300 cursor-pointer"
+              className="px-2 py-2 rounded-xl bg-blue-50 text-purple-800 font-semibold text-lg shadow hover:bg-blue-100 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-300 cursor-pointer"
               onClick={() => router.push("/teams")}
             >
               My Teams
