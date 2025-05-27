@@ -1,5 +1,5 @@
         //server.js
-const app = require('./app')
+const server = require('./app')
 const mongoose = require('mongoose')
 require('dotenv').config({path:'./config.env'})
 
@@ -17,4 +17,4 @@ mongoose.connection.on('disconnected', ()=>{ console.log('MongoDB is disconnecte
 
 
 const port = process.env.PORT || 8080                       //Don't set a PORT n.o after hosting.....
-app.listen(port, ()=>{ console.log(`Server started & listening at http://localhost:${port}/`) })
+server.listen(port, ()=>{ console.log(`Server started & listening at http://localhost:${port}/`) })

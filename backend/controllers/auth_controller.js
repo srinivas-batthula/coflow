@@ -101,8 +101,8 @@ const logout = (req, res) => {
 
 const protectRoute = async (req, res, next) => {
   const { q } = req.query;
-  const token = req.cookies?.token;
-  // let token = req.headers.authorization?.split(" ")[1] || "";
+  let token = req.cookies?.token;
+  // token = req.headers.authorization?.split(' ')[1] || '';
   // console.log(req.headers.authorization)
 
   // If no token found, return 401 Unauthorized
@@ -115,7 +115,7 @@ const protectRoute = async (req, res, next) => {
   try {
     // Verify the token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
+    // console.log(jwt.decode(token))
     // Fetch the user from the database using userId from decoded token
     const user = await User.findById(decoded.userId);
 

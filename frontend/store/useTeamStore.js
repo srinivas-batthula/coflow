@@ -107,7 +107,7 @@ export const useTeamStore = create((set, get) => ({
       );
 
       const data = await res.json();
-      console.log(data.my_teams);
+      // console.log(data.my_teams);
       if (data.success) {
         set({ teams: data.my_teams });
       } else {

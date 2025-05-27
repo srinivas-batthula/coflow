@@ -8,6 +8,10 @@ const helmet = require("helmet");
 const errorHandler = require("./utils/errorHandler");
 require("./services/cron_jobs/hackathonsUpdater"); // Starting Cron-Jobs...
 const MainRouter = require("./routes/MainRouter");
+const socketAuth = require("./socket/socketAuth");
+const http = require('http');
+const { Server } = require('socket.io');
+
 
 const app = express();
 
@@ -43,6 +47,22 @@ app.use(helmet());
 
 app.use(passport.initialize())      //Initialize OAuth2.0
 
+// WebSocket connection...
+const server = http.createServer(app)
+const io = new Server(server, {
+  cors: corsOptions,
+})
+// WebSockets Auth Middleware
+io.use(socketAuth);
+
+// Share io with all routes
+app.set('io', io);
+
+// Init Socket.IO logic
+require("./socket/index")(io);
+
+
+// REST API...
 app.get("/", async (req, res) => {
   return res
     .status(200)
@@ -64,4 +84,4 @@ app.use((req, res) => {
 
 app.use(errorHandler);
 
-module.exports = app;
+module.exports = server;

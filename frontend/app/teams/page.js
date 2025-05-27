@@ -69,7 +69,7 @@ export default function TeamsPage() {
     const response = await joinTeam(teamId);
 
     if (response?.success) {
-      router.push(`/teams/${response.team._id}`);
+      window.location.href = `/teams/${response.team._id}`;
     } else if (response?.msg) {
       setAlertMsg(response.msg); // ← shows custom alert
     }
@@ -144,9 +144,8 @@ export default function TeamsPage() {
                   name="project_description"
                   value={formData.project_description}
                   onChange={handleInput}
-                  placeholder="Project Description"
+                  placeholder="Project Description [Only <30 letters]  (Optional)"
                   className="w-full p-3 rounded border border-gray-300 placeholder-black text-black resize-none h-32 overflow-y-auto"
-                  required
                 />
                 <input
                   name="github_repo"

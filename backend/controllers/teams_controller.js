@@ -1,11 +1,51 @@
-require("dotenv").config({ path: "./config.env" });
 const { default: mongoose } = require("mongoose");
 const Team = require("../models/TeamModel");
 
 const getTeams = async (req, res) => {
   const userId = req.user._id;
   try {
-    const my_teams = await Team.find({ members: userId }).lean();
+    const my_teams = await Team.aggregate([
+      {
+        $match: {
+          members: userId
+        }
+      },
+      {
+        $lookup: {
+          from: 'hackpilot_users',
+          localField: 'members',
+          foreignField: '_id',
+          as: 'member_details'
+        }
+      },
+      {
+        $addFields: {
+          member_details: {
+            $map: {
+              input: "$member_details",
+              as: "member",
+              in: {
+                _id: "$$member._id",
+                fullName: "$$member.fullName"
+              }
+            }
+          }
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          github_repo: 1,
+          project_description: 1,
+          leader: 1,
+          member_details: 1,
+          createdAt: 1,
+          updatedAt: 1,
+        }
+      }
+    ]);
+
     return res
       .status(200)
       .json({ success: true, msg: "Fetched Teams!", my_teams });
@@ -20,7 +60,7 @@ const getTeams = async (req, res) => {
 const createTeam = async (req, res) => {
   const { name, project_description, github_repo } = req.body;
   const userId = req.user._id;
-  if (!name || !project_description)
+  if (!name)
     return res.status(400).json({ success: false, msg: "Invalid Inputs!" });
   try {
     const finalObj = {
@@ -31,6 +71,7 @@ const createTeam = async (req, res) => {
       project_description,
     };
     const team = await Team.create(finalObj);
+    team.members = [ { _id: userId, fullName: req.user.fullName } ]
     return res
       .status(201)
       .json({ success: true, msg: "Created a new Team!", team });
@@ -46,7 +87,7 @@ const joinTeam = async (req, res) => {
   const { teamId } = req.params;
   const userId = req.user._id;
   try {
-    // ✅ Validate ObjectId before querying
+    // Validate ObjectId before querying
     if (!mongoose.Types.ObjectId.isValid(teamId)) {
       return res
         .status(400)
