@@ -3,11 +3,10 @@ import React, { useEffect, useState } from "react";
 export default function CreateTaskModal({ team, onClose, onCreate }) {
   const [task, setTask] = useState("");
   const [description, setDescription] = useState("");
-  const [githubRepo, setGithubRepo] = useState("");
   const [assignedTo, setAssignedTo] = useState("");
+  const [deadline, setDeadline] = useState("");
 
   useEffect(() => {
-    // Prevent background scrolling while modal is open
     document.body.classList.add("overflow-hidden");
     return () => {
       document.body.classList.remove("overflow-hidden");
@@ -19,12 +18,11 @@ export default function CreateTaskModal({ team, onClose, onCreate }) {
       _id: Date.now().toString(),
       task,
       description,
-      githubRepo,
       status: "pending",
       assigned_to: assignedTo,
       teamId: team._id,
       comments: [],
-      deadline: null,
+      deadline,
     };
     onCreate(newTask);
     onClose();
@@ -33,10 +31,9 @@ export default function CreateTaskModal({ team, onClose, onCreate }) {
   return (
     <div
       className="fixed left-0 right-0 bottom-0 top-[64px] z-50 flex items-center justify-center backdrop-blur-sm"
-      style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }} // subtle transparent blur overlay
+      style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
     >
       <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 relative border border-gray-200">
-        {/* Close Button */}
         <button
           onClick={onClose}
           className="absolute top-4 right-5 text-gray-500 hover:text-black text-3xl font-bold leading-none"
@@ -45,7 +42,6 @@ export default function CreateTaskModal({ team, onClose, onCreate }) {
           &times;
         </button>
 
-        {/* Header */}
         <h2 className="text-2xl font-bold text-black mb-2">
           Create a New Task
         </h2>
@@ -53,7 +49,6 @@ export default function CreateTaskModal({ team, onClose, onCreate }) {
           Fill in the task details and assign it to a team member.
         </p>
 
-        {/* Task Title */}
         <div className="mb-4">
           <label className="block text-sm font-semibold text-black mb-1">
             Task Title
@@ -67,36 +62,36 @@ export default function CreateTaskModal({ team, onClose, onCreate }) {
           />
         </div>
 
-        {/* Description */}
         <div className="mb-4">
           <label className="block text-sm font-semibold text-black mb-1">
             Description
           </label>
           <textarea
-            className="w-full border border-gray-300 p-2 rounded text-black placeholder-gray-400 resize-none overflow-y-auto"
-            placeholder="Short description (max 50 chars)"
+            className="w-full border border-gray-300 p-2 rounded text-black placeholder-gray-400 resize-none"
+            placeholder="Short description (max 250 chars)"
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            maxLength={50}
+            onChange={(e) => {
+              if (e.target.value.length <= 250) setDescription(e.target.value);
+            }}
             rows={4}
           />
+          <p className="text-right text-xs text-gray-500 mt-1">
+            {description.length}/250 characters
+          </p>
         </div>
 
-        {/* GitHub Repo */}
         <div className="mb-4">
           <label className="block text-sm font-semibold text-black mb-1">
-            GitHub Repo URL
+            Deadline
           </label>
           <input
-            type="url"
-            className="w-full border border-gray-300 p-2 rounded text-black placeholder-gray-400"
-            placeholder="https://github.com/project"
-            value={githubRepo}
-            onChange={(e) => setGithubRepo(e.target.value)}
+            type="date"
+            className="w-full border border-gray-300 p-2 rounded text-black"
+            value={deadline}
+            onChange={(e) => setDeadline(e.target.value)}
           />
         </div>
 
-        {/* Assignee */}
         <div className="mb-6">
           <label className="block text-sm font-semibold text-black mb-1">
             Assign To
@@ -109,22 +104,16 @@ export default function CreateTaskModal({ team, onClose, onCreate }) {
             <option value="" className="text-gray-400">
               Select team member
             </option>
-            {team.member_details.filter((m) => m._id !== team.leader).length ===
-            0 ? (
-              <option disabled>No available members</option>
-            ) : (
-              team.member_details
-                .filter((m) => m._id !== team.leader)
-                .map((m) => (
-                  <option key={m._id} value={m._id}>
-                    {m.fullName}
-                  </option>
-                ))
-            )}
+            {team.member_details
+              .filter((m) => m._id !== team.leader)
+              .map((m) => (
+                <option key={m._id} value={m._id}>
+                  {m.fullName}
+                </option>
+              ))}
           </select>
         </div>
 
-        {/* Submit Button */}
         <button
           onClick={handleSubmit}
           disabled={!task || !assignedTo}

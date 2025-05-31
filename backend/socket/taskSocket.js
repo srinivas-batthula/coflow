@@ -61,23 +61,29 @@ module.exports = (io, socket) => {
     socket.emit("task_history", result);
   });
 
-  socket.on("task_create", async ({ task, assigned_to, teamId }) => {
-    const result = await createUpdate({
-      condition: "create",
-      body: {
-        task,
-        assigned_to,
-        teamId,
-        status: "pending",
-        comments: [],
-      },
-      taskId: "",
-    });
+  socket.on(
+    "task_create",
+    async ({ task, assigned_to, teamId, description, deadline }) => {
+      const result = await createUpdate({
+        condition: "create",
+        body: {
+          task,
+          assigned_to,
+          teamId,
+          description,
+          deadline, // ✅ Add this
+          status: "pending",
+          comments: [],
+          // createdAt and updatedAt will be auto-managed by mongoose if your schema uses timestamps
+        },
+        taskId: "",
+      });
 
-    // Send task only to leader (creator) and assignee
-    socket.emit("task_created", result); // To leader
-    io.to(assigned_to).emit("task_created", result); // To assignee
-  });
+      // Send full task data to leader and assignee
+      socket.emit("task_created", result); // To leader
+      io.to(assigned_to).emit("task_created", result); // To assignee
+    }
+  );
 
   socket.on("task_review", async ({ taskId, leaderId }) => {
     const result = await createUpdate({

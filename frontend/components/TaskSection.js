@@ -61,6 +61,8 @@ export default function TasksSection({ team, user, socket }) {
       task: newTask.task,
       assigned_to: newTask.assigned_to,
       teamId: team._id,
+      description: newTask.description,
+      deadline: newTask.deadline, // ✅ pass deadline
     });
 
     setShowCreateModal(false);
