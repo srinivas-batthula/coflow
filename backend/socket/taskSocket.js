@@ -3,7 +3,7 @@ const Task = require("../models/taskModel");
 
 module.exports = (io, socket) => {
   const fetchHistory = async ({ teamId, userId, is_leader }) => {
-    console.log(teamId, userId, is_leader);
+    // console.log(teamId, userId, is_leader);
     if (!teamId || !userId) {
       console.warn("Invalid task_history payload", { teamId, userId });
       socket.emit("task_history", { success: false, data: [] });

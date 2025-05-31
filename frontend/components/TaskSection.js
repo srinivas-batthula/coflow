@@ -16,12 +16,10 @@ export default function TasksSection({ team, user, socket }) {
       is_leader: team.leader === user._id,
     };
 
-    console.log("Emitting task_history with payload:", payload);
     socket.emit("task_history", payload);
 
     const handleTaskHistory = ({ success, data }) => {
       if (success && Array.isArray(data)) setTasks(data);
-      console.log(data);
     };
 
     const handleTaskCreated = ({ success, data }) => {
@@ -51,7 +49,7 @@ export default function TasksSection({ team, user, socket }) {
     if (selectedTask) {
       const updated = tasks.find((t) => t._id === selectedTask._id);
       if (updated && updated !== selectedTask) {
-        setSelectedTask(updated); // 🔄 refresh modal with updated task
+        setSelectedTask(updated);
       }
     }
   }, [tasks]);
@@ -79,7 +77,7 @@ export default function TasksSection({ team, user, socket }) {
     } else if (newStatus === "completed") {
       socket.emit("task_approve", {
         taskId,
-        teamId: team._id, // ✅ Add this
+        teamId: team._id,
       });
     }
 
@@ -94,37 +92,61 @@ export default function TasksSection({ team, user, socket }) {
   const getMemberName = (id) =>
     team.member_details.find((m) => m._id === id)?.fullName || "Unknown";
 
+  const statusColors = {
+    pending: "bg-yellow-100 text-yellow-800",
+    "under review": "bg-blue-100 text-blue-800",
+    completed: "bg-green-100 text-green-800",
+  };
+
   return (
-    <div className="flex flex-col h-full p-4 bg-white rounded-xl">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">Tasks</h2>
+    <div className="flex flex-col h-full p-6 bg-gray-50 rounded-lg shadow-md max-w-3xl mx-auto">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-3xl font-semibold text-gray-900 tracking-tight">
+          Tasks
+        </h2>
         {user._id === team.leader && (
           <button
             onClick={() => setShowCreateModal(true)}
-            className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="px-5 py-2 rounded-md bg-gradient-to-r from-blue-600 to-blue-500 text-white font-semibold shadow-md hover:from-blue-700 hover:to-blue-600 transition"
           >
             + Task
           </button>
         )}
       </div>
 
-      <div className="overflow-y-auto flex-grow space-y-3">
+      {/* Task List */}
+      <div className="overflow-y-auto flex-grow space-y-4 pr-1">
         {tasks.length === 0 ? (
-          <p className="text-center text-gray-500">No tasks available.</p>
+          <p className="text-center text-gray-400 italic select-none">
+            No tasks available.
+          </p>
         ) : (
           tasks.map((task) => (
             <div
               key={task._id}
               onClick={() => setSelectedTask(task)}
-              className="p-4 border rounded-lg shadow hover:bg-gray-100 cursor-pointer transition"
+              className="cursor-pointer p-5 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition flex flex-col gap-1 bg-white"
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === "Enter" && setSelectedTask(task)}
             >
-              <p className="font-medium">{task.task}</p>
-              <p className="text-sm text-gray-500">
-                Assigned to: {getMemberName(task.assigned_to)}
+              <p className="font-semibold text-lg text-gray-900 truncate">
+                {task.task}
               </p>
-              <p className="text-sm">
+              <p className="text-sm text-gray-600">
+                Assigned to:{" "}
+                <span className="font-medium text-gray-800">
+                  {getMemberName(task.assigned_to)}
+                </span>
+              </p>
+              <p className="text-sm text-gray-900">
                 Status:{" "}
-                <span className="font-semibold capitalize text-blue-600">
+                <span
+                  className={`inline-block px-3 py-0.5 rounded-full font-semibold text-sm capitalize ${
+                    statusColors[task.status] || "bg-gray-200 text-gray-700"
+                  }`}
+                >
                   {task.status}
                 </span>
               </p>
@@ -133,27 +155,24 @@ export default function TasksSection({ team, user, socket }) {
         )}
       </div>
 
+      {/* Modals */}
       {selectedTask && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
-          <TaskModal
-            task={selectedTask}
-            user={user}
-            team={team}
-            onClose={() => setSelectedTask(null)}
-            updateStatus={handleStatusUpdate}
-            addComment={handleComment}
-          />
-        </div>
+        <TaskModal
+          task={selectedTask}
+          user={user}
+          team={team}
+          onClose={() => setSelectedTask(null)}
+          updateStatus={handleStatusUpdate}
+          addComment={handleComment}
+        />
       )}
 
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
-          <CreateTaskModal
-            team={team}
-            onClose={() => setShowCreateModal(false)}
-            onCreate={handleCreateTask}
-          />
-        </div>
+        <CreateTaskModal
+          team={team}
+          onClose={() => setShowCreateModal(false)}
+          onCreate={handleCreateTask}
+        />
       )}
     </div>
   );

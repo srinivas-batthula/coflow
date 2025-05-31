@@ -1,55 +1,134 @@
-// components/TaskModal.js
-import React from "react";
+import React, { useEffect } from "react";
 
 export default function TaskModal({ task, onClose, user, team, updateStatus }) {
   const isLeader = user._id === team.leader;
   const isAssignee = user._id === task.assigned_to;
 
-  const handleSubmit = () => {
-    updateStatus(task._id, "under review");
-  };
+  // Prevent background scroll on modal open
+  useEffect(() => {
+    document.body.classList.add("overflow-hidden");
+    return () => document.body.classList.remove("overflow-hidden");
+  }, []);
 
-  const handleApprove = () => {
-    updateStatus(task._id, "completed");
-  };
+  // Find assignee full name from team member_details
+  const assignee = team.member_details.find((m) => m._id === task.assigned_to);
+
+  const handleSubmit = () => updateStatus(task._id, "under review");
+  const handleApprove = () => updateStatus(task._id, "completed");
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl w-[90%] max-w-md p-6 relative shadow-xl">
+    <div
+      className="fixed left-0 right-0 bottom-0 top-[64px] z-50 flex items-center justify-center backdrop-blur-sm"
+      style={{ backgroundColor: "rgba(255, 255, 255, 0.15)" }}
+      aria-modal="true"
+      role="dialog"
+      aria-labelledby="task-modal-title"
+    >
+      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 relative border border-gray-300 max-h-[80vh] overflow-y-auto">
+        {/* Close button */}
         <button
-          className="absolute top-2 right-3 text-xl font-bold text-gray-600 hover:text-red-500"
           onClick={onClose}
+          aria-label="Close modal"
+          className="absolute top-4 right-5 text-gray-600 hover:text-gray-900 text-4xl font-extrabold leading-none"
         >
           &times;
         </button>
-        <h2 className="text-xl font-bold mb-2">{task.task}</h2>
-        <p className="text-sm text-gray-700 mb-2">{task.description}</p>
-        <p className="text-sm mb-1">Deadline: {task.deadline}</p>
-        <p className="text-sm mb-1">Status: {task.status}</p>
-        <div className="mb-4">
-          <p className="font-semibold">Comments:</p>
-          <ul className="text-sm list-disc ml-5">
-            {task.comments.map((c, i) => (
-              <li key={i}>{c}</li>
-            ))}
-          </ul>
+
+        {/* Header */}
+        <h2
+          id="task-modal-title"
+          className="text-3xl font-bold text-black mb-4 select-none"
+        >
+          {task.task}
+        </h2>
+
+        {/* Task Details */}
+        <div className="space-y-3 text-black text-sm">
+          <div>
+            <label className="font-semibold block mb-1">Description</label>
+            <p className="text-gray-900">
+              {task.description || "No description"}
+            </p>
+          </div>
+
+          <div>
+            <label className="font-semibold block mb-1">Assignee</label>
+            <p className="text-gray-900">
+              {assignee ? assignee.fullName : "Unknown"}
+            </p>
+          </div>
+
+          <div>
+            <label className="font-semibold block mb-1">Deadline</label>
+            <p className="text-gray-900">
+              {task.deadline || "No deadline set"}
+            </p>
+          </div>
+
+          <div>
+            <label className="font-semibold block mb-1">Status</label>
+            <p className="text-gray-900 capitalize">{task.status}</p>
+          </div>
+
+          <div>
+            <label className="font-semibold block mb-1">GitHub Repo</label>
+            {task.githubRepo ? (
+              <a
+                href={task.githubRepo}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline break-all"
+              >
+                {task.githubRepo}
+              </a>
+            ) : (
+              <p className="text-gray-500 italic">No repo linked</p>
+            )}
+          </div>
+
+          <div>
+            <label className="font-semibold block mb-1">Comments</label>
+            {task.comments && task.comments.length > 0 ? (
+              <ul className="list-disc ml-5 max-h-32 overflow-y-auto text-gray-800">
+                {task.comments.map((c, i) => (
+                  <li key={i} className="mb-1">
+                    {c}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-gray-500 italic">No comments</p>
+            )}
+          </div>
         </div>
-        {isAssignee && task.status === "pending" && (
-          <button
-            onClick={handleSubmit}
-            className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
-          >
-            Submit
-          </button>
-        )}
-        {isLeader && task.status === "under review" && (
-          <button
-            onClick={handleApprove}
-            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-          >
-            Approve
-          </button>
-        )}
+
+        {/* Actions */}
+        <div className="mt-6 flex gap-3">
+          {isAssignee && task.status === "pending" && (
+            <button
+              onClick={handleSubmit}
+              className="flex-1 bg-yellow-500 text-white py-2 rounded-lg hover:bg-yellow-600 font-semibold transition"
+            >
+              Submit
+            </button>
+          )}
+          {isLeader && task.status === "under review" && (
+            <button
+              onClick={handleApprove}
+              className="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 font-semibold transition"
+            >
+              Approve
+            </button>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="mt-6 text-xs text-gray-400 border-t pt-3 select-none">
+          <p>
+            Task details are visible to team members. Use "Submit" to mark task
+            ready for review and "Approve" if you are the team leader.
+          </p>
+        </div>
       </div>
     </div>
   );
