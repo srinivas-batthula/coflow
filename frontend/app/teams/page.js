@@ -15,6 +15,7 @@ import {
 import { useAuthStore } from "@/store/useAuthStore";
 import { useTeamStore } from "@/store/useTeamStore";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 export default function TeamsPage() {
   const router = useRouter();
@@ -59,9 +60,13 @@ export default function TeamsPage() {
     const team = await createTeam({ name, project_description, github_repo });
     if (team) {
       router.push(`/teams/${team._id}`);
+      toast.success(`Team "${team.name}" created!`);
+    } else {
+      toast.error("Failed to create team.");
     }
   };
 
+  // Example: In handleJoinSubmit, show toast on success or error
   const handleJoinSubmit = async (e) => {
     e.preventDefault();
     const { teamId } = formData;
@@ -69,9 +74,11 @@ export default function TeamsPage() {
     const response = await joinTeam(teamId);
 
     if (response?.success) {
-      window.location.href = `/teams/${response.team._id}`;
+      router.push(`/teams/${teamId}`);
+      toast.success(`Joined team successfully!`);
     } else if (response?.msg) {
-      setAlertMsg(response.msg); // ← shows custom alert
+      toast.error(response.msg);
+      setAlertMsg(response.msg); // keep your current alert for persistence
     }
   };
 

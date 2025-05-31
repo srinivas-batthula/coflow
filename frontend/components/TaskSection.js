@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import CreateTaskModal from "./CreateTask";
 import TaskModal from "./TaskModal";
+import toast from "react-hot-toast";
 
 export default function TasksSection({ team, user, socket }) {
   const [tasks, setTasks] = useState([]);
@@ -19,11 +20,20 @@ export default function TasksSection({ team, user, socket }) {
     socket.emit("task_history", payload);
 
     const handleTaskHistory = ({ success, data }) => {
-      if (success && Array.isArray(data)) setTasks(data);
+      if (success && Array.isArray(data)) {
+        setTasks(data);
+      } else {
+        toast.error("Failed to load tasks.");
+      }
     };
 
     const handleTaskCreated = ({ success, data }) => {
-      if (success && data) setTasks((prev) => [...prev, data]);
+      if (success && data) {
+        setTasks((prev) => [...prev, data]);
+        toast.success("Task created successfully!");
+      } else {
+        toast.error("Task creation failed.");
+      }
     };
 
     const handleTaskUpdated = ({ success, data }) => {
@@ -31,6 +41,15 @@ export default function TasksSection({ team, user, socket }) {
         setTasks((prev) =>
           prev.map((task) => (task._id === data._id ? data : task))
         );
+
+        let message = "Task updated!";
+        if (data.status === "under review") {
+          message = "Task submitted for review.";
+        } else if (data.status === "completed") {
+          message = "Task approved.";
+        }
+
+        toast.success(message);
       }
     };
 
@@ -55,21 +74,27 @@ export default function TasksSection({ team, user, socket }) {
   }, [tasks]);
 
   const handleCreateTask = (newTask) => {
-    if (!newTask?.task || !newTask?.assigned_to) return;
+    if (!newTask?.task || !newTask?.assigned_to) {
+      toast.error("Task name and assignee are required.");
+      return;
+    }
 
     socket.emit("task_create", {
       task: newTask.task,
       assigned_to: newTask.assigned_to,
       teamId: team._id,
       description: newTask.description,
-      deadline: newTask.deadline, // ✅ pass deadline
+      deadline: newTask.deadline,
     });
 
     setShowCreateModal(false);
   };
 
   const handleStatusUpdate = (taskId, newStatus) => {
-    if (!taskId || !newStatus) return;
+    if (!taskId || !newStatus) {
+      toast.error("Invalid task update.");
+      return;
+    }
 
     if (newStatus === "under review") {
       socket.emit("task_review", {
@@ -87,8 +112,13 @@ export default function TasksSection({ team, user, socket }) {
   };
 
   const handleComment = (taskId, comment) => {
-    if (!taskId || !comment) return;
+    if (!taskId || !comment) {
+      toast.error("Comment cannot be empty.");
+      return;
+    }
+
     socket.emit("task_comment", { taskId, comment });
+    toast.success("Comment added.");
   };
 
   const getMemberName = (id) =>

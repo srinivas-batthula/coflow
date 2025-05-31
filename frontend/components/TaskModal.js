@@ -16,6 +16,28 @@ export default function TaskModal({ task, onClose, user, team, updateStatus }) {
   const handleSubmit = () => updateStatus(task._id, "under review");
   const handleApprove = () => updateStatus(task._id, "completed");
 
+  // Footer message logic
+  let footerMessage;
+  if (isLeader) {
+    if (task.status === "under review") {
+      footerMessage = "You can approve this task.";
+    } else if (task.status === "completed") {
+      footerMessage = "This task is completed.";
+    } else {
+      footerMessage = "You are the team leader.";
+    }
+  } else if (isAssignee) {
+    if (task.status === "pending") {
+      footerMessage = "This task is assigned to you. Submit when ready.";
+    } else if (task.status === "under review") {
+      footerMessage = "Task is under review.";
+    } else if (task.status === "completed") {
+      footerMessage = "This task is completed.";
+    }
+  } else {
+    footerMessage = "Task details are visible to team members.";
+  }
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm"
@@ -59,7 +81,7 @@ export default function TaskModal({ task, onClose, user, team, updateStatus }) {
               <div
                 className="border border-gray-300 rounded p-2 text-gray-900 break-words"
                 style={{
-                  maxHeight: "5.5rem", // ~4 lines (approx 1.375rem line-height * 4)
+                  maxHeight: "5.5rem", // ~4 lines
                   overflowY: "auto",
                   whiteSpace: "pre-wrap",
                 }}
@@ -142,21 +164,7 @@ export default function TaskModal({ task, onClose, user, team, updateStatus }) {
 
         {/* Footer */}
         <div className="mt-4 text-xs text-gray-400 border-t pt-3 select-none flex-shrink-0">
-          {isAssignee && (
-            <p>
-              This task is assigned to you. Use "Submit" to mark it ready for
-              review.
-            </p>
-          )}
-          {isLeader && (
-            <p>
-              As the team leader, use "Approve" to mark the task as completed
-              when it's ready.
-            </p>
-          )}
-          {!isLeader && !isAssignee && (
-            <p>Task details are visible to team members.</p>
-          )}
+          {footerMessage}
         </div>
       </div>
     </div>
