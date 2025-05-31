@@ -1,6 +1,6 @@
 //app.js
 const express = require("express");
-const passport = require('passport')
+const passport = require("passport");
 const cookieParser = require("cookie-parser");
 const rateLimit = require("express-rate-limit");
 const cors = require("cors");
@@ -9,9 +9,8 @@ const errorHandler = require("./utils/errorHandler");
 require("./services/cron_jobs/hackathonsUpdater"); // Starting Cron-Jobs...
 const MainRouter = require("./routes/MainRouter");
 const socketAuth = require("./socket/socketAuth");
-const http = require('http');
-const { Server } = require('socket.io');
-
+const http = require("http");
+const { Server } = require("socket.io");
 
 const app = express();
 
@@ -37,7 +36,7 @@ app.options("*", cors(corsOptions));
 const limiter = rateLimit({
   //Must to be used in production to prevent attacks...
   windowMs: 1 * 60 * 1000, // 1 minute
-  max: 8, // limit each IP to 8 requests per windowMs
+  max: 20, // limit each IP to 8 requests per windowMs
   message: "Too many requests from this IP, please try again after 1 minute",
   headers: true,
 });
@@ -45,31 +44,33 @@ app.use(limiter);
 
 app.use(helmet());
 
-app.use(passport.initialize())      //Initialize OAuth2.0
+app.use(passport.initialize()); //Initialize OAuth2.0
 
 // WebSocket connection...
-const server = http.createServer(app)
+const server = http.createServer(app);
 const io = new Server(server, {
-  cors: corsOptions,
-})
+  cors: {
+    origin: "http://localhost:3000", // Your frontend URL
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+  transports: ["websocket"],
+});
 // WebSockets Auth Middleware
 io.use(socketAuth);
 
 // Share io with all routes
-app.set('io', io);
+app.set("io", io);
 
 // Init Socket.IO logic
 require("./socket/index")(io);
 
-
 // REST API...
 app.get("/", async (req, res) => {
-  return res
-    .status(200)
-    .json({
-      status: "success",
-      details: `You are Viewing a Non-API Route (${req.url}), Use '/api/' for all other endpoints to access them`,
-    });
+  return res.status(200).json({
+    status: "success",
+    details: `You are Viewing a Non-API Route (${req.url}), Use '/api/' for all other endpoints to access them`,
+  });
 });
 
 // API Starter...

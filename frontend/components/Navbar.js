@@ -23,7 +23,7 @@ export default function Navbar() {
   }, [open]);
 
   return (
-    <nav className="flex items-center justify-between px-10 py-5 bg-white shadow-md sticky top-0 z-10">
+    <nav className="flex items-center justify-between px-10 py-5 bg-white shadow-md sticky top-0 z-100">
       <div
         onClick={() => router.push("/")}
         className="font-black text-3xl text-purple-700 tracking-tight cursor-pointer select-none"
