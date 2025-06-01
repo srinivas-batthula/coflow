@@ -1,53 +1,116 @@
-export default function ParticipantsSection({ team, onBack }) {
+export default function ParticipantsSection({ team, user, onBack }) {
   const leaderId = team.leader;
+  const userId = user._id;
 
-  const members = team.member_details.filter((m) => m._id !== leaderId);
-  const leader = team.member_details.find((m) => m._id === leaderId);
+  const members = team.member_details.map((member) => ({
+    ...member,
+    isLeader: member._id === leaderId,
+    isCurrentUser: member._id === userId,
+  }));
 
   return (
-    <div className="w-full h-full p-6 bg-white rounded-xl shadow-md flex flex-col justify-between">
-      <div>
-        {/* Back Button */}
-        <button
-          className="mb-4 text-blue-600 hover:underline text-sm font-medium"
-          onClick={onBack}
+    <div className="w-full h-full max-w-3xl mx-auto p-6 bg-white rounded-xl shadow-lg flex flex-col">
+      {/* Back Button */}
+      <button
+        onClick={onBack}
+        aria-label="Go back"
+        className="inline-flex items-center mb-5 text-gray-700 hover:text-gray-900 font-semibold text-sm focus:outline-none transition"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5 mr-1"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+          aria-hidden="true"
         >
-          ← Back
-        </button>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M15 19l-7-7 7-7"
+          />
+        </svg>
+        Back
+      </button>
 
-        {/* Team Name & Description */}
-        <h2 className="text-2xl font-bold text-gray-800 mb-1">{team.name}</h2>
-        <p className="text-gray-500 text-sm mb-6 italic">
-          {team.project_description}
-        </p>
+      {/* Team Title */}
+      <h2 className="text-4xl font-extrabold text-gray-900 mb-7 tracking-tight">
+        {team.name}
+      </h2>
 
-        {/* Members List */}
-        <h3 className="text-lg font-semibold text-gray-700 mb-3">👥 Members</h3>
-        <ul className="space-y-2">
+      {/* Description & GitHub Repo */}
+      <div className="space-y-5 mb-10">
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-1">
+          <span className="uppercase text-gray-600 tracking-wide font-semibold text-xs w-[110px]">
+            Description
+          </span>
+          <p className="text-gray-800 text-sm leading-relaxed flex-1 min-w-[180px]">
+            {team.project_description || "No project description provided."}
+          </p>
+        </div>
+
+        {team.github_repo && (
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-1">
+            <span className="uppercase text-gray-600 tracking-wide font-semibold text-xs w-[110px]">
+              GitHub Repo
+            </span>
+            <a
+              href={team.github_repo}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 font-semibold hover:underline break-all flex-1 min-w-[180px] text-sm"
+              aria-label="GitHub Repository Link"
+            >
+              {team.github_repo}
+            </a>
+          </div>
+        )}
+      </div>
+
+      {/* Members */}
+      <div>
+        <h3 className="text-2xl font-semibold text-gray-900 mb-6 tracking-wide">
+          Team Members
+        </h3>
+        <ul className="space-y-3 rounded-md" role="list">
           {members.map((member) => (
             <li
               key={member._id}
-              className="flex items-center justify-between bg-gray-50 border border-gray-200 p-2 rounded-md hover:bg-gray-100 transition text-sm text-gray-700"
+              tabIndex={0}
+              role="button"
+              aria-label={`Member ${member.fullName} ${
+                member.isLeader ? "Admin" : "Member"
+              }${member.isCurrentUser ? ", You" : ""}`}
+              className={`flex items-center justify-between p-3 rounded-lg border transition-shadow cursor-pointer
+                ${
+                  member.isCurrentUser
+                    ? "bg-sky-100 border-sky-400 shadow-md"
+                    : "bg-white border-gray-200 hover:shadow-lg"
+                }`}
             >
-              {member.fullName}
-              <span className="text-xs text-gray-400">Member</span>
+              <span
+                className={`font-semibold truncate ${
+                  member.isCurrentUser ? "text-sky-900" : "text-gray-900"
+                }`}
+                title={member.fullName}
+              >
+                {member.fullName}
+              </span>
+
+              <span
+                className={`text-xs font-semibold px-3 py-1 rounded-full select-none whitespace-nowrap ${
+                  member.isLeader
+                    ? "bg-gray-900 text-white"
+                    : "bg-gray-300 text-gray-700"
+                }`}
+              >
+                {member.isLeader ? "Admin" : "Member"}
+              </span>
             </li>
           ))}
         </ul>
       </div>
-
-      {/* Leader at the Bottom */}
-      {leader && (
-        <div className="pt-6 mt-6 border-t">
-          <h3 className="text-md font-medium text-gray-600 mb-2">👑 Admin</h3>
-          <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-2 rounded-md shadow-sm text-sm">
-            {leader.fullName}
-            <span className="ml-2 text-xs bg-blue-600 text-white px-2 py-0.5 rounded-full">
-              Leader
-            </span>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
