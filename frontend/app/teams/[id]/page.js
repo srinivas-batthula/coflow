@@ -7,7 +7,6 @@ import { useAuthStore } from "@/store/useAuthStore";
 
 import ParticipantsSection from "@/components/ParticipantSection";
 import TasksSection from "@/components/TaskSection";
-import ReservedSection from "@/components/ChatSection";
 
 import socket from "@/utils/socket";
 
@@ -25,7 +24,6 @@ export default function TeamSpecificPage() {
     if (user?._id && !socket.connected) {
       socket.connect();
     }
-
     return () => {
       if (socket.connected) socket.disconnect();
     };
@@ -57,22 +55,43 @@ export default function TeamSpecificPage() {
     );
   }
 
+  const sectionStyle =
+    "rounded-xl overflow-hidden border border-gray-200 bg-white h-full";
+
+  const scrollableContent = "h-full overflow-y-auto p-2";
+
   return (
-    <div className="flex h-screen bg-gradient-to-br from-white via-gray-50 to-gray-100 p-4 gap-4">
-      <div className="w-30/100  rounded-xl overflow-hidden border border-gray-200">
-        <ParticipantsSection
-          team={team}
-          user={user}
-          onBack={() => router.back()}
-        />
+    <div className="h-screen p-4 bg-gradient-to-br from-white via-gray-50 to-gray-100 flex flex-col gap-4 lg:flex-row">
+      {/* Top row for <900px: 1st & 2nd side-by-side */}
+      <div className="flex flex-row gap-4 h-full w-full lg:w-[65%]">
+        {/* First section */}
+        <div className="w-[40%] lg:w-[46%] h-full">
+          <div className={sectionStyle}>
+            <div className={scrollableContent}>
+              <ParticipantsSection
+                team={team}
+                user={user}
+                onBack={() => router.back()}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Second section */}
+        <div className="w-[60%] lg:w-[54%] h-full">
+          <div className={sectionStyle}>
+            <div className={scrollableContent}>
+              <TasksSection team={team} user={user} socket={socket} />
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="w-35/100  rounded-xl overflow-hidden border border-gray-200">
-        <TasksSection team={team} user={user} socket={socket} />
-      </div>
-
-      <div className="w-35/100 rounded-xl overflow-hidden border border-gray-200">
-        <ReservedSection />
+      {/* Third section (bottom on mobile, right on desktop) */}
+      <div className="w-full  lg:w-[35%] h-full">
+        <div className="rounded-xl border border-gray-200 bg-gray-100 text-gray-600 font-semibold flex items-center justify-center select-none h-full">
+          Coming Soon...
+        </div>
       </div>
     </div>
   );

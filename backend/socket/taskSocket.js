@@ -100,18 +100,28 @@ module.exports = (io, socket) => {
     }
   });
 
-  socket.on("task_approve", async ({ taskId, teamId }) => {
-    const result = await createUpdate({
-      condition: "status_update",
-      body: { status: "completed" },
-      taskId,
-    });
+  socket.on(
+    "task_approve",
+    async ({ taskId, teamId, leaderId, assigneeId }) => {
+      const result = await createUpdate({
+        condition: "status_update",
+        body: { status: "completed" },
+        taskId,
+      });
 
-    if (result.success && result.data) {
-      // Broadcast update to everyone in the team room
-      io.to(`team_${teamId}`).emit("task_updated", result);
+      if (result.success && result.data) {
+        //   const assigneeId = result.data.assigned_to?.toString();
+
+        // Emit update to leader (sender)
+        io.to(leaderId).emit("task_updated", result);
+
+        // Emit update to assignee (important)
+        if (assigneeId) {
+          io.to(assigneeId).emit("task_updated", result);
+        }
+      }
     }
-  });
+  );
 
   socket.on("task_comment", async ({ taskId, comment }) => {
     const result = await createUpdate({
@@ -120,7 +130,24 @@ module.exports = (io, socket) => {
       taskId,
     });
 
-    socket.emit("task_updated", result);
-    io.to(result.data.assigned_to).emit("task_updated", result);
+    if (result.success && result.data) {
+      io.to(result.data.assigned_to).emit("task_updated", {
+        success: true,
+        data: result.data,
+      });
+    }
+  });
+
+  socket.on("task_reassign", async ({ taskId, leaderId, assigneeId }) => {
+    const result = await createUpdate({
+      condition: "status_update",
+      body: { status: "pending" },
+      taskId,
+    });
+
+    if (result.success && result.data) {
+      io.to(assigneeId).emit("task_updated", result);
+      io.to(leaderId).emit("task_updated", result);
+    }
   });
 };
