@@ -59,15 +59,15 @@ export default function TeamSpecificPage() {
 
   return (
     <div className="flex h-screen bg-gradient-to-br from-white via-gray-50 to-gray-100 p-4 gap-4">
-      <div className="w-1/4 rounded-xl overflow-hidden border border-gray-200">
+      <div className="w-1/5 rounded-xl overflow-hidden border border-gray-200">
         <ParticipantsSection team={team} onBack={() => router.back()} />
       </div>
 
-      <div className="w-2/4 rounded-xl overflow-hidden border border-gray-200">
+      <div className="w-2/5 rounded-xl overflow-hidden border border-gray-200">
         <TasksSection team={team} user={user} socket={socket} />
       </div>
 
-      <div className="w-1/4 rounded-xl overflow-hidden border border-gray-200">
+      <div className="w-2/5 rounded-xl overflow-hidden border border-gray-200">
         <ReservedSection />
       </div>
     </div>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 export default function CreateTaskModal({ team, onClose, onCreate }) {
   const [task, setTask] = useState("");
@@ -85,10 +86,19 @@ export default function CreateTaskModal({ team, onClose, onCreate }) {
             Deadline
           </label>
           <input
-            type="date"
-            className="w-full border border-gray-300 p-2 rounded text-black"
+            type="datetime-local"
+            className="w-full border border-gray-300 p-2 rounded text-black focus:ring-2 focus:ring-blue-500"
             value={deadline}
-            onChange={(e) => setDeadline(e.target.value)}
+            min={new Date(Date.now()).toISOString().slice(0, 16)} // Ensure min is now
+            onChange={(e) => {
+              const selectedTime = new Date(e.target.value).getTime();
+              if (selectedTime >= Date.now()) {
+                setDeadline(e.target.value);
+              } else {
+                toast.error("Please select a future date and time.");
+                setDeadline(""); // Optional: clear invalid input
+              }
+            }}
           />
         </div>
 

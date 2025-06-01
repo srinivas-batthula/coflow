@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-
+import CountDownTimer from "@/components/CountDownTimer";
 export default function TaskModal({ task, onClose, user, team, updateStatus }) {
   const isLeader = user._id === team.leader;
   const isAssignee = user._id === task.assigned_to;
@@ -96,12 +96,23 @@ export default function TaskModal({ task, onClose, user, team, updateStatus }) {
                 {assignee ? assignee.fullName : "Unknown"}
               </p>
             </div>
-
+            {/* Deadline */}
             <div>
               <label className="font-semibold block mb-1">Deadline</label>
               <p className="text-gray-900">
-                {task.deadline || "No deadline set"}
+                {task.deadline
+                  ? new Date(task.deadline).toLocaleString(undefined, {
+                      dateStyle: "medium",
+                      timeStyle: "short",
+                      hour12: true,
+                    })
+                  : "No deadline set"}
               </p>
+
+              {/* Show countdown only for non-leaders with pending status */}
+              {!isLeader && task.status === "pending" && task.deadline && (
+                <CountDownTimer deadline={task.deadline} />
+              )}
             </div>
 
             <div>

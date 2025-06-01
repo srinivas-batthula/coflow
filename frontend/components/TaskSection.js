@@ -148,7 +148,7 @@ export default function TasksSection({ team, user, socket }) {
       </div>
 
       {/* Task List */}
-      <div className="overflow-y-auto flex-grow space-y-4 pr-1">
+      <div className="overflow-y-auto flex-grow space-y-4 pr-1 scrollbar-hide">
         {tasks.length === 0 ? (
           <p className="text-center text-gray-400 italic select-none">
             No tasks available.
