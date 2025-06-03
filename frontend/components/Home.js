@@ -33,8 +33,8 @@ const features = [
   },
 ];
 
-export default function HomePage({}) {
-  const { hackathons, loading, error, fetchHackathons } = useHackathonStore();
+export default function HomePage({ data }) {
+  const { hackathons, loading, error, fetchHackathons, setHackathons } = useHackathonStore();
   const user = useAuthStore((s) => s.user);
   const authLoading = useAuthStore((s) => s.loading);
   const [selectedCity, setSelectedCity] = useState("All");
@@ -48,8 +48,8 @@ export default function HomePage({}) {
         ) || [];
 
   useEffect(() => {
-    fetchHackathons();
-  }, [fetchHackathons]);
+    setHackathons(data);
+  }, [data]);
 
   if (authLoading) {
     return (

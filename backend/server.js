@@ -1,6 +1,7 @@
         //server.js
 const server = require('./app')
 const mongoose = require('mongoose')
+const startWorker = require("./workers/push_notifications")
 require('dotenv').config({path:'./config.env'})
 
 
@@ -15,6 +16,9 @@ mongoose.connection.on('connected', ()=>{ console.log('Connected to DB...') })
 mongoose.connection.on('error', (err)=>{ console.log(`Error in MongoDB connection  -->  ${err}`) })
 mongoose.connection.on('disconnected', ()=>{ console.log('MongoDB is disconnected & attempting to reconnect...'); ConnectDb(); })
 
+if (process.env.ENABLE_EMBEDDED_WORKER === "true") {        // Start the Redis-based worker inline...
+    startWorker()
+}
 
 const port = process.env.PORT || 8080                       //Don't set a PORT n.o after hosting.....
 server.listen(port, ()=>{ console.log(`Server started & listening at http://localhost:${port}/`) })

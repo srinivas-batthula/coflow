@@ -15,6 +15,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        {/* Manifest.json.... */}
+        {/* <link rel="manifest" href="https://verseify.netlify.app/manifest.json" /> */}
+
+        {/* Icon...     */}
+        {/* <link rel="icon" href="https://verseify.netlify.app/verseify.png" type="image/x-icon" /> */}
+      </head>
       <body>
         <Layout>{children}</Layout>
         <Toaster

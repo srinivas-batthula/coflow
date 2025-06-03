@@ -52,7 +52,7 @@ export default function CreateTaskModal({ team, onClose, onCreate }) {
 
         <div className="mb-4">
           <label className="block text-sm font-semibold text-black mb-1">
-            Task Title
+            Task Title <span style={{color:'red'}}>*</span>
           </label>
           <input
             type="text"
@@ -104,7 +104,7 @@ export default function CreateTaskModal({ team, onClose, onCreate }) {
 
         <div className="mb-6">
           <label className="block text-sm font-semibold text-black mb-1">
-            Assign To
+            Assign To <span style={{color:'red'}}>*</span>
           </label>
           <select
             className="w-full border border-gray-300 p-2 rounded text-black"

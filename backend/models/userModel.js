@@ -6,7 +6,20 @@ const userSchema = new mongoose.Schema({
   fullName: { type: String, required: true },
   email: { type: String, required: true, unique: true, lowercase: true },
   password: { type: String},
-  is_from_google: { type: Boolean, default: false }
+  is_from_google: { type: Boolean, default: false },
+  subscription: {
+    endpoint: {
+      type: String
+    },
+    keys: {
+      p256dh: {
+        type: String
+      },
+      auth: {
+        type: String
+      }
+    }
+  },
 }, {timestamps: true})
 
   // Auto-hashes password before saving it to DB

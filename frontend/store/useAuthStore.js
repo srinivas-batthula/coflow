@@ -11,7 +11,7 @@ export const useAuthStore = create((set) => ({
   login: async (email, password) => {
     set({ loading: true, error: null });
     try {
-      const res = await fetch("http://localhost:8080/api/auth/login", {
+      const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL+"/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -37,7 +37,7 @@ export const useAuthStore = create((set) => ({
   signup: async (fullName, email, password) => {
     set({ loading: true, error: null });
     try {
-      const res = await fetch("http://localhost:8080/api/auth/signup", {
+      const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL+"/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ fullName, email, password }),
@@ -64,7 +64,7 @@ export const useAuthStore = create((set) => ({
   logout: async () => {
     set({ loading: true, error: null });
     try {
-      const res = await fetch("http://localhost:8080/api/auth/logout", {
+      const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL+"/api/auth/logout", {
         method: "POST",
         credentials: "include",
       });
@@ -86,7 +86,7 @@ export const useAuthStore = create((set) => ({
     set({ loading: true, error: null });
     try {
       const res = await fetch(
-        "http://localhost:8080/api/auth/validateUser?q=true",
+        process.env.NEXT_PUBLIC_BACKEND_URL+"/api/auth/validateUser?q=true",
         {
           method: "GET",
           credentials: "include",

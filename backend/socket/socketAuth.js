@@ -10,6 +10,9 @@ module.exports = async (socket, next) => {
         const cookies = cookie.parse(socket.handshake.headers.cookie);
         token = cookies?.token || '';
     }
+    if (!token && socket.handshake.auth) {     // If not in cookies, try from Authorization header
+        token = socket.handshake.auth.token || '';
+    }
     if (!token && socket.handshake.headers.authorization) {     // If not in cookies, try from Authorization header
         token = socket.handshake.headers.authorization?.split(" ")[1] || '';
     }
@@ -22,8 +25,7 @@ module.exports = async (socket, next) => {
         const user = await User.findById(decoded.userId);
         if (!user)
             return next(new Error("Unauthorized: User not found"));
-        user.password = null;
-        socket.user = user; // Attach user to socket
+        socket.user = { _id: user._id, fullName: user.fullName };    // Attach user to socket
         return next()
     } catch (error) {
         console.log(error)

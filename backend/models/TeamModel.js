@@ -19,7 +19,7 @@ const TeamSchema = new mongoose.Schema(
     github_repo: { type: String, trim: true },
     project_description: {
       type: String,
-      maxlength: [500, "project_description cannot exceed 500 characters"],
+      maxlength: [250, "project_description cannot exceed 500 characters"],
     },
   },
   { timestamps: true }

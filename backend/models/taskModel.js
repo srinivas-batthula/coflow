@@ -13,7 +13,7 @@ const TaskSchema = new mongoose.Schema(
       default: "pending",
       enum: ["pending", "under review", "completed"],
     },
-    comments: [{ type: String }],
+    comments: { type: [String], default: [] },
     assigned_to: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "hackpilot_users",

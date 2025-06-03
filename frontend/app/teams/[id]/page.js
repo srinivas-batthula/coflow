@@ -1,3 +1,4 @@
+// app/teams/[id]/page.js
 "use client";
 
 import { useEffect } from "react";
@@ -14,24 +15,29 @@ export default function TeamSpecificPage() {
   const { id } = useParams();
   const router = useRouter();
   const { fetchTeams, teams, loading, error } = useTeamStore();
-  const { user } = useAuthStore();
+  const { user, token } = useAuthStore();
 
   useEffect(() => {
-    fetchTeams();
-  }, []);
+    // if (!teams || teams.length === 0) {
+      fetchTeams();
+    // }
+  }, [fetchTeams]);
 
   useEffect(() => {
     if (user?._id && !socket.connected) {
+      socket.io.opts.extraHeaders = {   // Injecting `token` manually before connection in client-side...
+        Authorization: `Bearer ${token}`,
+      };
       socket.connect();
     }
     return () => {
       if (socket.connected) socket.disconnect();
     };
-  }, [user]);
+  }, [user, token]);
 
   const team = teams.find((t) => t._id === id);
 
-  if (loading) {
+  if (loading || !user || !teams.length) {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-50 text-gray-600 text-xl">
         Loading team info...
@@ -47,10 +53,20 @@ export default function TeamSpecificPage() {
     );
   }
 
-  if (!team || !user || !socket.connected) {
+  // Now check for missing team
+  if (!team) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-50 text-gray-800 text-lg">
-        Team not found, user not ready, or socket not connected.
+      <div className="flex items-center justify-center h-screen bg-gray-50 text-red-600 text-lg">
+        Team not found.
+      </div>
+    );
+  }
+
+  // Wait for socket to finish connecting
+  if (!socket.connected) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-50 text-gray-600 text-lg">
+        Connecting to socket...
       </div>
     );
   }

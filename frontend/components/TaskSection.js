@@ -29,8 +29,8 @@ export default function TasksSection({ team, user, socket }) {
 
     socket.emit("task_history", {
       teamId: team._id,
-      userId: user._id,
       is_leader: user._id === team.leader,
+      teamName: team.name,
     });
 
     socket.on("task_history", ({ success, data }) => {
@@ -40,14 +40,18 @@ export default function TasksSection({ team, user, socket }) {
 
     socket.on("task_created", ({ success, data }) => {
       if (success) {
-        setTasks((prev) => [...prev, data]);
+        setTasks((prev) => [data, ...prev]);
         toast.success("Task created");
       } else toast.error("Failed to create task");
     });
 
     socket.on("task_updated", ({ success, data }) => {
       if (success) {
-        setTasks((prev) => prev.map((t) => (t._id === data._id ? data : t)));
+        setTasks((prev) =>
+          prev
+            .map((t) => (t._id === data._id ? data : t))
+            .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+        );
         setSelectedTask((prev) =>
           prev && prev._id === data._id ? data : prev
         );
@@ -82,7 +86,6 @@ export default function TasksSection({ team, user, socket }) {
     socket.emit("task_create", {
       task: newTask.task,
       assigned_to: newTask.assigned_to,
-      teamId: team._id,
       description: newTask.description,
       deadline: newTask.deadline,
     });
@@ -95,9 +98,6 @@ export default function TasksSection({ team, user, socket }) {
     } else if (newStatus === "completed") {
       socket.emit("task_approve", {
         taskId,
-        teamId: team._id,
-        leaderId: user._id,
-        assigneeId: selectedTask?.assigned_to,
       });
     } else if (newStatus === "pending") {
       socket.emit("task_reassign", {
@@ -146,9 +146,8 @@ export default function TasksSection({ team, user, socket }) {
                         setFilterBy("all");
                         setShowDropdown(false);
                       }}
-                      className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
-                        filterBy === "all" ? "font-semibold bg-gray-50" : ""
-                      }`}
+                      className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${filterBy === "all" ? "font-semibold bg-gray-50" : ""
+                        }`}
                     >
                       All
                     </li>
@@ -161,11 +160,10 @@ export default function TasksSection({ team, user, socket }) {
                             setFilterBy(member._id);
                             setShowDropdown(false);
                           }}
-                          className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
-                            filterBy === member._id
+                          className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${filterBy === member._id
                               ? "font-semibold bg-gray-50"
                               : ""
-                          }`}
+                            }`}
                         >
                           {member.fullName}
                         </li>
@@ -221,13 +219,12 @@ export default function TasksSection({ team, user, socket }) {
                 <Flag className="w-4 h-4 text-gray-400" />
                 Status:
                 <span
-                  className={`ml-2 px-2 py-0.5 text-xs rounded-full font-medium capitalize ${
-                    task.status === "pending"
+                  className={`ml-2 px-2 py-0.5 text-xs rounded-full font-medium capitalize ${task.status === "pending"
                       ? "bg-yellow-100 text-yellow-800"
                       : task.status === "under review"
-                      ? "bg-blue-100 text-blue-800"
-                      : "bg-green-100 text-green-800"
-                  }`}
+                        ? "bg-blue-100 text-blue-800"
+                        : "bg-green-100 text-green-800"
+                    }`}
                 >
                   {task.status}
                 </span>

@@ -34,9 +34,7 @@ export default function TeamsPage() {
   const [alertMsg, setAlertMsg] = useState("");
 
   useEffect(() => {
-    // if (!teams || teams.length === 0) {
     fetchTeams();
-    // }
   }, [fetchTeams]);
 
   // Auto-dismiss alert

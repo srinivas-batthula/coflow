@@ -36,7 +36,7 @@ app.options("*", cors(corsOptions));
 const limiter = rateLimit({
   //Must to be used in production to prevent attacks...
   windowMs: 1 * 60 * 1000, // 1 minute
-  max: 20, // limit each IP to 8 requests per windowMs
+  max: 15, // limit each IP to 15 requests per windowMs
   message: "Too many requests from this IP, please try again after 1 minute",
   headers: true,
 });
@@ -49,11 +49,7 @@ app.use(passport.initialize()); //Initialize OAuth2.0
 // WebSocket connection...
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:3000", // Your frontend URL
-    methods: ["GET", "POST"],
-    credentials: true,
-  },
+  cors: corsOptions,
   transports: ["websocket"],
 });
 // WebSockets Auth Middleware
