@@ -22,11 +22,11 @@ export default function TaskModal({
   const assignee = team.member_details.find((m) => m._id === task.assigned_to);
 
   const handleSubmit = () => {
-    updateStatus(task._id, "under review");
+    updateStatus(task, "under review");
     onClose();
   };
   const handleApprove = () => {
-    updateStatus(task._id, "completed");
+    updateStatus(task, "completed");
     onClose();
   };
   const handleReassign = () => {
@@ -38,8 +38,7 @@ export default function TaskModal({
       toast.error("Reassignment comment is required.");
       return;
     }
-    addComment(task._id, reassignComment);
-    updateStatus(task._id, "pending");
+    addComment(task, reassignComment);
     onClose();
   };
 

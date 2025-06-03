@@ -53,23 +53,22 @@ const createUpdate = async ({ condition, body, taskId }) => {
 };
 
 module.exports = (io, socket) => {
-  socket.on("task_history", async ({ teamId, is_leader, teamName }) => {
-    socket.join(socket.user._id); // for personal messages
-    socket.teamId = teamId;
-    socket.teamName = teamName;
-    const result = await fetchHistory({ teamId, userId: socket.user._id, is_leader });
+  socket.on("task_history", async ({ teamId, userId, is_leader }) => {
+    socket.join(userId); // for personal messages
+    // console.log("Rooms after join:", Array.from(socket.rooms));
+    const result = await fetchHistory({ teamId, userId, is_leader });
     socket.emit("task_history", result);
   });
 
   socket.on(
     "task_create",
-    async ({ task, assigned_to, description, deadline }) => {
+    async ({ task, assigned_to, description, deadline, teamId, teamName }) => {
       const result = await createUpdate({
         condition: "create",
         body: {
           task,
           assigned_to,
-          teamId: socket.teamId,
+          teamId,
           description,
           deadline,
         },
@@ -80,7 +79,7 @@ module.exports = (io, socket) => {
         socket.emit("task_created", result); // To leader
         io.to(assigned_to).emit("task_created", result); // To assignee
         // Push Notification to `assignee`...
-        // await enqueuePush(assigned_to, false, { title: `New Task Alert from ${socket.teamName}`, body: `${result.data.task.slice(0, 50)}${result.data.task.length > 50 ? '...' : ''}` });
+        // await enqueuePush(assigned_to, false, { title: `New Task Alert from ${teamName}`, body: `${result.data.task.slice(0, 50)}${result.data.task.length > 50 ? '...' : ''}` });
       }
     }
   );
@@ -102,7 +101,7 @@ module.exports = (io, socket) => {
 
   socket.on(
     "task_approve",
-    async ({ taskId }) => {
+    async ({ taskId, teamName, assigned_to }) => {
       const result = await createUpdate({
         condition: "status_update",
         body: { status: "completed" },
@@ -111,14 +110,14 @@ module.exports = (io, socket) => {
 
       if (result.success && result.data) {
         socket.emit("task_updated", result); // To leader
-        io.to(result.data?.assigned_to).emit("task_updated", result); // To member
+        io.to(assigned_to).emit("task_updated", result); // To member
         // Push Notification to `assignee`...
-        // await enqueuePush(result.data?.assigned_to, false, { title: `Your Task Approved in ${socket.teamName}`, body: `${result.data?.task.slice(0, 50)}${result.data?.task.length > 50 ? '...' : ''}` });
+        // await enqueuePush(assigned_to, false, { title: `Your Task Approved in ${teamName}`, body: `${result.data?.task.slice(0, 50)}${result.data?.task.length > 50 ? '...' : ''}` });
       }
     }
   );
 
-  socket.on("task_comment", async ({ taskId, comment }) => {  // Added comment for task & re-assigned to user...
+  socket.on("task_comment", async ({ taskId, comment, teamName, assigned_to }) => {  // Added comment for task & re-assigned to user...
     const result = await createUpdate({
       condition: "comment_update",
       body: { comment, status: 'pending' },
@@ -127,9 +126,9 @@ module.exports = (io, socket) => {
 
     if (result.success && result.data) {
       socket.emit("task_updated", result); // To leader
-      io.to(result.data?.assigned_to).emit("task_updated", result); // To member
+      io.to(assigned_to).emit("task_updated", result); // To member
       // Push Notification to `assignee`...
-      // await enqueuePush(result.data?.assigned_to, false, { title: `Added comment for your Task in ${socket.teamName}`, body: `${comment.slice(0, 50)}${comment.length > 50 ? '...' : ''}` });
+      // await enqueuePush(assigned_to, false, { title: `Added comment for your Task in ${teamName}`, body: `${comment.slice(0, 50)}${comment.length > 50 ? '...' : ''}` });
     }
   });
 };

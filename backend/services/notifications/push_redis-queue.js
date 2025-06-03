@@ -4,7 +4,7 @@ const Redis = require("ioredis")
 
 const redis = new Redis(process.env.REDIS_URL)
 
-const enqueuePush = async ( id, is_teamId=false, payload, ping=false ) => {   // id = teamId/userId ,&, is_group = (`true` for message_notify's) ,&, payload = { title, body }...
+const enqueuePush = async ( id, is_teamId=false, payload, ping=false ) => {   // id = teamId/userId ,&, is_teamId = (`true` for message_notify's) ,&, payload = { title, body }...
     if (!id || !payload) {
         console.error("Missing required fields for redis-push")
         return false

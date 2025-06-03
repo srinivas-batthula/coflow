@@ -29,8 +29,8 @@ export default function TasksSection({ team, user, socket }) {
 
     socket.emit("task_history", {
       teamId: team._id,
+      userId: user._id,
       is_leader: user._id === team.leader,
-      teamName: team.name,
     });
 
     socket.on("task_history", ({ success, data }) => {
@@ -88,29 +88,27 @@ export default function TasksSection({ team, user, socket }) {
       assigned_to: newTask.assigned_to,
       description: newTask.description,
       deadline: newTask.deadline,
+      teamId: team._id,
+      teamName: team.name,
     });
     setShowCreateModal(false);
   };
 
-  const updateStatus = (taskId, newStatus) => {
+  const updateStatus = (task, newStatus) => {
     if (newStatus === "under review") {
-      socket.emit("task_review", { taskId, leaderId: team.leader });
+      socket.emit("task_review", { taskId: task._id, leaderId: team.leader });
     } else if (newStatus === "completed") {
       socket.emit("task_approve", {
-        taskId,
-      });
-    } else if (newStatus === "pending") {
-      socket.emit("task_reassign", {
-        taskId,
-        leaderId: user._id,
-        assigneeId: selectedTask?.assigned_to,
+        taskId: task._id,
+        teamName: team.name,
+        assigned_to: task.assigned_to,
       });
     }
   };
 
-  const addComment = (taskId, comment) => {
+  const addComment = (task, comment) => {
     if (!comment) return toast.error("Comment is required");
-    socket.emit("task_comment", { taskId, comment });
+    socket.emit("task_comment", { taskId: task._id, comment, teamName: team.name, assigned_to: task.assigned_to, });
     toast.success("Comment added");
   };
 

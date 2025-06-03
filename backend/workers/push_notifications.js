@@ -20,7 +20,7 @@ const startWorker = async () => {
             const { ping, is_teamId, id, payload } = job
 
             if (ping) {        // ping==true
-                console.log('PING...')
+                console.log('Notification-Worker PING...')
                 continue
             }
             if (!id || !payload) {

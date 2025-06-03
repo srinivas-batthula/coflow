@@ -6,6 +6,8 @@ const taskSocket = require("./taskSocket");
 module.exports = (io) => {
   io.on("connection", (socket) => {
     console.log("Socket connected:", socket.id, ` ${socket.user.fullName}`);
+    // console.log("All rooms:", Array.from(io.sockets.adapter.rooms.keys()));
+
     // Test item added to Redis Queue...
     enqueuePush('1', false, {t: 't'}, true).catch((err)=>{console.log(err)});
 

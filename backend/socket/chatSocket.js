@@ -2,7 +2,7 @@
 const Message = require('../models/chatMessageModel')
 const enqueuePush = require('../services/notifications/push_redis-queue')
 
-const fetchHistory = async (teamId) => {
+const fetchHistory = async ({teamId}) => {
     if (!teamId) {
         console.log("Invalid chat_history payload");
         return { success: false, data: [] };
@@ -47,7 +47,7 @@ const fetchHistory = async (teamId) => {
     }
 };
 
-const createUpdate = async (condition, body, messageId) => {
+const createUpdate = async ({condition, body, messageId}) => {
     try {
         let data = {}
         switch (condition) {
@@ -66,19 +66,20 @@ const createUpdate = async (condition, body, messageId) => {
 }
 
 module.exports = (io, socket) => {
-    socket.on('message_history', async ({ teamId, teamName }) => {   // Fetch previous `messages` of current team/group...
+    socket.on('message_history', async ({ teamId }) => {   // Fetch previous `messages` of current team/group...
         // console.log(teamId, members_ids)
         socket.join(teamId);
-        socket.teamId = teamId;
-        socket.teamName = teamName;
-        const result = await fetchHistory(teamId);
+        const result = await fetchHistory({teamId});
         socket.emit('message_history', result);
     });
 
-    socket.on("message_create", async ({ message }) => {    // Message Create...
-        const result = await createUpdate('create', { message, sender: socket.user._id, teamId: socket.teamId }, '');
-        io.to(socket.teamId).emit("message_created", result);
-        // Push Notifications to all members in `group/team`...
-        // await enqueuePush(socket.teamId, true, { title: `${socket.user.fullName} sent a message in team -${socket.teamName}`, body: `${message.slice(0, 50)}${message.length > 50 ? '...' : ''}` });
+    socket.on("message_create", async ({ message, teamId, teamName }) => {    // Message Create...
+        const result = await createUpdate({condition: 'create', body: { message, sender: socket.user._id, teamId }, messageId: ''});
+
+        if (result.success && result.data) {
+            io.to(teamId).emit("message_created", result);
+            // Push Notifications to all members in `group/team`...
+            // await enqueuePush(teamId, true, { title: `${socket.user.fullName} sent a message in team -${teamName}`, body: `${message.slice(0, 50)}${message.length > 50 ? '...' : ''}` });
+        }
     });
 };
