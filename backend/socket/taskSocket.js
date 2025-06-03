@@ -1,6 +1,6 @@
 // socket/teamSocket.js
 const Task = require("../models/taskModel");
-const enqueuePush = require("../services/notifications/push_redis-queue");
+const {sendPushToOfflineUsers} = require("../services/notifications/push_redis-queue");
 
 const fetchHistory = async ({ teamId, userId, is_leader }) => {
   // console.log(teamId, userId, is_leader);
@@ -79,7 +79,7 @@ module.exports = (io, socket) => {
         socket.emit("task_created", result); // To leader
         io.to(assigned_to).emit("task_created", result); // To assignee
         // Push Notification to `assignee`...
-        // await enqueuePush(assigned_to, false, { title: `New Task Alert from ${teamName}`, body: `${result.data.task.slice(0, 50)}${result.data.task.length > 50 ? '...' : ''}` });
+        // await sendPushToOfflineUsers(io, [assigned_to], { title: `New Task Alert from ${teamName}`, body: `${result.data.task.slice(0, 30)}${result.data.task.length > 30 ? '...' : ''}` });
       }
     }
   );
@@ -95,7 +95,7 @@ module.exports = (io, socket) => {
       socket.emit("task_updated", result); // To submitter
       io.to(leaderId).emit("task_updated", result); // To leader
       // Push Notification to `leader`...
-      // await enqueuePush(leaderId, false, { title: `Task Submitted for review by ${socket.user.fullName}`, body: `${result.data?.task.slice(0, 50)}${result.data?.task.length > 50 ? '...' : ''}` });
+      // await sendPushToOfflineUsers(io, [leaderId], { title: `Task Submitted for review by ${socket.user.fullName}`, body: `${result.data?.task.slice(0, 30)}${result.data?.task.length > 30 ? '...' : ''}` });
     }
   });
 
@@ -112,7 +112,7 @@ module.exports = (io, socket) => {
         socket.emit("task_updated", result); // To leader
         io.to(assigned_to).emit("task_updated", result); // To member
         // Push Notification to `assignee`...
-        // await enqueuePush(assigned_to, false, { title: `Your Task Approved in ${teamName}`, body: `${result.data?.task.slice(0, 50)}${result.data?.task.length > 50 ? '...' : ''}` });
+        // await sendPushToOfflineUsers(io, [assigned_to], { title: `Your Task Approved in ${teamName}`, body: `${result.data?.task.slice(0, 30)}${result.data?.task.length > 30 ? '...' : ''}` });
       }
     }
   );
@@ -128,7 +128,7 @@ module.exports = (io, socket) => {
       socket.emit("task_updated", result); // To leader
       io.to(assigned_to).emit("task_updated", result); // To member
       // Push Notification to `assignee`...
-      // await enqueuePush(assigned_to, false, { title: `Added comment for your Task in ${teamName}`, body: `${comment.slice(0, 50)}${comment.length > 50 ? '...' : ''}` });
+      // await sendPushToOfflineUsers(io, [assigned_to], { title: `Added comment for your Task in ${teamName}`, body: `${comment.slice(0, 30)}${comment.length > 30 ? '...' : ''}` });
     }
   });
 };

@@ -1,5 +1,5 @@
 // socket/index.js
-const enqueuePush = require("../services/notifications/push_redis-queue");
+const {enqueuePush} = require("../services/notifications/push_redis-queue");
 const chatSocket = require("./chatSocket");
 const taskSocket = require("./taskSocket");
 
@@ -9,7 +9,7 @@ module.exports = (io) => {
     // console.log("All rooms:", Array.from(io.sockets.adapter.rooms.keys()));
 
     // Test item added to Redis Queue...
-    enqueuePush('1', false, {t: 't'}, true).catch((err)=>{console.log(err)});
+    enqueuePush(['1'], {t: 't'}, true).catch((err)=>{console.log(err)});
 
     // Attach chat events
     chatSocket(io, socket);

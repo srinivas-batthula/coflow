@@ -1,6 +1,6 @@
 // socket/chatSocket.js
 const Message = require('../models/chatMessageModel')
-const enqueuePush = require('../services/notifications/push_redis-queue')
+const {sendPushToOfflineUsers} = require('../services/notifications/push_redis-queue')
 
 const fetchHistory = async ({teamId}) => {
     if (!teamId) {
@@ -37,7 +37,7 @@ const fetchHistory = async ({teamId}) => {
                 }
             },
             {
-                $sort: { updatedAt: -1 } // newest to oldest...
+                $sort: { updatedAt: 1 } // oldest to newest...
             }
         ]);
         return { success: true, data };
@@ -73,13 +73,13 @@ module.exports = (io, socket) => {
         socket.emit('message_history', result);
     });
 
-    socket.on("message_create", async ({ message, teamId, teamName }) => {    // Message Create...
+    socket.on("message_create", async ({ message, teamId, teamName, members_ids = [] }) => {    // Message Create...  { members_ids: [ list of member id's ] }...
         const result = await createUpdate({condition: 'create', body: { message, sender: socket.user._id, teamId }, messageId: ''});
 
         if (result.success && result.data) {
             io.to(teamId).emit("message_created", result);
             // Push Notifications to all members in `group/team`...
-            // await enqueuePush(teamId, true, { title: `${socket.user.fullName} sent a message in team -${teamName}`, body: `${message.slice(0, 50)}${message.length > 50 ? '...' : ''}` });
+            // await sendPushToOfflineUsers(io, members_ids, { title: `${socket.user.fullName} sent a message in team -${teamName}`, body: `${message.slice(0, 30)}${message.length > 30 ? '...' : ''}` });
         }
     });
 };
