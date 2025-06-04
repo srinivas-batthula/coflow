@@ -88,6 +88,7 @@ export default function TeamSpecificPage() {
                 team={team}
                 user={user}
                 onBack={() => router.back()}
+                socket={socket}
               />
             </div>
           </div>

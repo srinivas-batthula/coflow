@@ -1,4 +1,7 @@
-export default function ParticipantsSection({ team, user, onBack }) {
+import {useEffect, useState} from 'react'
+
+export default function ParticipantsSection({ team, user, onBack, socket }) {
+  const [onlineUsers, setOnlineUsers] = useState([]);
   const leaderId = team.leader;
   const userId = user._id;
 
@@ -6,7 +9,32 @@ export default function ParticipantsSection({ team, user, onBack }) {
     ...member,
     isLeader: member._id === leaderId,
     isCurrentUser: member._id === userId,
+    isOnline: onlineUsers?.includes?.(member._id) ?? false,
   }));
+
+  useEffect(()=>{
+    if (!socket?.connected || !team?._id || !user?._id) return;
+
+    socket.on('onlineUsers', ({ onlineMembers })=>{
+      setOnlineUsers(onlineMembers);
+    })
+
+    socket.on('newUser_online', ({ userId })=>{
+      if(!onlineUsers.includes(userId)){
+        setOnlineUsers((prev) => [...prev, userId]);
+      }
+    })
+
+    socket.on('newUser_offline', ({ userId })=>{
+      setOnlineUsers((prev) => prev.filter((id) => id !== userId));
+    })
+    
+    return ()=>{
+      socket.off('onlineUsers');
+      socket.off('newUser_online');
+      socket.off('newUser_offline');
+    };
+  }, [socket, team, user]);
 
   return (
     <div className="w-full h-full max-w-3xl mx-auto p-6 bg-white rounded-xl shadow-lg flex flex-col">
@@ -89,6 +117,8 @@ export default function ParticipantsSection({ team, user, onBack }) {
                     : "bg-white border-gray-200 hover:shadow-lg"
                 }`}
             >
+              <span style={{color: 'red'}}>{member.isOnline ? 'Online' : 'Offline'}</span>
+
               <span
                 className={`font-semibold truncate ${
                   member.isCurrentUser ? "text-sky-900" : "text-gray-900"

@@ -17,6 +17,8 @@ module.exports = (io) => {
     taskSocket(io, socket);
 
     socket.on("disconnect", () => {
+      socket.broadcast.emit('newUser_offline', { userId: socket.user._id });
+
       socket.rooms.forEach((room) => {
         if (room !== socket.id) {
           socket.leave(room);

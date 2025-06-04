@@ -66,10 +66,21 @@ const createUpdate = async ({condition, body, messageId}) => {
 }
 
 module.exports = (io, socket) => {
+    socket.on('onlineUsers', async({ members_ids = [] })=>{     // This event is emitted from `ParticipantSection.js` component from frontend...
+        const onlineMembers = [];
+        for (const userId of members_ids) {
+            const room = io.sockets.adapter.rooms.get(userId);
+            const isOnline = room && room.size > 0;
+            if (isOnline)
+                onlineMembers.push(userId);
+        }
+        socket.emit('onlineUsers', { onlineMembers });
+    })
+
     socket.on('message_history', async ({ teamId }) => {   // Fetch previous `messages` of current team/group...
-        // console.log(teamId, members_ids)
-        socket.join(teamId);
+        // socket.join(teamId);            // Joined to `teamId` -room in 'task_history' in `taskSocket.js`...
         const result = await fetchHistory({teamId});
+        
         socket.emit('message_history', result);
     });
 

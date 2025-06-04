@@ -24,6 +24,8 @@ export default function TasksSection({ team, user, socket }) {
       ? tasks
       : tasks.filter((t) => t.assigned_to === filterBy);
 
+  const members_ids = team.member_details.map((member)=>( member._id ));
+
   useEffect(() => {
     if (!socket?.connected || !team?._id || !user?._id) return;
 
@@ -36,6 +38,8 @@ export default function TasksSection({ team, user, socket }) {
     socket.on("task_history", ({ success, data }) => {
       if (success) setTasks(data);
       else toast.error("Failed to load tasks");
+
+      socket.emit('onlineUsers', { members_ids })
     });
 
     socket.on("task_created", ({ success, data }) => {
@@ -159,8 +163,8 @@ export default function TasksSection({ team, user, socket }) {
                             setShowDropdown(false);
                           }}
                           className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${filterBy === member._id
-                              ? "font-semibold bg-gray-50"
-                              : ""
+                            ? "font-semibold bg-gray-50"
+                            : ""
                             }`}
                         >
                           {member.fullName}
@@ -218,10 +222,10 @@ export default function TasksSection({ team, user, socket }) {
                 Status:
                 <span
                   className={`ml-2 px-2 py-0.5 text-xs rounded-full font-medium capitalize ${task.status === "pending"
-                      ? "bg-yellow-100 text-yellow-800"
-                      : task.status === "under review"
-                        ? "bg-blue-100 text-blue-800"
-                        : "bg-green-100 text-green-800"
+                    ? "bg-yellow-100 text-yellow-800"
+                    : task.status === "under review"
+                      ? "bg-blue-100 text-blue-800"
+                      : "bg-green-100 text-green-800"
                     }`}
                 >
                   {task.status}

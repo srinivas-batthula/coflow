@@ -54,9 +54,12 @@ const createUpdate = async ({ condition, body, taskId }) => {
 
 module.exports = (io, socket) => {
   socket.on("task_history", async ({ teamId, userId, is_leader }) => {
-    socket.join(userId); // for personal messages
+    socket.join(userId);    // This is for TASK's in `taskSocket.js`...
+    socket.join(teamId);   // This is for GROUP CHAT in `chatSocket.js`...
     // console.log("Rooms after join:", Array.from(socket.rooms));
     const result = await fetchHistory({ teamId, userId, is_leader });
+    
+    socket.to(teamId).emit('newUser_online', { userId });   // Append to Online-Users list in frontend...
     socket.emit("task_history", result);
   });
 
