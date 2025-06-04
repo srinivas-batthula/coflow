@@ -7,6 +7,7 @@ import { useTeamStore } from "@/store/useTeamStore";
 import { useAuthStore } from "@/store/useAuthStore";
 
 import ParticipantsSection from "@/components/ParticipantSection";
+import ChatSection from "@/components/ChatSection";
 import TasksSection from "@/components/TaskSection";
 
 import socket from "@/utils/socket";
@@ -19,13 +20,14 @@ export default function TeamSpecificPage() {
 
   useEffect(() => {
     // if (!teams || teams.length === 0) {
-      fetchTeams();
+    fetchTeams();
     // }
   }, [fetchTeams]);
 
   useEffect(() => {
     if (user?._id && !socket.connected) {
-      socket.io.opts.extraHeaders = {   // Injecting `token` manually before connection in client-side...
+      socket.io.opts.extraHeaders = {
+        // Injecting `token` manually before connection in client-side...
         Authorization: `Bearer ${token}`,
       };
       socket.connect();
@@ -63,7 +65,7 @@ export default function TeamSpecificPage() {
   }
 
   // Wait for socket to finish connecting
-  if (!socket.connected) {
+  if (!socket.connected && !loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-50 text-gray-600 text-lg">
         Connecting to socket...
@@ -106,9 +108,7 @@ export default function TeamSpecificPage() {
 
       {/* Third section (bottom on mobile, right on desktop) */}
       <div className="w-full  lg:w-[35%] h-full">
-        <div className="rounded-xl border border-gray-200 bg-gray-100 text-gray-600 font-semibold flex items-center justify-center select-none h-full">
-          Coming Soon...
-        </div>
+        <ChatSection teamId={team._id} teamName={team.name} />
       </div>
     </div>
   );
