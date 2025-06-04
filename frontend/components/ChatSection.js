@@ -41,8 +41,13 @@ export default function ChatSection({ teamId, teamName, members_ids = [] }) {
     };
   }, [teamId]);
 
+  const scrollRef = useRef(null);
+
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const scroll = scrollRef.current;
+    if (scroll) {
+      scroll.scrollTop = scroll.scrollHeight;
+    }
   }, [messages]);
 
   // Close emoji picker when clicking outside
@@ -167,7 +172,7 @@ export default function ChatSection({ teamId, teamName, members_ids = [] }) {
             {error}
           </div>
         )}
-        {messages.map(renderMessage)}
+        <div ref={scrollRef}>{messages.map(renderMessage)}</div>
         <div ref={messagesEndRef} />
       </div>
 

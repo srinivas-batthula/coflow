@@ -79,37 +79,50 @@ export default function TeamSpecificPage() {
   const scrollableContent = "h-full overflow-y-auto p-2";
 
   return (
-    <div className="h-screen p-4 bg-gradient-to-br from-white via-gray-50 to-gray-100 flex flex-col gap-4 lg:flex-row">
-      {/* Top row for <900px: 1st & 2nd side-by-side */}
-      <div className="flex flex-row gap-4 h-full w-full lg:w-[65%]">
-        {/* First section */}
-        <div className="w-[40%] lg:w-[46%] h-full">
-          <div className={sectionStyle}>
-            <div className={scrollableContent}>
-              <ParticipantsSection
-                team={team}
-                user={user}
-                onBack={() => router.back()}
-                socket={socket}
-              />
+    <>
+      <div className="h-screen p-4 bg-gradient-to-br from-white via-gray-50 to-gray-100 flex flex-col gap-4 lg:flex-row">
+        {/* Top row for <900px: 1st & 2nd side-by-side */}
+        <div className="flex flex-row gap-4 h-full w-full lg:w-[65%]">
+          {/* First section */}
+          <div className="w-[40%] lg:w-[46%] h-full">
+            <div className={sectionStyle}>
+              <div className={scrollableContent}>
+                <ParticipantsSection
+                  team={team}
+                  user={user}
+                  onBack={() => router.back()}
+                  socket={socket}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Second section */}
+          <div className="w-[60%] lg:w-[54%] h-full">
+            <div className={sectionStyle}>
+              <div className={scrollableContent}>
+                <TasksSection team={team} user={user} socket={socket} />
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Second section */}
-        <div className="w-[60%] lg:w-[54%] h-full">
-          <div className={sectionStyle}>
-            <div className={scrollableContent}>
-              <TasksSection team={team} user={user} socket={socket} />
+        {/* Third section (bottom on mobile, right on desktop) */}
+        <div className="w-full lg:w-[35%] hidden md:block">
+          <div className="h-full rounded-xl overflow-hidden border border-gray-200 bg-white">
+            <div className="h-full overflow-y-auto p-2">
+              <ChatSection teamId={team._id} teamName={team.name} />
             </div>
           </div>
         </div>
       </div>
-
-      {/* Third section (bottom on mobile, right on desktop) */}
-      <div className="w-full  lg:w-[35%] h-full">
-        <ChatSection teamId={team._id} teamName={team.name} />
+      <div className="w-full md:hidden bg-[#ffffff]">
+        <div className="h-[90vh]  p-3 overflow-hidden border border-gray-200 bg-[#ffffff]">
+          <div className="h-full overflow-y-auto p-2 rounded-xl">
+            <ChatSection teamId={team._id} teamName={team.name} />
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
