@@ -80,11 +80,11 @@ export default function TeamSpecificPage() {
 
   return (
     <>
-      <div className="h-screen p-4 bg-gradient-to-br from-white via-gray-50 to-gray-100 flex flex-col gap-4 lg:flex-row">
+      <div className="lg:h-screen h-[170%] p-4 bg-gradient-to-br from-white via-gray-50 to-gray-100 flex flex-col gap-4 lg:flex-row">
         {/* Top row for <900px: 1st & 2nd side-by-side */}
-        <div className="flex flex-row gap-4 h-full w-full lg:w-[65%]">
+        <div className="flex flex-col md:flex-row gap-4 h-full w-full lg:w-[65%]">
           {/* First section */}
-          <div className="w-[40%] lg:w-[46%] h-full">
+          <div className="w-full md:w-[40%] lg:w-[46%] h-[90vh]">
             <div className={sectionStyle}>
               <div className={scrollableContent}>
                 <ParticipantsSection
@@ -98,7 +98,7 @@ export default function TeamSpecificPage() {
           </div>
 
           {/* Second section */}
-          <div className="w-[60%] lg:w-[54%] h-full">
+          <div className="w-full md:w-[60%] lg:w-[54%] h-[90vh]">
             <div className={sectionStyle}>
               <div className={scrollableContent}>
                 <TasksSection team={team} user={user} socket={socket} />
@@ -108,7 +108,7 @@ export default function TeamSpecificPage() {
         </div>
 
         {/* Third section (bottom on mobile, right on desktop) */}
-        <div className="w-full lg:w-[35%] hidden md:block">
+        <div className="w-full lg:w-[35%] hidden md:block h-[90vh]">
           <div className="h-full rounded-xl overflow-hidden border border-gray-200 bg-white">
             <div className="h-full overflow-y-auto p-2">
               <ChatSection team={team} user={user} socket={socket} />
@@ -116,8 +116,10 @@ export default function TeamSpecificPage() {
           </div>
         </div>
       </div>
-      <div className="w-full md:hidden bg-[#ffffff]">
-        <div className="h-[90vh]  p-3 overflow-hidden border border-gray-200 bg-[#ffffff]">
+
+      {/* Chat on small screens only */}
+      <div className="w-full md:hidden bg-white">
+        <div className="h-[90vh] p-3 overflow-hidden border border-gray-200 bg-white">
           <div className="h-full overflow-y-auto p-2 rounded-xl">
             <ChatSection team={team} user={user} socket={socket} />
           </div>

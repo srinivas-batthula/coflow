@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import useMessageStore from "@/store/useChatStore";
 import EmojiPicker from "emoji-picker-react";
+import { Users } from "lucide-react"; // <-- import Users icon
 
 export default function ChatSection({ team, user, socket }) {
   const { messages, setMessages, addMessage, setLoading, error, setError } =
@@ -11,11 +12,11 @@ export default function ChatSection({ team, user, socket }) {
   const router = useRouter();
 
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const messagesEndRef = useRef(null);
   const emojiPickerRef = useRef(null);
-  const inputRef = useRef();
-  
-  const members_ids = team.member_details.map((member)=>( member._id ));
+  const inputRef = useRef(null);
+  const scrollRef = useRef(null);
+
+  const members_ids = team.member_details.map((member) => member._id);
 
   useEffect(() => {
     setLoading(true);
@@ -38,15 +39,11 @@ export default function ChatSection({ team, user, socket }) {
       }
     });
 
-    // socket.emit("onlineUsers", { members_ids });
-
     return () => {
       socket.off("message_history");
       socket.off("message_created");
     };
   }, [team?._id]);
-
-  const scrollRef = useRef(null);
 
   useEffect(() => {
     const scroll = scrollRef.current;
@@ -55,7 +52,6 @@ export default function ChatSection({ team, user, socket }) {
     }
   }, [messages]);
 
-  // Close emoji picker when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
       if (
@@ -69,8 +65,6 @@ export default function ChatSection({ team, user, socket }) {
 
     if (showEmojiPicker) {
       document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
@@ -119,28 +113,34 @@ export default function ChatSection({ team, user, socket }) {
         className={`flex ${isMine ? "justify-end" : "justify-start"} my-2 px-2`}
       >
         {!isMine && (
-          <div className="cursor-pointer flex-shrink-0 w-10 h-10 rounded-full bg-purple-600 text-white flex items-center justify-center font-semibold mr-3 select-none hover:outline-gray-400 hover:outline-2 hover:outline-offset-1" onClick={()=>router.push(`/profile/${msg.sender._id}`)}>
-            {msg?.sender?.name?.toUpperCase().slice(0,2) || "U"}
+          <div
+            onClick={() => router.push(`/profile/${msg.sender._id}`)}
+            className="cursor-pointer flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-indigo-600 text-white flex items-center justify-center font-semibold mr-3 select-none hover:ring-2 hover:ring-purple-400 hover:ring-offset-1 transition"
+            title={msg.sender.name}
+          >
+            {msg?.sender?.name?.toUpperCase().slice(0, 2) || "U"}
           </div>
         )}
         <div
-          className={`max-w-xs sm:max-w-sm px-5 py-3 rounded-xl shadow-md transition-colors duration-300 break-words whitespace-pre-wrap
-            ${
-              isMine
-                ? "bg-purple-600 text-white rounded-br-none"
-                : "bg-white text-gray-900 border border-gray-200 rounded-bl-none"
-            }`}
+          className={`max-w-xs sm:max-w-sm px-5 py-3 rounded-xl shadow-lg break-words whitespace-pre-wrap transition-colors ${
+            isMine
+              ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-br-none"
+              : "bg-white text-gray-900 border border-gray-300 rounded-bl-none hover:shadow-md"
+          }`}
         >
           {!isMine && (
-            <div className="cursor-pointer text-sm font-semibold mb-1 select-text hover:underline" onClick={()=>router.push(`/profile/${msg.sender._id}`)}>
+            <div
+              onClick={() => router.push(`/profile/${msg.sender._id}`)}
+              className="cursor-pointer text-sm font-semibold mb-1 select-text hover:underline text-indigo-700"
+            >
               {msg.sender.name}
             </div>
           )}
           <div className="text-base leading-relaxed">{msg.message}</div>
           <div
-            className={`text-xs mt-1 text-right ${
-              isMine ? "text-white/70" : "text-gray-400"
-            } select-none`}
+            className={`text-xs mt-1 text-right select-none ${
+              isMine ? "text-white/80" : "text-gray-400"
+            }`}
           >
             {formatAMPM(msg.createdAt)}
           </div>
@@ -156,68 +156,67 @@ export default function ChatSection({ team, user, socket }) {
   };
 
   return (
-    <div className="flex flex-col h-full border rounded-xl bg-white shadow-lg">
+    <div className="flex flex-col h-full bg-white border rounded-2xl shadow-xl">
       {/* Header */}
-      <div className="p-4 border-b bg-gray-50 text-lg font-semibold text-gray-700 select-none flex items-center gap-2">
-        <span role="img" aria-label="chat">
-          💬
-        </span>
-        {team.name} Chat
+      <div className="p-5 border-b bg-gradient-to-r from-indigo-100 to-purple-100 text-indigo-800 font-bold flex items-center gap-3 select-none shadow-md">
+        {/* Lucide Users Icon */}
+        <Users className="h-7 w-7 text-indigo-600" />
+
+        <span className="text-xl truncate">{team.name}</span>
       </div>
 
-      {/* Messages Container */}
-      <div className="flex-1 overflow-y-auto px-4 py-3 bg-gray-50 scrollbar-thin scrollbar-thumb-purple-400 scrollbar-track-gray-200">
+      {/* Messages */}
+      <div
+        ref={scrollRef}
+        className="flex-1 overflow-y-auto px-6 py-5 bg-indigo-50 scrollbar-thin scrollbar-thumb-purple-500 scrollbar-track-indigo-200 rounded-b-2xl"
+      >
         {messages.length === 0 && !error && (
-          <div className="text-center text-gray-400 mt-10 select-none">
+          <div className="text-center text-indigo-300 mt-10 select-none font-semibold">
             Start the conversation
           </div>
         )}
         {error && (
-          <div className="text-center text-red-500 mt-4 select-none">
+          <div className="text-center text-red-600 mt-4 select-none font-semibold">
             {error}
           </div>
         )}
-        <div ref={scrollRef}>{messages.map(renderMessage)}</div>
-        <div ref={messagesEndRef} />
+        {messages.map(renderMessage)}
       </div>
 
-      {/* Input and Emoji Picker */}
-      <div className="relative p-4 border-t bg-white flex items-center gap-3">
-        {/* Emoji Picker */}
+      {/* Input */}
+      <div className="relative p-5 border-t bg-white flex items-center gap-4 rounded-b-2xl shadow-inner">
         {showEmojiPicker && (
           <div
             ref={emojiPickerRef}
-            className="absolute bottom-16 left-4 z-50 shadow-lg rounded-lg overflow-hidden"
+            className="absolute bottom-16 left-5 z-50 shadow-2xl rounded-xl overflow-hidden ring-2 ring-purple-400"
           >
             <EmojiPicker onEmojiClick={handleAddEmoji} emojiStyle="apple" />
           </div>
         )}
 
-        {/* Emoji Toggle Button */}
         <button
           id="emoji-toggle-btn"
           onClick={() => setShowEmojiPicker((v) => !v)}
-          className="text-purple-600 hover:text-purple-700 text-2xl focus:outline-none transition-transform active:scale-90 select-none"
+          className="text-purple-600 hover:text-purple-700 text-3xl focus:outline-none transition-transform active:scale-90 select-none"
           aria-label="Toggle Emoji Picker"
           type="button"
+          title="Toggle Emoji Picker"
         >
           😊
         </button>
 
-        {/* Message Input */}
         <textarea
           ref={inputRef}
           rows={1}
           placeholder="Type a message..."
           onKeyDown={handleKeyPress}
-          className="flex-1 resize-none border border-gray-300 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-shadow"
+          className="flex-1 resize-none border border-gray-300 rounded-3xl px-5 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-purple-400 focus:border-transparent shadow-md transition-shadow"
           spellCheck={false}
         />
 
-        {/* Send Button */}
         <button
           onClick={handleSend}
-          className="cursor-pointer bg-purple-600 text-white px-5 py-3 rounded-xl hover:bg-purple-700 transition-transform active:scale-95 focus:outline-none"
+          className="bg-purple-600 text-white px-7 py-3 rounded-3xl hover:bg-purple-700 active:scale-95 transition-transform shadow-lg focus:outline-none focus:ring-4 focus:ring-purple-400"
           type="button"
         >
           Send

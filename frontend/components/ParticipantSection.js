@@ -1,7 +1,9 @@
-import {useEffect, useState} from 'react'
+import { useEffect, useState } from "react";
+import { CircleDot, Copy } from "lucide-react";
 
 export default function ParticipantsSection({ team, user, onBack, socket }) {
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [copied, setCopied] = useState(false);
   const leaderId = team.leader;
   const userId = user._id;
 
@@ -12,29 +14,37 @@ export default function ParticipantsSection({ team, user, onBack, socket }) {
     isOnline: onlineUsers?.includes?.(member._id) ?? false,
   }));
 
-  useEffect(()=>{
+  useEffect(() => {
     if (!socket?.connected || !team?._id || !user?._id) return;
 
-    socket.on('onlineUsers', ({ onlineMembers })=>{
+    socket.on("onlineUsers", ({ onlineMembers }) => {
       setOnlineUsers(onlineMembers);
-    })
+    });
 
-    socket.on('newUser_online', ({ userId })=>{
-      if(!onlineUsers.includes(userId)){
+    socket.on("newUser_online", ({ userId }) => {
+      if (!onlineUsers.includes(userId)) {
         setOnlineUsers((prev) => [...prev, userId]);
       }
-    })
+    });
 
-    socket.on('newUser_offline', ({ userId })=>{
+    socket.on("newUser_offline", ({ userId }) => {
       setOnlineUsers((prev) => prev.filter((id) => id !== userId));
-    })
-    
-    return ()=>{
-      socket.off('onlineUsers');
-      socket.off('newUser_online');
-      socket.off('newUser_offline');
+    });
+
+    return () => {
+      socket.off("onlineUsers");
+      socket.off("newUser_online");
+      socket.off("newUser_offline");
     };
   }, [socket, team, user]);
+
+  const handleCopy = () => {
+    if (!team._id) return;
+    navigator.clipboard.writeText(team._id).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
 
   return (
     <div className="w-full h-full max-w-3xl mx-auto p-6 bg-white rounded-xl shadow-lg flex flex-col">
@@ -51,7 +61,6 @@ export default function ParticipantsSection({ team, user, onBack, socket }) {
           viewBox="0 0 24 24"
           stroke="currentColor"
           strokeWidth={2}
-          aria-hidden="true"
         >
           <path
             strokeLinecap="round"
@@ -62,10 +71,24 @@ export default function ParticipantsSection({ team, user, onBack, socket }) {
         Back
       </button>
 
-      {/* Team Title */}
-      <h2 className="text-4xl font-extrabold text-gray-900 mb-7 tracking-tight">
-        {team.name}
-      </h2>
+      {/* Team Title + Copy Team ID */}
+      <div className="flex items-center mb-7 space-x-3">
+        <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">
+          {team.name}
+        </h2>
+
+        <button
+          onClick={handleCopy}
+          aria-label="Copy Team ID to clipboard"
+          className="flex items-center justify-center p-1 rounded-md border border-gray-300 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-sky-500 transition"
+          title={copied ? "Copied!" : "Copy Team ID"}
+        >
+          <Copy
+            size={20}
+            className={`text-gray-600 ${copied ? "text-green-600" : ""}`}
+          />
+        </button>
+      </div>
 
       {/* Description & GitHub Repo */}
       <div className="space-y-5 mb-10">
@@ -96,7 +119,7 @@ export default function ParticipantsSection({ team, user, onBack, socket }) {
         )}
       </div>
 
-      {/* Members */}
+      {/* Members List */}
       <div>
         <h3 className="text-2xl font-semibold text-gray-900 mb-6 tracking-wide">
           Team Members
@@ -110,29 +133,38 @@ export default function ParticipantsSection({ team, user, onBack, socket }) {
               aria-label={`Member ${member.fullName} ${
                 member.isLeader ? "Admin" : "Member"
               }${member.isCurrentUser ? ", You" : ""}`}
-              className={`flex items-center justify-between p-3 rounded-lg border transition-shadow cursor-pointer
-                ${
-                  member.isCurrentUser
-                    ? "bg-sky-100 border-sky-400 shadow-md"
-                    : "bg-white border-gray-200 hover:shadow-lg"
-                }`}
+              className={`flex items-center justify-between p-3 rounded-lg border transition-shadow cursor-pointer ${
+                member.isCurrentUser
+                  ? "bg-sky-100 border-sky-400 shadow-md"
+                  : "bg-white border-gray-200 hover:shadow-lg"
+              }`}
             >
-              <span style={{color: 'red'}}>{member.isOnline ? 'Online' : 'Offline'}</span>
+              {/* Left: Status + Name */}
+              <div className="flex items-center gap-3 min-w-0">
+                <CircleDot
+                  size={16}
+                  className={`${
+                    member.isOnline ? "text-green-500" : "text-red-400"
+                  }`}
+                  strokeWidth={3}
+                />
+                <span
+                  className={`font-medium truncate ${
+                    member.isCurrentUser ? "text-sky-900" : "text-gray-900"
+                  }`}
+                  title={member.fullName}
+                >
+                  {member.fullName}
+                  {member.isCurrentUser && " (You)"}
+                </span>
+              </div>
 
+              {/* Right: Role Badge */}
               <span
-                className={`font-semibold truncate ${
-                  member.isCurrentUser ? "text-sky-900" : "text-gray-900"
-                }`}
-                title={member.fullName}
-              >
-                {member.fullName}
-              </span>
-
-              <span
-                className={`text-xs font-semibold px-3 py-1 rounded-full select-none whitespace-nowrap ${
+                className={`text-xs font-bold px-3 py-1 rounded-full select-none whitespace-nowrap tracking-wide uppercase ${
                   member.isLeader
                     ? "bg-gray-900 text-white"
-                    : "bg-gray-300 text-gray-700"
+                    : "bg-gray-200 text-gray-700"
                 }`}
               >
                 {member.isLeader ? "Admin" : "Member"}
