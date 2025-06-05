@@ -111,7 +111,7 @@ export default function TeamSpecificPage() {
         <div className="w-full lg:w-[35%] hidden md:block">
           <div className="h-full rounded-xl overflow-hidden border border-gray-200 bg-white">
             <div className="h-full overflow-y-auto p-2">
-              <ChatSection teamId={team._id} teamName={team.name} />
+              <ChatSection team={team} user={user} socket={socket} />
             </div>
           </div>
         </div>
@@ -119,7 +119,7 @@ export default function TeamSpecificPage() {
       <div className="w-full md:hidden bg-[#ffffff]">
         <div className="h-[90vh]  p-3 overflow-hidden border border-gray-200 bg-[#ffffff]">
           <div className="h-full overflow-y-auto p-2 rounded-xl">
-            <ChatSection teamId={team._id} teamName={team.name} />
+            <ChatSection team={team} user={user} socket={socket} />
           </div>
         </div>
       </div>

@@ -53,41 +53,9 @@ const fetchHistory = async ({ teamId }) => {
 const createUpdate = async ({ condition, body, messageId }) => {
   try {
     let data = {};
-    console.log(body);
     switch (condition) {
       case "create":
         data = await Message.create(body);
-
-        // After creating the message, populate sender info for consistency
-        const populated = await Message.aggregate([
-          { $match: { _id: new mongoose.Types.ObjectId(data._id) } },
-          {
-            $lookup: {
-              from: "hackpilot_users",
-              localField: "sender",
-              foreignField: "_id",
-              as: "sender_info",
-            },
-          },
-          { $unwind: "$sender_info" },
-          {
-            $project: {
-              _id: 1,
-              message: 1,
-              teamId: 1,
-              sender: {
-                _id: "$sender_info._id",
-                name: "$sender_info.fullName",
-              },
-              createdAt: 1,
-              updatedAt: 1,
-            },
-          },
-        ]);
-
-        if (populated.length > 0) {
-          data = populated[0];
-        }
         break;
       default:
         console.log("Invalid condition");
@@ -122,7 +90,7 @@ module.exports = (io, socket) => {
 
   socket.on(
     "message_create",
-    async ({ message, teamId, teamName, members_ids = [], userId }) => {
+    async ({ message, teamId, teamName, members_ids, userId }) => {
       // Message Create...  { members_ids: [ list of member id's ] }...
       const result = await createUpdate({
         condition: "create",
@@ -131,6 +99,10 @@ module.exports = (io, socket) => {
       });
 
       if (result.success && result.data) {
+        result.data.sender = {
+          _id: socket.user._id,
+          name: socket.user.fullName,
+        };
         io.to(teamId).emit("message_created", result);
         // Push Notifications to all members in `group/team`...
         // await sendPushToOfflineUsers(io, members_ids, { title: `${socket.user.fullName} sent a message in team -${teamName}`, body: `${message.slice(0, 30)}${message.length > 30 ? '...' : ''}` });

@@ -1,9 +1,45 @@
 "use client";
 import { useAuthStore } from "@/store/useAuthStore";
+import { usePathname } from 'next/navigation';
+import {useEffect, useState} from 'react'
 
 export default function Profile({ onEdit, onLogout }) {
+  const pathname = usePathname();
+  const parts = pathname.split('/');
+  const userId = parts[parts.length - 1];
+
+  const [userInfo, setUserInfo] = useState(null);
   const user = useAuthStore((s) => s.user);
+  const token = useAuthStore((s) => s.token);
   const loading = useAuthStore((s) => s.loading);
+
+useEffect(()=>{
+  const fetchUser = async()=>{
+    try {
+      let res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL+`/api/auth/user/${userId}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: 'include',
+      });
+      res = await res.json();
+
+      if(res.success && res.user){
+        setUserInfo(res.user);
+      }
+    } catch (error) {
+      console.error("Error in profile: "+error);
+    }
+  }
+
+  if(userId === user._id){
+    setUserInfo(user);
+  }
+  else{
+    fetchUser();
+  }
+}, [user, userId]);
 
   if (loading) {
     return (
@@ -18,10 +54,10 @@ export default function Profile({ onEdit, onLogout }) {
     );
   }
 
-  if (!user && !loading) {
+  if (!userInfo && !loading) {
     return (
       <div className="flex flex-col items-center justify-center h-[60vh] text-gray-500 text-xl">
-        Please log in to view your profile.
+        Please log in to view profile.
       </div>
     );
   }
@@ -38,27 +74,27 @@ export default function Profile({ onEdit, onLogout }) {
         {/* Avatar */}
         <div className="w-32 h-32 bg-gradient-to-br from-purple-100 to-blue-100 rounded-full flex items-center justify-center shadow-md border-4 border-white ring-2 ring-purple-100">
           <span className="text-5xl font-bold text-purple-700">
-            {user.fullName?.[0]?.toUpperCase() ||
-              user.email?.[0]?.toUpperCase() ||
+            {userInfo.fullName?.[0]?.toUpperCase() ||
+              userInfo.email?.[0]?.toUpperCase() ||
               "U"}
           </span>
         </div>
 
         {/* Name */}
         <h2 className="text-3xl font-bold text-gray-800">
-          {user.fullName || "Unnamed User"}
+          {userInfo.fullName || "Unnamed User"}
         </h2>
 
         {/* Email */}
         <p className="text-md text-gray-600">
-          <strong>Email:</strong> {user.email}
+          <strong>Email:</strong> {userInfo.email}
         </p>
 
         {/* Joined Date */}
         <p className="text-sm text-gray-400">
           <strong>Joined:</strong>{" "}
-          {user.createdAt
-            ? new Date(user.createdAt).toLocaleDateString(undefined, {
+          {userInfo.createdAt
+            ? new Date(userInfo.createdAt).toLocaleDateString(undefined, {
                 year: "numeric",
                 month: "short",
                 day: "numeric",
@@ -67,7 +103,8 @@ export default function Profile({ onEdit, onLogout }) {
         </p>
 
         {/* Buttons */}
-        <div className="flex gap-4 mt-4">
+        {(userId === user._id) && (
+          <div className="flex gap-4 mt-4">
           <button
             onClick={onEdit}
             className="bg-purple-600 text-white px-6 py-2 rounded-xl font-semibold shadow hover:bg-purple-700 transition"
@@ -81,6 +118,7 @@ export default function Profile({ onEdit, onLogout }) {
             Logout
           </button>
         </div>
+        )}
       </div>
     </div>
   );

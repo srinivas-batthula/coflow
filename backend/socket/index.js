@@ -9,7 +9,7 @@ module.exports = (io) => {
     // console.log("All rooms:", Array.from(io.sockets.adapter.rooms.keys()));
 
     // Test item added to Redis Queue...
-    enqueuePush(['1'], {t: 't'}, true).catch((err)=>{console.log(err)});
+    // enqueuePush(['1'], {t: 't'}, true).catch((err)=>{console.log(err)});
 
     // Attach chat events
     chatSocket(io, socket);

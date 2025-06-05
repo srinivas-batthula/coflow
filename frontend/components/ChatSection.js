@@ -1,24 +1,25 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import socket from "@/utils/socket";
+import { useRouter } from "next/navigation";
 import useMessageStore from "@/store/useChatStore";
-import { useAuthStore } from "@/store/useAuthStore";
 import EmojiPicker from "emoji-picker-react";
 
-export default function ChatSection({ teamId, teamName, members_ids = [] }) {
+export default function ChatSection({ team, user, socket }) {
   const { messages, setMessages, addMessage, setLoading, error, setError } =
     useMessageStore();
-  const { user } = useAuthStore();
+  const router = useRouter();
 
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const messagesEndRef = useRef(null);
   const emojiPickerRef = useRef(null);
   const inputRef = useRef();
+  
+  const members_ids = team.member_details.map((member)=>( member._id ));
 
   useEffect(() => {
     setLoading(true);
-    socket.emit("message_history", { teamId });
+    socket.emit("message_history", { teamId: team._id });
 
     socket.on("message_history", ({ success, data }) => {
       if (success) {
@@ -33,13 +34,13 @@ export default function ChatSection({ teamId, teamName, members_ids = [] }) {
       addMessage(data);
     });
 
-    socket.emit("onlineUsers", { members_ids });
+    // socket.emit("onlineUsers", { members_ids });
 
     return () => {
       socket.off("message_history");
       socket.off("message_created");
     };
-  }, [teamId]);
+  }, [team?._id]);
 
   const scrollRef = useRef(null);
 
@@ -79,8 +80,8 @@ export default function ChatSection({ teamId, teamName, members_ids = [] }) {
 
     socket.emit("message_create", {
       message: msg,
-      teamId,
-      teamName,
+      teamId: team._id,
+      teamName: team.name,
       members_ids,
       userId: user._id,
     });
@@ -114,8 +115,8 @@ export default function ChatSection({ teamId, teamName, members_ids = [] }) {
         className={`flex ${isMine ? "justify-end" : "justify-start"} my-2 px-2`}
       >
         {!isMine && (
-          <div className="flex-shrink-0 w-10 h-10 rounded-full bg-purple-600 text-white flex items-center justify-center font-semibold mr-3 select-none">
-            {msg?.sender?.name[0]?.toUpperCase() || "U"}
+          <div className="cursor-pointer flex-shrink-0 w-10 h-10 rounded-full bg-purple-600 text-white flex items-center justify-center font-semibold mr-3 select-none hover:outline-gray-400 hover:outline-2 hover:outline-offset-1" onClick={()=>router.push(`/profile/${msg.sender._id}`)}>
+            {msg?.sender?.name?.toUpperCase().slice(0,2) || "U"}
           </div>
         )}
         <div
@@ -127,7 +128,7 @@ export default function ChatSection({ teamId, teamName, members_ids = [] }) {
             }`}
         >
           {!isMine && (
-            <div className="text-sm font-semibold mb-1 select-text">
+            <div className="cursor-pointer text-sm font-semibold mb-1 select-text hover:underline" onClick={()=>router.push(`/profile/${msg.sender._id}`)}>
               {msg.sender.name}
             </div>
           )}
@@ -157,7 +158,7 @@ export default function ChatSection({ teamId, teamName, members_ids = [] }) {
         <span role="img" aria-label="chat">
           💬
         </span>
-        {teamName} Chat
+        {team.name} Chat
       </div>
 
       {/* Messages Container */}
@@ -212,7 +213,7 @@ export default function ChatSection({ teamId, teamName, members_ids = [] }) {
         {/* Send Button */}
         <button
           onClick={handleSend}
-          className="bg-purple-600 text-white px-5 py-3 rounded-xl hover:bg-purple-700 transition-transform active:scale-95 focus:outline-none"
+          className="cursor-pointer bg-purple-600 text-white px-5 py-3 rounded-xl hover:bg-purple-700 transition-transform active:scale-95 focus:outline-none"
           type="button"
         >
           Send
