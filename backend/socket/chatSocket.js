@@ -55,7 +55,7 @@ const createUpdate = async ({ condition, body, messageId }) => {
     let data = {};
     switch (condition) {
       case "create":
-        data = await Message.create(body);
+        data = await Message.create(body).then(doc => doc.toObject());    // To mutate `data` object after this...
         break;
       default:
         console.log("Invalid condition");
@@ -92,7 +92,7 @@ module.exports = (io, socket) => {
     "message_create",
     async ({ message, teamId, teamName, members_ids, userId }) => {
       // Message Create...  { members_ids: [ list of member id's ] }...
-      const result = await createUpdate({
+      let result = await createUpdate({
         condition: "create",
         body: { message, sender: userId, teamId },
         messageId: "",

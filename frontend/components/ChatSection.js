@@ -30,8 +30,12 @@ export default function ChatSection({ team, user, socket }) {
       setLoading(false);
     });
 
-    socket.on("message_created", ({ data }) => {
-      addMessage(data);
+    socket.on("message_created", ({ success, data }) => {
+      if (success) {
+        addMessage(data);
+      } else {
+        setError("Failed to create message.");
+      }
     });
 
     // socket.emit("onlineUsers", { members_ids });
