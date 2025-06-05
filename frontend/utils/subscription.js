@@ -1,5 +1,4 @@
 'use client'
-import { useAuthStore } from "@/store/useAuthStore";
 
 //Method for public vapid key conversion...
 function urlBase64ToUint8Array(base64String) {
@@ -17,30 +16,23 @@ function urlBase64ToUint8Array(base64String) {
     return outputArray;
 }
 
-function askNotificationPermission() {
+export default async function askNotificationPermission(token) {
     // Check if the browser supports notifications
     if (!('Notification' in window)) {
         console.log('This browser does not support notifications.');
         return;
     }
-
     // Check the current permission status
     if (Notification.permission === 'granted') {
-        console.log('User has already granted permission.');
+        console.log('User has already granted permission for notifications.');
         return;
     }
-
-    if (Notification.permission === 'denied') {
-        console.log('User has denied notifications.');
-        return;
-    }
-
     // Request permission from the user
     Notification.requestPermission().then(async (permission) => {
         if (permission === 'granted') {
             console.log('User granted permission for notifications.');
             // You can also subscribe the user to push notifications here
-            await subscribeToNotifications();
+            await subscribeToNotifications(token);
         } else {
             console.log('User denied permission for notifications.');
         }
@@ -49,14 +41,11 @@ function askNotificationPermission() {
     });
 }
 
-export default async function subscribeToNotifications() {
-    const token = useAuthStore((s) => s.token);
-
-    askNotificationPermission()
-    console.log("Registering Push...")
+async function subscribeToNotifications(token) {
+    // console.log("Registering Push...")
 
     const publicVapidKey = urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_KEY + '')
-    console.log("PublicKey converted to Uint8Array...")
+    // console.log("PublicKey converted to Uint8Array...")
 
     let subscription
     try {
@@ -72,13 +61,14 @@ export default async function subscribeToNotifications() {
     }
 
     try {
-        let r = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/update/`, {
+        let r = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/update?q=subscription`, {
             method: 'PATCH',
             credentials: 'include',
             headers: {
                 'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ subscription, fullName: null, email: null }),
+            body: JSON.stringify({ subscription }),
         })
         r = await r.json()
 
