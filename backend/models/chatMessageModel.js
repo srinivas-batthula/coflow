@@ -5,7 +5,7 @@ const chatMessageSchema = new mongoose.Schema({
     teamId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: "hackpilot_teams"
+        ref: "hackpilot_teams",
     },
     sender: {
         type: mongoose.Schema.Types.ObjectId,

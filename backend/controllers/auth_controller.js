@@ -62,7 +62,7 @@ const login = async (req, res) => {
     if (!user)
       return res.status(400).json({ success: false, msg: "User Not Found!" });
 
-    if(user.is_from_google){
+    if (user.is_from_google) {
       user.password = password;
       user.is_from_google = false;
       await user.save();
@@ -156,22 +156,25 @@ const getUserDetails = async (req, res) => {
 };
 
 const updateUserDetails = async (req, res) => {
-  const { fullName, email } = req.body;
+  const check = req.query.q || '';
+  const body = req.body;
 
-  if (!fullName && !email) {
+  if (!body) {
+    return res.status(400).json({ success: false, msg: "Nothing to update." });
+  }
+
+  if (check === 'subscription' && !body.subscription) {
+    return res.status(400).json({ success: false, msg: "Nothing to update." });
+  }
+  else if (check !== 'subscription' && (!body.fullName || !body.email)) {
     return res.status(400).json({ success: false, msg: "Nothing to update." });
   }
 
   try {
-    // Update only provided fields
-    const updates = {};
-    if (fullName) updates.fullName = fullName;
-    if (email) updates.email = email;
-
     // Save changes
     const updatedUser = await User.findByIdAndUpdate(
       req.user._id,
-      { $set: updates },
+      { $set: body },
       { new: true, runValidators: true, context: "query" }
     ).select("-password");
 

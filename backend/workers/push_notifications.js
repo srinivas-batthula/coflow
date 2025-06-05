@@ -55,7 +55,7 @@ const startWorker = async () => {
                 );
             };
             await sendPushToAll(subscriptions);
-            console.log(`📨 Push sent to ${ids}: ${payload.title}`)
+            console.log(`📨 Push sent to ${ids}`)
         } catch (err) {
             console.error("Error in push worker: ", err)
         }

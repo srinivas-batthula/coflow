@@ -10,6 +10,8 @@ import subscribeToNotifications from '@/utils/subscription';
 const Layout = ({ children }) => {
   const setToken = useAuthStore((s) => s.setToken);
   const validateUser = useAuthStore((s) => s.validateUser);
+  const user = useAuthStore((s) => s.user);
+  const token = useAuthStore((s) => s.token);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -25,25 +27,30 @@ const Layout = ({ children }) => {
         setToken(token);
         localStorage.setItem("login", success);
       }
-      
-      //       // Register the service worker...        (Note: Use Only in `Production`...)
-      // if ('serviceWorker' in navigator) {
-      //   navigator.serviceWorker.register(process.env.NEXT_PUBLIC_HOME + '/service-worker.js', { scope: '/' })
-      //     .then((registration) => {
-      //       console.log('Service Worker registered with scope: ', registration.scope)
-      //     })
-      //     .catch((error) => {
-      //       console.error('Service Worker Registration failed: ', error)
-      //     })
-      // }
 
-      //       // Subscribe the user to notifications...
-      // if (!user.subscription) {
-      //   await subscribeToNotifications();
-      // }
+      // Register the service worker...        (Note: Use Only in `Production`...)
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register(process.env.NEXT_PUBLIC_HOME + '/service-worker.js', { scope: '/' })
+          .then((registration) => {
+            console.log('Service Worker registered with scope: ', registration.scope)
+          })
+          .catch((error) => {
+            console.error('Service Worker Registration failed: ', error)
+          })
+      }
     }
     validate();
   }, []);
+
+  useEffect(() => {
+    const subscribeUser = async () => {
+      // Subscribe the user to notifications...
+      if (user && !user.subscription) {
+        await subscribeToNotifications(token);
+      }
+    }
+    subscribeUser();
+  }, [user]);
 
   return (
     <Suspense

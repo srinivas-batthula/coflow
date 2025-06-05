@@ -1,14 +1,14 @@
 
 const CACHE_NAME = `hackpilot-cache-v01`             //Change this to a new version before every New DEPLOY.............................
-const HOME = 'https://localhost:3000'   // Provide a `Deployed` URL...
+const HOME = self.location.origin;      // Provide a `Deployed` URL...
 
 const STATIC_FILES = [
-    HOME+"/",
-    HOME+"/manifest.json",
-    HOME+"/icon.png",
-    HOME+"/badge.svg",
-    HOME+"/notification.wav",
-]
+    `${HOME}/`,
+    `${HOME}/manifest.json`,
+    `${HOME}/badge.svg`,
+    `${HOME}/notification.wav`,
+];
+
 
     // Install event: Cache essential assets...
 self.addEventListener("install", (event) => {
@@ -38,7 +38,7 @@ self.addEventListener("activate", (event) => {
 
     // Display Push Notifications...
 self.addEventListener('push', async(event) => {
-    console.log("Push received...", event.data)
+    console.log("Push received...")
     let data = event.data ? event.data.json() : { title: 'New Alert!', body: 'You have a New Notification from ~HackPilot.' }
 
     const options = {

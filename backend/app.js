@@ -69,6 +69,9 @@ app.get("/", async (req, res) => {
   });
 });
 
+// Serve Swagger UI Docs...
+// app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 // API Starter...
 app.use("/api", MainRouter);
 
