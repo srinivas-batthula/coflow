@@ -52,6 +52,10 @@ const Layout = ({ children }) => {
     subscribeUser();
   }, [user]);
 
+  // Define routes where Navbar and Footer should be hidden
+  const hideNavbarFooter = 
+    ["/login", "/login/otp"].includes(pathname);
+
   return (
     <Suspense
       fallback={
@@ -63,7 +67,7 @@ const Layout = ({ children }) => {
       <div>
         {
           //Dynamic Navbar
-          ["/login", "/login/otp"].includes(pathname) ? (
+          hideNavbarFooter ? (
             <div style={{ display: "none" }}></div>
           ) : (
             <Navbar />
@@ -73,7 +77,7 @@ const Layout = ({ children }) => {
         {
           //Dynamic Footer
           pathname.startsWith("/profile") ||
-            ["/login", "/login/otp"].includes(pathname) ? (
+            hideNavbarFooter ? (
             <div style={{ display: "none" }}></div>
           ) : (
             <Footer />

@@ -32,8 +32,27 @@ const enqueuePush = async (ids, payload, ping = false) => {   // ids = [userId, 
         return false
     }
     try {
-        const job = { ping, ids, payload }
-        await redis.rpush("push:queue", JSON.stringify(job));   // Push to Redis Queue...
+        const allowedIds = [];
+
+        for (const id of ids) {
+            const key = `push:rate:${id}`;
+            const current = await redis.incr(key);
+
+            if (current === 1) {
+                await redis.expire(key, 60); // Set 1-minute expiry on first push
+            }
+
+            if (current <= 3) {     // Only 3-Pushes are allowed per minute per user...
+                allowedIds.push(id);
+            } else {
+                console.log(`Redis-Push Rate limit exceeded for user ${id}`);
+            }
+        }
+
+        if (allowedIds.length > 0) {
+            const job = { ping, ids: allowedIds, payload }
+            await redis.rpush("push:queue", JSON.stringify(job));   // Push to Redis Queue...
+        }
         return true
     } catch (error) {
         console.error("Failed to enqueue redis-push: ", error)
