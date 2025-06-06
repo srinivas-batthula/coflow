@@ -4,20 +4,70 @@ import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import useMessageStore from "@/store/useChatStore";
 import EmojiPicker from "emoji-picker-react";
-import { Users } from "lucide-react"; // <-- import Users icon
+import { Users, Smile } from "lucide-react";
 
 export default function ChatSection({ team, user, socket }) {
   const { messages, setMessages, addMessage, setLoading, error, setError } =
     useMessageStore();
   const router = useRouter();
-
+  const [typingUsers, setTypingUsers] = useState({});
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
   const emojiPickerRef = useRef(null);
   const inputRef = useRef(null);
   const scrollRef = useRef(null);
-
   const members_ids = team.member_details.map((member) => member._id);
 
+  // Typing emit
+  useEffect(() => {
+    let timeout;
+    const handleTyping = () => {
+      socket.emit("typing", {
+        teamId: team._id,
+        userId: user._id,
+        name: user.fullName,
+      });
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        socket.emit("stop_typing", { teamId: team._id, userId: user._id });
+      }, 2000);
+    };
+
+    const input = inputRef.current;
+    if (!input) return;
+
+    input.addEventListener("input", handleTyping);
+    return () => {
+      input.removeEventListener("input", handleTyping);
+      clearTimeout(timeout);
+    };
+  }, [socket, team._id, user._id, user.fullName]);
+
+  // Typing receive
+  useEffect(() => {
+    const handleUserTyping = ({ userId, name }) => {
+      if (userId !== user._id) {
+        setTypingUsers((prev) => ({ ...prev, [userId]: name }));
+      }
+    };
+    const handleUserStopTyping = ({ userId }) => {
+      setTypingUsers((prev) => {
+        const copy = { ...prev };
+        delete copy[userId];
+        return copy;
+      });
+    };
+
+    socket.on("user_typing", handleUserTyping);
+    socket.on("user_stop_typing", handleUserStopTyping);
+
+    return () => {
+      socket.off("user_typing", handleUserTyping);
+      socket.off("user_stop_typing", handleUserStopTyping);
+    };
+  }, [socket, user._id]);
+
+  // Load messages
   useEffect(() => {
     setLoading(true);
     socket.emit("message_history", { teamId: team._id });
@@ -45,13 +95,13 @@ export default function ChatSection({ team, user, socket }) {
     };
   }, [team?._id]);
 
+  // Auto-scroll
   useEffect(() => {
     const scroll = scrollRef.current;
-    if (scroll) {
-      scroll.scrollTop = scroll.scrollHeight;
-    }
+    if (scroll) scroll.scrollTop = scroll.scrollHeight;
   }, [messages]);
 
+  // Emoji Picker outside click
   useEffect(() => {
     function handleClickOutside(event) {
       if (
@@ -62,20 +112,15 @@ export default function ChatSection({ team, user, socket }) {
         setShowEmojiPicker(false);
       }
     }
-
     if (showEmojiPicker) {
       document.addEventListener("mousedown", handleClickOutside);
     }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showEmojiPicker]);
 
   const handleSend = () => {
     const msg = inputRef.current?.value.trim();
     if (!msg) return;
-
     socket.emit("message_create", {
       message: msg,
       teamId: team._id,
@@ -105,11 +150,12 @@ export default function ChatSection({ team, user, socket }) {
     return `${hours}:${minutes} ${ampm}`;
   };
 
-  const renderMessage = (msg) => {
+  const renderMessage = (msg, idx) => {
     const isMine = msg.sender._id === user._id;
+    const key = `${msg._id}-${msg.createdAt || idx}`;
     return (
       <div
-        key={msg._id}
+        key={key}
         className={`flex ${isMine ? "justify-end" : "justify-start"} my-2 px-2`}
       >
         {!isMine && (
@@ -155,20 +201,53 @@ export default function ChatSection({ team, user, socket }) {
     inputRef.current.focus();
   };
 
+  const getAvatarStyle = (isTyping) =>
+    `w-8 h-8 rounded-full ${
+      isTyping
+        ? "bg-purple-600 text-white animate-pulse"
+        : "bg-indigo-200 text-indigo-800"
+    } text-sm font-bold flex items-center justify-center ring-2 ring-white shadow-sm transition-transform transform hover:scale-105`;
+
   return (
     <div className="flex flex-col h-full bg-white border rounded-2xl shadow-xl">
       {/* Header */}
-      <div className="p-5 border-b bg-gradient-to-r from-indigo-100 to-purple-100 text-indigo-800 font-bold flex items-center gap-3 select-none shadow-md">
-        {/* Lucide Users Icon */}
-        <Users className="h-7 w-7 text-indigo-600" />
+      <div className="flex items-center justify-between px-6 py-4 border-b shadow-sm bg-gradient-to-r from-indigo-100 to-purple-100 rounded-t-2xl">
+        <div className="flex items-center gap-4">
+          <Users className="h-8 w-8 text-indigo-700" />
+          <span className="text-2xl font-semibold text-indigo-800 truncate">
+            {team.name}
+          </span>
+        </div>
 
-        <span className="text-xl truncate">{team.name}</span>
+        {/* Avatar Section */}
+        <div className="flex items-center gap-3">
+          <div className="flex -space-x-2">
+            {(Object.keys(typingUsers).length > 0
+              ? Object.entries(typingUsers)
+              : team.member_details.map((m) => [m._id, m.fullName])
+            ).map(([id, name]) => (
+              <div
+                key={id}
+                className={getAvatarStyle(typingUsers[id])}
+                title={name}
+              >
+                {name.slice(0, 2).toUpperCase()}
+              </div>
+            ))}
+          </div>
+
+          {Object.keys(typingUsers).length > 0 && (
+            <span className="text-sm text-purple-700 font-medium italic animate-pulse">
+              Typing...
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Messages */}
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto px-6 py-5 bg-indigo-50 scrollbar-thin scrollbar-thumb-purple-500 scrollbar-track-indigo-200 rounded-b-2xl"
+        className="flex-1 overflow-y-auto px-6 py-5 bg-indigo-50 scrollbar-thin scrollbar-thumb-purple-500 scrollbar-track-indigo-200"
       >
         {messages.length === 0 && !error && (
           <div className="text-center text-indigo-300 mt-10 select-none font-semibold">
@@ -193,18 +272,13 @@ export default function ChatSection({ team, user, socket }) {
             <EmojiPicker onEmojiClick={handleAddEmoji} emojiStyle="apple" />
           </div>
         )}
-
         <button
           id="emoji-toggle-btn"
           onClick={() => setShowEmojiPicker((v) => !v)}
-          className="text-purple-600 hover:text-purple-700 text-3xl focus:outline-none transition-transform active:scale-90 select-none"
-          aria-label="Toggle Emoji Picker"
-          type="button"
-          title="Toggle Emoji Picker"
+          className="text-purple-600 hover:text-purple-700 text-2xl focus:outline-none transition-transform active:scale-90 select-none"
         >
-          😊
+          <Smile className="w-7 h-7" />
         </button>
-
         <textarea
           ref={inputRef}
           rows={1}
@@ -213,11 +287,9 @@ export default function ChatSection({ team, user, socket }) {
           className="flex-1 resize-none border border-gray-300 rounded-3xl px-5 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-purple-400 focus:border-transparent shadow-md transition-shadow"
           spellCheck={false}
         />
-
         <button
           onClick={handleSend}
           className="bg-purple-600 text-white px-7 py-3 rounded-3xl hover:bg-purple-700 active:scale-95 transition-transform shadow-lg focus:outline-none focus:ring-4 focus:ring-purple-400"
-          type="button"
         >
           Send
         </button>

@@ -55,7 +55,7 @@ const createUpdate = async ({ condition, body, messageId }) => {
     let data = {};
     switch (condition) {
       case "create":
-        data = await Message.create(body).then(doc => doc.toObject());    // To mutate `data` object after this...
+        data = await Message.create(body).then((doc) => doc.toObject()); // To mutate `data` object after this...
         break;
       default:
         console.log("Invalid condition");
@@ -109,4 +109,12 @@ module.exports = (io, socket) => {
       }
     }
   );
+  // Handle typing indicator
+  socket.on("typing", ({ teamId, userId, name }) => {
+    socket.to(teamId).emit("user_typing", { userId, name });
+  });
+
+  socket.on("stop_typing", ({ teamId, userId }) => {
+    socket.to(teamId).emit("user_stop_typing", { userId });
+  });
 };
