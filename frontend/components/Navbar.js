@@ -10,7 +10,6 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const modalRef = useRef();
 
-  // Close modal on outside click
   useEffect(() => {
     if (!open) return;
     function handleClick(e) {
@@ -23,52 +22,55 @@ export default function Navbar() {
   }, [open]);
 
   return (
-    <nav className="flex items-center justify-between px-10 py-5 bg-white shadow-md sticky top-0 z-100">
+    <nav className="flex items-center justify-between px-10 py-4 bg-white shadow-md sticky top-0 z-50">
       <div
         onClick={() => router.push("/")}
-        className="font-black text-3xl text-purple-700 tracking-tight cursor-pointer select-none"
-        style={{ fontFamily: "'Inter', sans-serif", fontWeight: 900 }}
+        className="flex items-center gap-3 cursor-pointer select-none"
       >
-        HackPilot
+        <img
+          src="/logosvg1.png"
+          alt="Coflow Logo"
+          className="w-32 h-auto md:w-40 object-contain"
+        />
       </div>
+
       <div className="flex items-center gap-4 relative">
-        {/* My Teams Button - only show when user is logged in */}
         {user && (
-          <>
-            <button
-              className="px-2 py-2 rounded-xl bg-blue-50 text-purple-800 font-semibold text-lg shadow hover:bg-blue-100 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-300 cursor-pointer"
-              onClick={() => router.push("/teams")}
-            >
-              My Teams
-            </button>
-          </>
+          <button
+            className="px-3 py-2 rounded-xl bg-[#ECE3FF] text-[#400F7D] font-semibold text-lg shadow hover:bg-[#DED0FB] transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#7854C4] cursor-pointer"
+            onClick={() => router.push("/teams")}
+          >
+            My Teams
+          </button>
         )}
-        {/* Auth Buttons or Profile Icon */}
+
         {!user && (
           <button
-            className="px-3 py-2 rounded-xl bg-purple-600 text-white font-semibold text-lg shadow hover:scale-105 hover:bg-purple-700 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-purple-400 cursor-pointer"
+            className="px-4 py-2 rounded-xl bg-[#400F7D] text-white font-semibold text-lg shadow hover:scale-105 hover:bg-[#5729A9] transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#7854C4] cursor-pointer"
             onClick={() => router.push("/login")}
           >
             Signup / Login
           </button>
         )}
+
         {user && (
           <div className="relative">
             <button
-              className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-purple-100 to-blue-100 border-2 border-purple-600 text-purple-700 shadow hover:shadow-lg hover:scale-105 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-purple-400 cursor-pointer"
+              className="flex items-center justify-center w-12 h-12 rounded-full bg-[#ECE3FF] border-2 border-[#400F7D] text-[#400F7D] shadow hover:shadow-lg hover:scale-105 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#7854C4] cursor-pointer"
               onClick={() => setOpen((v) => !v)}
               title={user?.firstName || "Profile"}
               aria-label="User menu"
             >
-              <FaUserCircle className="text-3xl md:text-4xl text-purple-600 drop-shadow" />
+              <FaUserCircle className="text-3xl md:text-4xl drop-shadow" />
             </button>
+
             {open && (
               <div
                 ref={modalRef}
                 className="absolute right-0 mt-2 w-44 bg-white rounded-xl shadow-lg border border-gray-100 z-50"
               >
                 <button
-                  className="w-full text-left px-4 py-3 hover:bg-purple-50 rounded-t-xl text-purple-700 font-semibold transition-colors cursor-pointer"
+                  className="w-full text-left px-4 py-3 hover:bg-[#F5EDFF] rounded-t-xl text-[#400F7D] font-semibold transition-colors cursor-pointer"
                   onClick={() => {
                     setOpen(false);
                     router.push(`/profile/${user._id}`);
@@ -77,7 +79,7 @@ export default function Navbar() {
                   Profile
                 </button>
                 <button
-                  className="w-full text-left px-4 py-3 hover:bg-purple-50 rounded-b-xl text-red-600 font-semibold transition-colors cursor-pointer"
+                  className="w-full text-left px-4 py-3 hover:bg-[#FDECEF] rounded-b-xl text-red-600 font-semibold transition-colors cursor-pointer"
                   onClick={() => {
                     setOpen(false);
                     logout();

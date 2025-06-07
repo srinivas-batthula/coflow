@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import useMessageStore from "@/store/useChatStore";
 import EmojiPicker from "emoji-picker-react";
-import { Users, Smile, CheckCheck as Eye, Send } from "lucide-react";
+import { Users, Smile, CheckCheck as Eye, Send, X } from "lucide-react";
 
 export default function ChatSection({ team, user, socket }) {
   const {
@@ -16,16 +16,19 @@ export default function ChatSection({ team, user, socket }) {
     error,
     setError,
   } = useMessageStore();
+
   const router = useRouter();
   const [typingUsers, setTypingUsers] = useState({});
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-
+  const [seenModalOpen, setSeenModalOpen] = useState(false);
+  const [seenUsers, setSeenUsers] = useState([]);
+  const [anchorRect, setAnchorRect] = useState(null);
   const emojiPickerRef = useRef(null);
   const inputRef = useRef(null);
   const scrollRef = useRef(null);
+  const modalRef = useRef(null);
   const members_ids = team.member_details.map((member) => member._id);
 
-  // Typing emit
   useEffect(() => {
     let timeout;
     const handleTyping = () => {
@@ -53,7 +56,6 @@ export default function ChatSection({ team, user, socket }) {
     };
   }, [socket, team._id, user._id, user.fullName]);
 
-  // Typing receive
   useEffect(() => {
     const handleUserTyping = ({ userId, name }) => {
       if (userId !== user._id) {
@@ -77,7 +79,6 @@ export default function ChatSection({ team, user, socket }) {
     };
   }, [socket, user._id]);
 
-  // Load messages
   useEffect(() => {
     const handleHistory = ({ success, data }) => {
       if (success) {
@@ -126,13 +127,11 @@ export default function ChatSection({ team, user, socket }) {
     };
   }, [team?._id]);
 
-  // Auto-scroll
   useEffect(() => {
     const scroll = scrollRef.current;
     if (scroll) scroll.scrollTop = scroll.scrollHeight;
   }, [messages]);
 
-  // Emoji Picker outside click
   useEffect(() => {
     function handleClickOutside(event) {
       if (
@@ -142,12 +141,20 @@ export default function ChatSection({ team, user, socket }) {
       ) {
         setShowEmojiPicker(false);
       }
+
+      if (
+        seenModalOpen &&
+        modalRef.current &&
+        !modalRef.current.contains(event.target)
+      ) {
+        setSeenModalOpen(false);
+        setAnchorRect(null);
+      }
     }
-    if (showEmojiPicker) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
+
+    document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [showEmojiPicker]);
+  }, [showEmojiPicker, seenModalOpen]);
 
   const handleSend = () => {
     const msg = inputRef.current?.value.trim();
@@ -194,6 +201,22 @@ export default function ChatSection({ team, user, socket }) {
         : "bg-indigo-200 text-indigo-800"
     } text-xs font-semibold flex items-center justify-center ring-1 ring-white shadow-sm transition-transform transform hover:scale-105`;
 
+  const handleMessageClick = (msg, e) => {
+    if (msg.sender._id !== user._id) return;
+
+    const seenNames = (msg.seen_by || [])
+      .map((id) => {
+        const member = team.member_details.find((m) => m._id === id);
+        return member ? member.fullName || member.name || "Unknown" : null;
+      })
+      .filter(Boolean);
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    setAnchorRect(rect);
+    setSeenUsers(seenNames);
+    setSeenModalOpen(true);
+  };
+
   const renderMessage = (msg, idx) => {
     const isMine = msg.sender._id === user._id;
     const key = `${msg._id}-${msg.createdAt || idx}`;
@@ -214,7 +237,10 @@ export default function ChatSection({ team, user, socket }) {
           </div>
         )}
 
-        <div className="relative flex flex-col max-w-xs sm:max-w-xs">
+        <div
+          onClick={(e) => handleMessageClick(msg, e)}
+          className="relative flex flex-col max-w-xs sm:max-w-xs cursor-pointer"
+        >
           <div
             className={`px-3 py-2 rounded-lg shadow break-words whitespace-pre-wrap transition-colors ${
               isMine
@@ -232,8 +258,6 @@ export default function ChatSection({ team, user, socket }) {
               </div>
             )}
             <div className="text-sm leading-snug">{msg.message}</div>
-
-            {/* Timestamp */}
             <div
               className={`text-[0.65rem] mt-0.5 text-right select-none ${
                 isMine ? "text-white/70" : "text-gray-400"
@@ -243,7 +267,6 @@ export default function ChatSection({ team, user, socket }) {
             </div>
           </div>
 
-          {/* Seen/Sent Icon beside the bubble */}
           {isMine && (
             <div className="absolute -right-4 -bottom-1 text-purple-600">
               {seenByAll ? (
@@ -254,6 +277,53 @@ export default function ChatSection({ team, user, socket }) {
             </div>
           )}
         </div>
+      </div>
+    );
+  };
+
+  const SeenByModal = () => {
+    if (!seenModalOpen || !anchorRect) return null;
+
+    const style = {
+      position: "absolute",
+      top: anchorRect.top + window.scrollY - 20,
+      left: anchorRect.left + window.scrollX - 180,
+    };
+
+    return (
+      <div
+        ref={modalRef}
+        className="z-50 w-44 bg-white rounded-md shadow-xl border border-purple-300 p-2"
+        style={style}
+      >
+        <div className="flex justify-between items-center border-b pb-1 mb-1">
+          <h3 className="text-sm font-semibold text-purple-700">Seen by</h3>
+          <button
+            onClick={() => {
+              setSeenModalOpen(false);
+              setAnchorRect(null);
+            }}
+            className="text-gray-400 hover:text-gray-600"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+        {seenUsers.length === 0 ? (
+          <p className="text-xs text-gray-500 select-none">
+            No one has seen this yet.
+          </p>
+        ) : (
+          <ul className="space-y-0.5 max-h-40 overflow-y-auto scrollbar-thin scrollbar-thumb-purple-300">
+            {seenUsers.map((name, i) => (
+              <li
+                key={i}
+                className="text-sm text-gray-800 border-b border-purple-100 last:border-none"
+              >
+                {name}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     );
   };
@@ -295,7 +365,7 @@ export default function ChatSection({ team, user, socket }) {
           </div>
         </div>
 
-        {/* Messages container */}
+        {/* Messages */}
         <div
           ref={scrollRef}
           className="flex-1 overflow-y-auto px-4 py-3 bg-indigo-50 scrollbar-thin scrollbar-thumb-purple-500 scrollbar-track-indigo-200"
@@ -346,6 +416,9 @@ export default function ChatSection({ team, user, socket }) {
           </button>
         </div>
       </div>
+
+      {/* Seen modal */}
+      <SeenByModal />
     </div>
   );
 }

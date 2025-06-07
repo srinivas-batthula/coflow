@@ -11,82 +11,78 @@ const features = [
     icon: "🌍",
     title: "Discover Hackathons",
     desc: "Browse and filter a curated list of global hackathons. Never miss an opportunity to innovate and compete.",
-    color: "from-purple-100 to-blue-100",
+    bgColor: "bg-[#E8E7F9]",
+    iconColor: "#4C3F91",
   },
   {
     icon: "📝",
     title: "Project Tracking",
     desc: "After login, update your team’s project, assign tasks, and mark completion to keep everyone in sync.",
-    color: "from-blue-100 to-green-100",
+    bgColor: "bg-[#DDE9F7]",
+    iconColor: "#3753B5",
   },
   {
     icon: "🏆",
     title: "Prizes & Hosts",
     desc: "See prize pools, event hosts, and all key details at a glance. Find the perfect event for your team.",
-    color: "from-yellow-100 to-pink-100",
+    bgColor: "bg-[#D9D8F7]",
+    iconColor: "#3B368C",
   },
   {
     icon: "🤝",
     title: "Team Collaboration",
     desc: "Collaborate with your team, share updates, and stay organized throughout the hackathon journey.",
-    color: "from-pink-100 to-purple-100",
+    bgColor: "bg-[#F5F7FC]",
+    iconColor: "#4A51A3",
   },
 ];
 
 export default function HomePage() {
-  const { hackathons, loading, error, fetchHackathons, setHackathons } = useHackathonStore();
+  const { hackathons, loading, error, fetchHackathons } = useHackathonStore();
   const user = useAuthStore((s) => s.user);
   const authLoading = useAuthStore((s) => s.loading);
   const [selectedCity, setSelectedCity] = useState("All");
   const [showDropdown, setShowDropdown] = useState(false);
-  const [deferredPrompt, setDeferredPrompt] = useState(null);   // This is used to store PWA-instal event...
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
 
   const filteredHackathons =
     selectedCity === "All"
       ? hackathons
       : hackathons?.filter(
-        (h) => h.city.toLowerCase() === selectedCity.toLowerCase()
-      ) || [];
+          (h) => h.city.toLowerCase() === selectedCity.toLowerCase()
+        ) || [];
 
-  // Fetching `hackathons` data from backend...
   useEffect(() => {
-    const Fetch = async () => {
-      await fetchHackathons();
-    }
-    Fetch();
-
-    window.addEventListener('beforeinstallprompt', (e) => {  // Store the PWA-install event for manual trigger...
+    fetchHackathons();
+    const handlePrompt = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
-    })
-
-    return () => {
-      window.removeEventListener('beforeinstallprompt', () => { })
-    }
+    };
+    window.addEventListener("beforeinstallprompt", handlePrompt);
+    return () =>
+      window.removeEventListener("beforeinstallprompt", handlePrompt);
   }, []);
 
-  // Triggered when user clicks to install PWA...
   const handleInstallClick = async () => {
     if (deferredPrompt) {
-      deferredPrompt.prompt()  // Show install prompt
-
-      const { outcome } = await deferredPrompt.userChoice
-      if (outcome === 'accepted') {
-        console.log('User accepted the install.')
-      } else {
-        console.log('User dismissed the install.')
-      }
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(
+        outcome === "accepted"
+          ? "User accepted the install."
+          : "User dismissed the install."
+      );
     } else {
-      alert('PWA install prompt is not available.')
+      alert("PWA install prompt is not available.");
     }
   };
 
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-100">
+      <div className="min-h-screen flex items-center justify-center bg-[#E8E7F9]">
         <div className="flex flex-col items-center">
           <svg
-            className="animate-spin h-12 w-12 text-purple-600 mb-4"
+            className="animate-spin h-12 w-12 text-[#320398] mb-4"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -105,7 +101,7 @@ export default function HomePage() {
               d="M4 12a8 8 0 018-8v8z"
             ></path>
           </svg>
-          <span className="text-purple-700 text-xl font-semibold">
+          <span className="text-[#320398] text-xl font-semibold">
             Loading...
           </span>
         </div>
@@ -114,65 +110,77 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-100 relative font-sans font-medium">
+    <div className="min-h-screen bg-[#F7F9FF] text-[#320398] font-sans font-medium">
       {/* Hero Section */}
-      <section className="relative text-center py-24 px-4 overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute -top-32 left-1/2 transform -translate-x-1/2 w-[700px] h-[700px] bg-purple-200 opacity-25 rounded-full blur-3xl"></div>
+      <section className="text-center py-24 px-6 relative max-w-5xl mx-auto">
+        <div className="absolute inset-0 -z-10 flex justify-center">
+          <div className="w-[600px] h-[600px] bg-[#320398] opacity-10 rounded-full blur-3xl"></div>
         </div>
-        <h1 className="relative text-5xl md:text-6xl font-extrabold text-gray-800 mb-7 drop-shadow-lg leading-tight font-inter">
-          Welcome to <span className="text-purple-600">HackPilot</span>
+
+        <h1 className="flex gap-12 flex-col md:flex-row items-center justify-center text-5xl md:text-6xl font-extrabold mb-6 leading-tight font-inter tracking-tight">
+          <span>Welcome to</span>
+          <span className="ml-3 inline-flex items-center text-[#2A3BD9] scale-250 mt-4">
+            <img
+              src="./textlogo.png"
+              alt="Coflow Logo"
+              className="h-12 md:h-16 object-contain"
+              loading="lazy"
+            />
+          </span>
         </h1>
 
-        <button onClick={() => handleInstallClick()} style={{ color: 'black', backgroundColor: 'skyblue' }} className="px-2 py-3 hover-light-blue"> Get the App </button>
+        <button
+          onClick={handleInstallClick}
+          className="mt-4 px-8 py-3 bg-[#320398] hover:bg-[#24026d] text-white rounded-full font-semibold transition-all shadow-lg hover:shadow-xl"
+        >
+          Get the App
+        </button>
 
-        <p className="relative text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-8">
+        <p className="mt-6 text-xl md:text-2xl max-w-3xl mx-auto text-[#4A51A3]">
           Discover, join, and track hackathons worldwide.
-          <span className="block mt-4 text-purple-700 font-semibold">
+          <span className="block mt-4 text-[#2A3BD9] font-semibold">
             Find your next challenge, collaborate with your team, and showcase
-            your innovation. Start exploring featured hackathons below!
+            your innovation.
           </span>
         </p>
       </section>
 
-      {/* Features */}
-      <section className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 mb-24 px-4">
+      {/* Features Section */}
+      <section className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 px-6 mb-24">
         {features.map((f) => (
           <div
             key={f.title}
-            className={`group bg-gradient-to-br ${f.color} rounded-3xl shadow-xl p-10 flex flex-col items-center hover:scale-105 hover:shadow-2xl transition-all duration-200`}
+            className="bg-white rounded-3xl shadow-lg p-8 flex flex-col items-center text-center transition-transform hover:scale-[1.03]"
           >
-            <span className="text-6xl mb-5 group-hover:scale-125 transition-transform duration-200">
+            <div
+              className={`${f.bgColor} rounded-full p-5 mb-5 inline-flex justify-center items-center`}
+              style={{ color: f.iconColor, fontSize: "3rem" }}
+              aria-label={f.title}
+              role="img"
+            >
               {f.icon}
-            </span>
-            <h3 className="font-black text-2xl mb-3 text-purple-700 text-center group-hover:text-purple-900 transition-colors duration-200 font-inter">
-              {f.title}
-            </h3>
-            <p className="text-gray-700 text-center text-lg">{f.desc}</p>
+            </div>
+            <h3 className="text-lg font-bold mb-2 text-[#320398]">{f.title}</h3>
+            <p className="text-gray-600 text-sm">{f.desc}</p>
           </div>
         ))}
       </section>
 
-      {/* Hackathon List */}
-      <section className="max-w-7xl mx-auto px-4 pb-24">
-        <div className="flex justify-between items-center mb-12">
-          <h2 className="text-4xl font-black text-gray-800 tracking-tight font-inter">
-            🚀 Featured Hackathons
-          </h2>
-
-          {/* Filter Button */}
-          <div className="relative inline-block text-left scale-90">
+      {/* Hackathons List */}
+      <section className="max-w-7xl mx-auto px-6 pb-24">
+        <div className="flex justify-between items-center mb-10">
+          <h2 className="text-3xl font-bold">🚀 Featured Hackathons</h2>
+          <div className="relative inline-block text-left">
             <button
               onClick={() => setShowDropdown(!showDropdown)}
-              className="p-3 bg-purple-100 text-purple-700 rounded-full shadow hover:bg-purple-200 transition-all duration-200 flex items-center justify-center cursor-pointer"
-              aria-label="Filter Cities"
+              className="px-4 py-2 bg-[#320398] text-white rounded-full hover:bg-[#24026d] transition-all flex items-center"
             >
-              <SlidersHorizontal className="w-5 h-5" />
-              <span className="text-xl ml-2.5">Filter</span>
+              <SlidersHorizontal className="w-5 h-5 mr-2" />
+              Filter
             </button>
 
             {showDropdown && (
-              <div className="absolute right-0 mt-3 w-44 rounded-xl bg-white shadow-xl border border-gray-200 z-50 animate-fade-in">
+              <div className="absolute right-0 mt-2 w-44 rounded-xl bg-white text-gray-800 shadow-xl z-50 overflow-hidden">
                 {["All", "Hyderabad", "Mumbai", "Bengaluru", "Global"].map(
                   (city) => (
                     <button
@@ -181,10 +189,11 @@ export default function HomePage() {
                         setSelectedCity(city);
                         setShowDropdown(false);
                       }}
-                      className={`block w-full text-left px-4 py-2 text-sm transition-colors duration-150 ${selectedCity === city
-                        ? "bg-purple-100 text-purple-700 font-semibold"
-                        : "text-gray-700 hover:bg-purple-50"
-                        }`}
+                      className={`block w-full text-left px-4 py-2 text-sm transition-all ${
+                        selectedCity === city
+                          ? "bg-[#E6E0FF] text-[#320398] font-semibold"
+                          : "hover:bg-gray-100"
+                      }`}
                     >
                       {city}
                     </button>
@@ -195,69 +204,59 @@ export default function HomePage() {
           </div>
         </div>
 
-        {loading && (
-          <div className="text-center text-lg text-purple-700 font-medium">
-            Loading...
-          </div>
-        )}
-        {error && (
-          <div className="text-center text-red-500 font-medium">{error}</div>
-        )}
+        {loading && <p className="text-[#5A63BD]">Loading hackathons...</p>}
+        {error && <p className="text-red-600">{error}</p>}
 
-        <div className="flex flex-col gap-8 md:grid md:grid-cols-2 md:gap-12 xl:grid-cols-2">
-          {filteredHackathons.length > 0
-            ? filteredHackathons.map((hackathon) => (
+        <div className="grid md:grid-cols-2 gap-8">
+          {filteredHackathons.length > 0 ? (
+            filteredHackathons.map((hackathon) => (
               <div
-                key={hackathon._id?.$oid || hackathon._id || hackathon.title}
-                className="bg-white rounded-3xl shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-200 p-8 flex flex-col border-t-4 border-purple-400 w-full"
+                key={hackathon._id}
+                className="bg-white border border-[#E0E0F5] rounded-2xl shadow-md p-6 hover:shadow-lg transition-transform hover:-translate-y-1"
               >
-                <h3 className="text-2xl font-black mb-3 text-purple-700 hover:text-purple-900 transition-colors duration-150 font-inter">
+                <h3 className="text-xl font-bold text-[#320398] mb-3 hover:underline">
                   <a
                     href={hackathon.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="hover:underline"
                   >
                     {hackathon.title}
                   </a>
                 </h3>
-                <div className="flex-1 mb-3 space-y-1 text-gray-600 font-medium">
+                <div className="text-gray-700 text-sm space-y-1">
                   <p>
-                    <span className="font-semibold">📅 Date:</span>{" "}
-                    {hackathon.date}
+                    <strong>📅 Date:</strong> {hackathon.date}
                   </p>
                   <p>
-                    <span className="font-semibold">🌐 Location:</span>{" "}
-                    {hackathon.location}{" "}
+                    <strong>🌐 Location:</strong> {hackathon.location}{" "}
                     <span className="text-xs text-gray-400">
                       ({hackathon.city})
                     </span>
                   </p>
                   <p>
-                    <span className="font-semibold">🏆 Prize:</span>{" "}
-                    {hackathon.prize}
+                    <strong>🏆 Prize:</strong> {hackathon.prize}
                   </p>
                   <p>
-                    <span className="font-semibold">👤 Host:</span>{" "}
-                    {hackathon.host}
+                    <strong>👤 Host:</strong> {hackathon.host}
                   </p>
                 </div>
-                <a
-                  href={hackathon.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-4 inline-block px-6 py-2 rounded-xl bg-purple-600 text-white font-semibold text-lg text-center shadow hover:bg-purple-700 hover:scale-105 transition-all duration-150"
-                >
-                  View Details
-                </a>
+                <div className="mt-5">
+                  <a
+                    href={hackathon.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block px-6 py-2 bg-[#320398] hover:bg-[#1c2d99] text-white rounded-full font-medium shadow transition-all"
+                  >
+                    View Details
+                  </a>
+                </div>
               </div>
             ))
-            : !loading &&
-            !error && (
-              <div className="col-span-full text-center text-gray-500 font-medium">
-                No hackathons found.
-              </div>
-            )}
+          ) : (
+            <p className="text-center text-gray-400 col-span-full">
+              No hackathons found.
+            </p>
+          )}
         </div>
       </section>
     </div>
