@@ -12,7 +12,6 @@ export const useHackathonStore = create((set) => ({
       );
       if (!res.ok) throw new Error("Failed to fetch hackathons");
       const response = await res.json();
-      console.log(response);
       set({ hackathons: response.data, loading: false });
     } catch (err) {
       set({ error: err.message, loading: false });

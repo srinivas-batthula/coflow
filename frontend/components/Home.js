@@ -33,7 +33,7 @@ const features = [
   },
 ];
 
-export default function HomePage({ data }) {
+export default function HomePage() {
   const { hackathons, loading, error, fetchHackathons, setHackathons } = useHackathonStore();
   const user = useAuthStore((s) => s.user);
   const authLoading = useAuthStore((s) => s.loading);
@@ -44,12 +44,16 @@ export default function HomePage({ data }) {
     selectedCity === "All"
       ? hackathons
       : hackathons?.filter(
-          (h) => h.city.toLowerCase() === selectedCity.toLowerCase()
-        ) || [];
+        (h) => h.city.toLowerCase() === selectedCity.toLowerCase()
+      ) || [];
 
+            // Fetching `hackathons` data from backend...
   useEffect(() => {
-    setHackathons(data);
-  }, [data]);
+    const Fetch = async () => {
+      await fetchHackathons();
+    }
+    Fetch();
+  }, []);
 
   if (authLoading) {
     return (
@@ -148,11 +152,10 @@ export default function HomePage({ data }) {
                         setSelectedCity(city);
                         setShowDropdown(false);
                       }}
-                      className={`block w-full text-left px-4 py-2 text-sm transition-colors duration-150 ${
-                        selectedCity === city
+                      className={`block w-full text-left px-4 py-2 text-sm transition-colors duration-150 ${selectedCity === city
                           ? "bg-purple-100 text-purple-700 font-semibold"
                           : "text-gray-700 hover:bg-purple-50"
-                      }`}
+                        }`}
                     >
                       {city}
                     </button>
@@ -175,57 +178,57 @@ export default function HomePage({ data }) {
         <div className="flex flex-col gap-8 md:grid md:grid-cols-2 md:gap-12 xl:grid-cols-2">
           {filteredHackathons.length > 0
             ? filteredHackathons.map((hackathon) => (
-                <div
-                  key={hackathon._id?.$oid || hackathon._id || hackathon.title}
-                  className="bg-white rounded-3xl shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-200 p-8 flex flex-col border-t-4 border-purple-400 w-full"
-                >
-                  <h3 className="text-2xl font-black mb-3 text-purple-700 hover:text-purple-900 transition-colors duration-150 font-inter">
-                    <a
-                      href={hackathon.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:underline"
-                    >
-                      {hackathon.title}
-                    </a>
-                  </h3>
-                  <div className="flex-1 mb-3 space-y-1 text-gray-600 font-medium">
-                    <p>
-                      <span className="font-semibold">📅 Date:</span>{" "}
-                      {hackathon.date}
-                    </p>
-                    <p>
-                      <span className="font-semibold">🌐 Location:</span>{" "}
-                      {hackathon.location}{" "}
-                      <span className="text-xs text-gray-400">
-                        ({hackathon.city})
-                      </span>
-                    </p>
-                    <p>
-                      <span className="font-semibold">🏆 Prize:</span>{" "}
-                      {hackathon.prize}
-                    </p>
-                    <p>
-                      <span className="font-semibold">👤 Host:</span>{" "}
-                      {hackathon.host}
-                    </p>
-                  </div>
+              <div
+                key={hackathon._id?.$oid || hackathon._id || hackathon.title}
+                className="bg-white rounded-3xl shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-200 p-8 flex flex-col border-t-4 border-purple-400 w-full"
+              >
+                <h3 className="text-2xl font-black mb-3 text-purple-700 hover:text-purple-900 transition-colors duration-150 font-inter">
                   <a
                     href={hackathon.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-4 inline-block px-6 py-2 rounded-xl bg-purple-600 text-white font-semibold text-lg text-center shadow hover:bg-purple-700 hover:scale-105 transition-all duration-150"
+                    className="hover:underline"
                   >
-                    View Details
+                    {hackathon.title}
                   </a>
+                </h3>
+                <div className="flex-1 mb-3 space-y-1 text-gray-600 font-medium">
+                  <p>
+                    <span className="font-semibold">📅 Date:</span>{" "}
+                    {hackathon.date}
+                  </p>
+                  <p>
+                    <span className="font-semibold">🌐 Location:</span>{" "}
+                    {hackathon.location}{" "}
+                    <span className="text-xs text-gray-400">
+                      ({hackathon.city})
+                    </span>
+                  </p>
+                  <p>
+                    <span className="font-semibold">🏆 Prize:</span>{" "}
+                    {hackathon.prize}
+                  </p>
+                  <p>
+                    <span className="font-semibold">👤 Host:</span>{" "}
+                    {hackathon.host}
+                  </p>
                 </div>
-              ))
+                <a
+                  href={hackathon.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 inline-block px-6 py-2 rounded-xl bg-purple-600 text-white font-semibold text-lg text-center shadow hover:bg-purple-700 hover:scale-105 transition-all duration-150"
+                >
+                  View Details
+                </a>
+              </div>
+            ))
             : !loading &&
-              !error && (
-                <div className="col-span-full text-center text-gray-500 font-medium">
-                  No hackathons found.
-                </div>
-              )}
+            !error && (
+              <div className="col-span-full text-center text-gray-500 font-medium">
+                No hackathons found.
+              </div>
+            )}
         </div>
       </section>
     </div>

@@ -11,6 +11,8 @@ const MainRouter = require("./routes/MainRouter");
 const socketAuth = require("./socket/socketAuth");
 const http = require("http");
 const { Server } = require("socket.io");
+const swaggerUi = require("swagger-ui-express")
+const swaggerDocument = require("./swagger.json")
 
 const app = express();
 
@@ -70,7 +72,7 @@ app.get("/", async (req, res) => {
 });
 
 // Serve Swagger UI Docs...
-// app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // API Starter...
 app.use("/api", MainRouter);
