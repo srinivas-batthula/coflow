@@ -39,6 +39,7 @@ export default function HomePage() {
   const authLoading = useAuthStore((s) => s.loading);
   const [selectedCity, setSelectedCity] = useState("All");
   const [showDropdown, setShowDropdown] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState(null);   // This is used to store PWA-instal event...
 
   const filteredHackathons =
     selectedCity === "All"
@@ -47,13 +48,38 @@ export default function HomePage() {
         (h) => h.city.toLowerCase() === selectedCity.toLowerCase()
       ) || [];
 
-            // Fetching `hackathons` data from backend...
+  // Fetching `hackathons` data from backend...
   useEffect(() => {
     const Fetch = async () => {
       await fetchHackathons();
     }
     Fetch();
+
+    window.addEventListener('beforeinstallprompt', (e) => {  // Store the PWA-install event for manual trigger...
+      e.preventDefault();
+      setDeferredPrompt(e);
+    })
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', () => { })
+    }
   }, []);
+
+  // Triggered when user clicks to install PWA...
+  const handleInstallClick = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt()  // Show install prompt
+
+      const { outcome } = await deferredPrompt.userChoice
+      if (outcome === 'accepted') {
+        console.log('User accepted the install.')
+      } else {
+        console.log('User dismissed the install.')
+      }
+    } else {
+      alert('PWA install prompt is not available.')
+    }
+  };
 
   if (authLoading) {
     return (
@@ -97,6 +123,9 @@ export default function HomePage() {
         <h1 className="relative text-5xl md:text-6xl font-extrabold text-gray-800 mb-7 drop-shadow-lg leading-tight font-inter">
           Welcome to <span className="text-purple-600">HackPilot</span>
         </h1>
+
+        <button onClick={() => handleInstallClick()} style={{ color: 'black', backgroundColor: 'skyblue' }} className="px-2 py-3 hover-light-blue"> Get the App </button>
+
         <p className="relative text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-8">
           Discover, join, and track hackathons worldwide.
           <span className="block mt-4 text-purple-700 font-semibold">
@@ -153,8 +182,8 @@ export default function HomePage() {
                         setShowDropdown(false);
                       }}
                       className={`block w-full text-left px-4 py-2 text-sm transition-colors duration-150 ${selectedCity === city
-                          ? "bg-purple-100 text-purple-700 font-semibold"
-                          : "text-gray-700 hover:bg-purple-50"
+                        ? "bg-purple-100 text-purple-700 font-semibold"
+                        : "text-gray-700 hover:bg-purple-50"
                         }`}
                     >
                       {city}

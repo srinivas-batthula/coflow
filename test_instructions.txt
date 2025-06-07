@@ -1,0 +1,6 @@
+
+Follow these instructions to test this project in local your setup,,
+
+1. Before Running the project in local, Do Comment the 'manifest.json'-linking code in `frontend/app/layout.js` in <head> tag
+2. Then before committing the changes made, Remember to Un-Comment 'manifest.json'-linking code in `layout.js`
+3. And before re-deploying the project, Change the 'version number' of 'CACHE_NAME' in `frontend/public/service-worker.js` to a new one

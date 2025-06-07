@@ -93,15 +93,14 @@ module.exports = (io, socket) => {
       const isOnline = room && room.size > 0;
       if (isOnline) onlineMembers.push(userId);
     }
-    io.to(teamId).emit("onlineUsers", { onlineMembers });
+    io.to(teamId).emit("onlineUsers", { onlineMembers });   // Emit to all mem's when a new user connects with team...
   });
 
   socket.on("message_history", async ({ teamId }) => {
     // Fetch previous `messages` of current team/group...
     // Joined to `teamId` -room in 'task_history' in `taskSocket.js`...
     const result = await fetchHistory({ teamId, userId: socket.user._id });
-    io.to(teamId).emit("message_history", result);
-    // console.log('message_history: On reload');
+    io.to(teamId).emit("message_history", result);  // Emit 'message_history' to all mem's when a new user connects, to sync all msg's status for all mem's...
   });
 
   socket.on(
