@@ -36,10 +36,14 @@ export default function TasksSection({ team, user, socket }) {
     });
 
     socket.on("task_history", ({ success, data }) => {
-      if (success) setTasks(data);
-      else toast.error("Failed to load tasks");
-
-      socket.emit('onlineUsers', { members_ids })
+      if (success){
+        setTasks(data)
+        // console.log('task_history: On reload');
+      }
+      else{
+        toast.error("Failed to load tasks")
+      }
+      socket.emit('onlineUsers', { teamId: team._id, members_ids })
     });
 
     socket.on("task_created", ({ success, data }) => {

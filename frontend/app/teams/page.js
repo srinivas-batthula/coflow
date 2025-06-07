@@ -57,7 +57,8 @@ export default function TeamsPage() {
     const { name, project_description, github_repo } = formData;
     const team = await createTeam({ name, project_description, github_repo });
     if (team) {
-      router.push(`/teams/${team._id}`);
+      // router.push(`/teams/${team._id}`);
+      toggleForm("create");
       toast.success(`Team "${team.name}" created!`);
     } else {
       toast.error("Failed to create team.");
@@ -72,7 +73,7 @@ export default function TeamsPage() {
     const response = await joinTeam(teamId);
 
     if (response?.success) {
-      router.push(`/teams/${teamId}`);
+      toggleForm("join");
       toast.success(`Joined team successfully!`);
     } else if (response?.msg) {
       toast.error(response.msg);

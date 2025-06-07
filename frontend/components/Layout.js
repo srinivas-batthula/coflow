@@ -76,7 +76,7 @@ const Layout = ({ children }) => {
         <main>{children}</main>
         {
           //Dynamic Footer
-          pathname.startsWith("/profile") ||
+          pathname.startsWith("/profile") || pathname.startsWith('/teams/68') ||
             hideNavbarFooter ? (
             <div style={{ display: "none" }}></div>
           ) : (

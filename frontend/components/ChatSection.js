@@ -7,7 +7,7 @@ import EmojiPicker from "emoji-picker-react";
 import { Users, Smile } from "lucide-react";
 
 export default function ChatSection({ team, user, socket }) {
-  const { messages, setMessages, addMessage, setLoading, error, setError } =
+  const { messages, setMessages, addMessage, updateMessage, setLoading, error, setError } =
     useMessageStore();
   const router = useRouter();
   const [typingUsers, setTypingUsers] = useState({});
@@ -22,14 +22,14 @@ export default function ChatSection({ team, user, socket }) {
   useEffect(() => {
     let timeout;
     const handleTyping = () => {
-      socket.emit("typing", {
+      socket.emit("message_start_typing", {
         teamId: team._id,
         userId: user._id,
         name: user.fullName,
       });
       clearTimeout(timeout);
       timeout = setTimeout(() => {
-        socket.emit("stop_typing", { teamId: team._id, userId: user._id });
+        socket.emit("message_stop_typing", { teamId: team._id, userId: user._id });
       }, 2000);
     };
 
@@ -58,40 +58,59 @@ export default function ChatSection({ team, user, socket }) {
       });
     };
 
-    socket.on("user_typing", handleUserTyping);
-    socket.on("user_stop_typing", handleUserStopTyping);
+    socket.on("message_started_typing", handleUserTyping);
+    socket.on("message_stopped_typing", handleUserStopTyping);
 
     return () => {
-      socket.off("user_typing", handleUserTyping);
-      socket.off("user_stop_typing", handleUserStopTyping);
+      socket.off("message_started_typing", handleUserTyping);
+      socket.off("message_stopped_typing", handleUserStopTyping);
     };
   }, [socket, user._id]);
 
   // Load messages
   useEffect(() => {
-    setLoading(true);
-    socket.emit("message_history", { teamId: team._id });
-
-    socket.on("message_history", ({ success, data }) => {
+    const handleHistory = ({ success, data }) => {
       if (success) {
         setMessages(data);
+        console.log('message_history: On reload');
       } else {
         setError("Failed to load messages.");
       }
       setLoading(false);
-    });
+    };
 
-    socket.on("message_created", ({ success, data }) => {
+    const handleCreated = ({ success, data }) => {
       if (success) {
         addMessage(data);
+        if (user._id !== data.sender._id) {
+          socket.emit('message_mark_seen', { message_id: data._id, sender_id: data.sender._id, sender_name: data.sender.name });
+        }
       } else {
         setError("Failed to create message.");
       }
-    });
+    };
+
+    const handleUpdated = ({ success, data }) => {
+      if (success) {
+        updateMessage(data);
+      }
+    };
+
+    setLoading(true);
+    socket.emit("message_history", { teamId: team._id });
+
+    // Attach listener ONCE
+    socket.off("message_history", handleHistory); // Prevent duplication
+    if (!socket.hasListeners("message_history")) {
+      socket.on("message_history", handleHistory);
+    }
+    socket.on("message_created", handleCreated);
+    socket.on('message_updated', handleUpdated);
 
     return () => {
-      socket.off("message_history");
-      socket.off("message_created");
+      socket.off("message_history", handleHistory);
+      socket.off("message_created", handleCreated);
+      socket.off("message_updated", handleUpdated);
     };
   }, [team?._id]);
 
@@ -168,11 +187,10 @@ export default function ChatSection({ team, user, socket }) {
           </div>
         )}
         <div
-          className={`max-w-xs sm:max-w-sm px-5 py-3 rounded-xl shadow-lg break-words whitespace-pre-wrap transition-colors ${
-            isMine
-              ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-br-none"
-              : "bg-white text-gray-900 border border-gray-300 rounded-bl-none hover:shadow-md"
-          }`}
+          className={`max-w-xs sm:max-w-sm px-5 py-3 rounded-xl shadow-lg break-words whitespace-pre-wrap transition-colors ${isMine
+            ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-br-none"
+            : "bg-white text-gray-900 border border-gray-300 rounded-bl-none hover:shadow-md"
+            }`}
         >
           {!isMine && (
             <div
@@ -183,10 +201,14 @@ export default function ChatSection({ team, user, socket }) {
             </div>
           )}
           <div className="text-base leading-relaxed">{msg.message}</div>
+
+          {isMine && (
+            <div style={{ color: 'greenyellow' }}>{msg.seen_by?.length > 0 ? 'Seen' : 'Sent'}</div>
+          )}
+
           <div
-            className={`text-xs mt-1 text-right select-none ${
-              isMine ? "text-white/80" : "text-gray-400"
-            }`}
+            className={`text-xs mt-1 text-right select-none ${isMine ? "text-white/80" : "text-gray-400"
+              }`}
           >
             {formatAMPM(msg.createdAt)}
           </div>
@@ -202,10 +224,9 @@ export default function ChatSection({ team, user, socket }) {
   };
 
   const getAvatarStyle = (isTyping) =>
-    `w-8 h-8 rounded-full ${
-      isTyping
-        ? "bg-purple-600 text-white animate-pulse"
-        : "bg-indigo-200 text-indigo-800"
+    `w-8 h-8 rounded-full ${isTyping
+      ? "bg-purple-600 text-white animate-pulse"
+      : "bg-indigo-200 text-indigo-800"
     } text-sm font-bold flex items-center justify-center ring-2 ring-white shadow-sm transition-transform transform hover:scale-105`;
 
   return (

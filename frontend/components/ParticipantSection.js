@@ -7,7 +7,7 @@ export default function ParticipantsSection({ team, user, onBack, socket }) {
   const leaderId = team.leader;
   const userId = user._id;
 
-  const members = team.member_details.map((member) => ({
+  let members = team.member_details.map((member) => ({
     ...member,
     isLeader: member._id === leaderId,
     isCurrentUser: member._id === userId,
@@ -21,19 +21,12 @@ export default function ParticipantsSection({ team, user, onBack, socket }) {
       setOnlineUsers(onlineMembers);
     });
 
-    socket.on("newUser_online", ({ userId }) => {
-      if (!onlineUsers.includes(userId)) {
-        setOnlineUsers((prev) => [...prev, userId]);
-      }
-    });
-
     socket.on("newUser_offline", ({ userId }) => {
       setOnlineUsers((prev) => prev.filter((id) => id !== userId));
     });
 
     return () => {
       socket.off("onlineUsers");
-      socket.off("newUser_online");
       socket.off("newUser_offline");
     };
   }, [socket, team, user]);
@@ -130,28 +123,24 @@ export default function ParticipantsSection({ team, user, onBack, socket }) {
               key={member._id}
               tabIndex={0}
               role="button"
-              aria-label={`Member ${member.fullName} ${
-                member.isLeader ? "Admin" : "Member"
-              }${member.isCurrentUser ? ", You" : ""}`}
-              className={`flex items-center justify-between p-3 rounded-lg border transition-shadow cursor-pointer ${
-                member.isCurrentUser
+              aria-label={`Member ${member.fullName} ${member.isLeader ? "Admin" : "Member"
+                }${member.isCurrentUser ? ", You" : ""}`}
+              className={`flex items-center justify-between p-3 rounded-lg border transition-shadow cursor-pointer ${member.isCurrentUser
                   ? "bg-sky-100 border-sky-400 shadow-md"
                   : "bg-white border-gray-200 hover:shadow-lg"
-              }`}
+                }`}
             >
               {/* Left: Status + Name */}
               <div className="flex items-center gap-3 min-w-0">
                 <CircleDot
                   size={16}
-                  className={`${
-                    member.isOnline ? "text-green-500" : "text-red-400"
-                  }`}
+                  className={`${member.isOnline ? "text-green-500" : "text-red-400"
+                    }`}
                   strokeWidth={3}
                 />
                 <span
-                  className={`font-medium truncate ${
-                    member.isCurrentUser ? "text-sky-900" : "text-gray-900"
-                  }`}
+                  className={`font-medium truncate ${member.isCurrentUser ? "text-sky-900" : "text-gray-900"
+                    }`}
                   title={member.fullName}
                 >
                   {member.fullName}
@@ -161,11 +150,10 @@ export default function ParticipantsSection({ team, user, onBack, socket }) {
 
               {/* Right: Role Badge */}
               <span
-                className={`text-xs font-bold px-3 py-1 rounded-full select-none whitespace-nowrap tracking-wide uppercase ${
-                  member.isLeader
+                className={`text-xs font-bold px-3 py-1 rounded-full select-none whitespace-nowrap tracking-wide uppercase ${member.isLeader
                     ? "bg-gray-900 text-white"
                     : "bg-gray-200 text-gray-700"
-                }`}
+                  }`}
               >
                 {member.isLeader ? "Admin" : "Member"}
               </span>

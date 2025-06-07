@@ -15,7 +15,13 @@ const chatMessageSchema = new mongoose.Schema({
     message: {
         type: String,
         required: true
-    }
+    },
+    seen_by: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "hackpilot_users",
+        },
+    ],
 }, { timestamps: true });
 
 module.exports = mongoose.model("hackpilot_chats", chatMessageSchema);

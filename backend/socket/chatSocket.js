@@ -5,12 +5,23 @@ const {
   sendPushToOfflineUsers,
 } = require("../services/notifications/push_redis-queue");
 
-const fetchHistory = async ({ teamId }) => {
-  if (!teamId) {
+const fetchHistory = async ({ teamId, userId }) => {
+  if (!teamId || !userId) {
     console.log("Invalid chat_history payload");
     return { success: false, data: [] };
   }
   try {
+    await Message.updateMany(   // Update userId in seen_by
+      {
+        teamId: new mongoose.Types.ObjectId(teamId),
+        sender: { $ne: userId },
+        seen_by: { $ne: userId },
+      },
+      {
+        $addToSet: { seen_by: userId },
+      }
+    );
+
     const data = await Message.aggregate([
       {
         $match: { teamId: new mongoose.Types.ObjectId(teamId) },
@@ -35,6 +46,7 @@ const fetchHistory = async ({ teamId }) => {
             _id: "$sender_info._id",
             name: "$sender_info.fullName",
           },
+          seen_by: 1,
           createdAt: 1,
           updatedAt: 1,
         },
@@ -43,6 +55,7 @@ const fetchHistory = async ({ teamId }) => {
         $sort: { updatedAt: 1 }, // oldest to newest...
       },
     ]);
+
     return { success: true, data };
   } catch (error) {
     console.error(error);
@@ -55,7 +68,10 @@ const createUpdate = async ({ condition, body, messageId }) => {
     let data = {};
     switch (condition) {
       case "create":
-        data = await Message.create(body).then((doc) => doc.toObject()); // To mutate `data` object after this...
+        data = await Message.create(body).then(doc => doc.toObject());    // To mutate `data` object after this...
+        break;
+      case "status_update":
+        data = await Message.findByIdAndUpdate(messageId, { $push: { seen_by: body._id } }, { new: true, runValidators: true }).then(doc => doc.toObject());
         break;
       default:
         console.log("Invalid condition");
@@ -69,7 +85,7 @@ const createUpdate = async ({ condition, body, messageId }) => {
 };
 
 module.exports = (io, socket) => {
-  socket.on("onlineUsers", async ({ members_ids = [] }) => {
+  socket.on("onlineUsers", async ({ teamId, members_ids = [] }) => {
     // This event is emitted from `ParticipantSection.js` component from frontend...
     const onlineMembers = [];
     for (const userId of members_ids) {
@@ -77,15 +93,15 @@ module.exports = (io, socket) => {
       const isOnline = room && room.size > 0;
       if (isOnline) onlineMembers.push(userId);
     }
-    socket.emit("onlineUsers", { onlineMembers });
+    io.to(teamId).emit("onlineUsers", { onlineMembers });
   });
 
   socket.on("message_history", async ({ teamId }) => {
     // Fetch previous `messages` of current team/group...
-    // socket.join(teamId);            // Joined to `teamId` -room in 'task_history' in `taskSocket.js`...
-    const result = await fetchHistory({ teamId });
-
-    socket.emit("message_history", result);
+    // Joined to `teamId` -room in 'task_history' in `taskSocket.js`...
+    const result = await fetchHistory({ teamId, userId: socket.user._id });
+    io.to(teamId).emit("message_history", result);
+    // console.log('message_history: On reload');
   });
 
   socket.on(
@@ -109,12 +125,30 @@ module.exports = (io, socket) => {
       }
     }
   );
-  // Handle typing indicator
-  socket.on("typing", ({ teamId, userId, name }) => {
-    socket.to(teamId).emit("user_typing", { userId, name });
+
+  // Handle typing indicator...
+  socket.on("message_start_typing", ({ teamId, userId, name }) => {
+    socket.to(teamId).emit("message_started_typing", { userId, name });
   });
 
-  socket.on("stop_typing", ({ teamId, userId }) => {
-    socket.to(teamId).emit("user_stop_typing", { userId });
+  socket.on("message_stop_typing", ({ teamId, userId }) => {
+    socket.to(teamId).emit("message_stopped_typing", { userId });
+  });
+
+  // Handle Message Delivery Status...
+  socket.on('message_mark_seen', async ({ message_id, sender_id, sender_name }) => {
+    let result = await createUpdate({
+      condition: "status_update",
+      body: { _id: socket.user._id },
+      messageId: message_id,
+    });
+
+    if (result.success && result.data) {
+      result.data.sender = {
+        _id: sender_id,
+        name: sender_name,
+      };
+      io.to(sender_id).emit('message_updated', result);   // Only To `sender` as a message-seen...
+    }
   });
 };

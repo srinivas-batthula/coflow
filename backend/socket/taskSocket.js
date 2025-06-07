@@ -59,7 +59,6 @@ module.exports = (io, socket) => {
     // console.log("Rooms after join:", Array.from(socket.rooms));
     const result = await fetchHistory({ teamId, userId, is_leader });
     
-    socket.to(teamId).emit('newUser_online', { userId });   // Append to Online-Users list in frontend...
     socket.emit("task_history", result);
   });
 
