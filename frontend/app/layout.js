@@ -7,7 +7,7 @@ export const viewport = {
 };
 
 export const metadata = {
-  title: "HackPilot",
+  title: "CoFlow",
   description: "A-Z Hackathon Team management platform",
   authors: [{ name: "Srinivas Batthula" }, { name: "Akash Kyadari" }],
 };

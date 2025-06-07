@@ -1,15 +1,15 @@
 export default function Footer() {
   return (
-    <footer className="w-full bg-[#e9dcfc] py-10">
+    <footer className="w-full bg-[#f5f1fc] py-10">
       <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6">
         {/* Brand & Year */}
         <div className="flex items-center gap-3">
           <span
             onClick={() => (window.location.href = "/")}
-            className="font-black text-3xl text-purple-700 tracking-tight cursor-pointer"
+            className="font-black text-3xl text-[#320398] tracking-tight cursor-pointer"
             style={{ fontFamily: "'Inter', sans-serif" }}
           >
-            <span className="inline-block align-middle">🚀</span> HackPilot
+            <span className="inline-block align-middle">🚀</span> CoFlow
           </span>
           <span className="text-gray-500 text-base font-medium ml-2">
             © {new Date().getFullYear()}
@@ -18,14 +18,14 @@ export default function Footer() {
 
         {/* Tagline & Mission */}
         <div className="text-gray-700 text-base text-center md:text-right leading-relaxed max-w-xl">
-          <span className="block font-semibold text-purple-700 mb-1">
+          <span className="block font-semibold text-[#320398] mb-1">
             Empowering Innovators, Teams & Communities
           </span>
           <span>
-            HackPilot is your launchpad to discover, join, and win hackathons
+            CoFlow is your launchpad to discover, join, and win hackathons
             worldwide.
             <br className="hidden md:inline" />
-            <span className="text-purple-600 font-semibold">
+            <span className="text-[#320398] font-semibold">
               {" "}
               Build. Collaborate. Win. Repeat.
             </span>
@@ -39,7 +39,7 @@ export default function Footer() {
             href="https://github.com/srinivas-batthula/hackpilot"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-purple-600 hover:text-purple-800 transition-colors"
+            className="text-[#320398] hover:text-[#220268] transition-colors"
             aria-label="GitHub"
           >
             <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
@@ -50,7 +50,7 @@ export default function Footer() {
           {/* Email */}
           <a
             href="mailto:team@hackpilot.dev"
-            className="text-purple-600 hover:text-purple-800 transition-colors"
+            className="text-[#320398] hover:text-[#220268] transition-colors"
             aria-label="Email"
           >
             <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">

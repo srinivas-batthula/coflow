@@ -17,7 +17,7 @@ const AuthArt = ({ isSignup }) => (
       className="text-2xl font-bold text-purple-700 mb-2"
       style={{ fontFamily: "'Inter', sans-serif" }}
     >
-      {isSignup ? "Join HackPilot!" : "Welcome Back!"}
+      {isSignup ? "Join CoFlow!" : "Welcome Back!"}
     </h2>
     <p className="text-gray-600 text-center" style={{ fontWeight: 500 }}>
       {isSignup
