@@ -203,7 +203,7 @@ export default function ChatSection({ team, user, socket }) {
           <div className="text-base leading-relaxed">{msg.message}</div>
 
           {isMine && (
-            <div style={{ color: 'greenyellow' }}>{msg.seen_by?.length > 0 ? 'Seen' : 'Sent'}</div>
+            <div style={{ color: 'greenyellow' }}>{msg.seen_by?.length === team.member_details?.length-1 ? 'Seen' : 'Sent'}</div>
           )}
 
           <div
