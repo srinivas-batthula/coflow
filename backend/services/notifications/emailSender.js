@@ -1,18 +1,14 @@
-import nodemailer from 'nodemailer';
+// ./services/notifications/emailSender.js
+require('dotenv').config({path:'./config.env'})
+const nodemailer = require('nodemailer');
 
-
-export async function POST(request) {
-    const { to, fullName, otp } = await request.json();
+const EmailSender = async(req, res)=>{
+    const { to, fullName, otp } = req.body;
 
     if (!to || !fullName || !otp) {
-        return new Response(JSON.stringify({ success: false, error: 'Missing required fields' }), {
-            status: 400,
-            headers: { 'Content-Type': 'application/json' },
-        });
+        return res.status(400).json({ success: false, error: 'Missing required fields' });
     }
-
     try {
-        // Create transporter
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
@@ -38,7 +34,6 @@ export async function POST(request) {
             </div>
         `;
 
-        // Send email
         await transporter.sendMail({
             from: `"NoReply" <${process.env.EMAIL_USER}>`,
             to,
@@ -46,15 +41,11 @@ export async function POST(request) {
             html: htmlContent,
         });
 
-        return new Response(JSON.stringify({ success: true }), {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' },
-        });
+        return res.status(200).json({ success: true });
     } catch (error) {
         console.error('Email error:', error);
-        return new Response(JSON.stringify({ success: false, error: 'Failed to send email' }), {
-            status: 500,
-            headers: { 'Content-Type': 'application/json' },
-        });
+        return res.status(500).json({ success: false, error: 'Failed to send email' });
     }
 }
+
+module.exports = EmailSender;

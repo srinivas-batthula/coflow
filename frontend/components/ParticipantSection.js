@@ -126,8 +126,8 @@ export default function ParticipantsSection({ team, user, onBack, socket }) {
               aria-label={`Member ${member.fullName} ${member.isLeader ? "Admin" : "Member"
                 }${member.isCurrentUser ? ", You" : ""}`}
               className={`flex items-center justify-between p-3 rounded-lg border transition-shadow cursor-pointer ${member.isCurrentUser
-                  ? "bg-sky-100 border-sky-400 shadow-md"
-                  : "bg-white border-gray-200 hover:shadow-lg"
+                ? "bg-sky-100 border-sky-400 shadow-md"
+                : "bg-white border-gray-200 hover:shadow-lg"
                 }`}
             >
               {/* Left: Status + Name */}
@@ -151,8 +151,8 @@ export default function ParticipantsSection({ team, user, onBack, socket }) {
               {/* Right: Role Badge */}
               <span
                 className={`text-xs font-bold px-3 py-1 rounded-full select-none whitespace-nowrap tracking-wide uppercase ${member.isLeader
-                    ? "bg-gray-900 text-white"
-                    : "bg-gray-200 text-gray-700"
+                  ? "bg-gray-900 text-white"
+                  : "bg-gray-200 text-gray-700"
                   }`}
               >
                 {member.isLeader ? "Admin" : "Member"}

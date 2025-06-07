@@ -93,9 +93,9 @@ export function SignupForm({ onSwitch }) {
             email,
             password
         }
-        localStorage.setItem('otp', JSON.stringify(val))
+        localStorage.setItem('otp', JSON.stringify(val));
 
-        let res = await fetch('/api/sendEmail', {       //Sending OTP via Email...
+        let res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL+'/api/auth/sendEmail', {       //Sending OTP via Email...
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

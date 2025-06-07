@@ -71,7 +71,7 @@ const createUpdate = async ({ condition, body, messageId }) => {
         data = await Message.create(body).then(doc => doc.toObject());    // To mutate `data` object after this...
         break;
       case "status_update":
-        data = await Message.findByIdAndUpdate(messageId, { $push: { seen_by: body._id } }, { new: true, runValidators: true }).then(doc => doc.toObject());
+        data = await Message.findByIdAndUpdate(messageId, { $addToSet: { seen_by: body._id } }, { new: true, runValidators: true }).then(doc => doc.toObject());
         break;
       default:
         console.log("Invalid condition");

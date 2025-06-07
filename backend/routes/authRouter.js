@@ -3,14 +3,16 @@ const jwt = require('jsonwebtoken')
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const router = require("express").Router();
 const { signup, login, logout, protectRoute, getUserDetails, updateUserDetails } = require("../controllers/auth_controller.js");
-const User = require('../models/userModel.js')
+const EmailSender = require('../services/notifications/emailSender.js');
+const User = require('../models/userModel.js');
 
+router.post("/sendEmail", EmailSender);
 router.post("/signup", signup);
 router.post("/login", login);
 router.post("/logout", logout);
 
 // Validate User  { `/validateUser?q=true` }
-router.get('/validateUser', protectRoute);    // this route is called from frontend everytime user opens the site...
+router.get('/validateUser', protectRoute);    // this route is called from frontend every-time user opens the site...
 
 router.get("/user/:id", protectRoute, getUserDetails);
 router.patch("/update", protectRoute, updateUserDetails);
