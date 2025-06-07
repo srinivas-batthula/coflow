@@ -113,53 +113,63 @@ export default function ParticipantsSection({ team, user, onBack, socket }) {
       </div>
 
       {/* Members List */}
-      <div>
+      <div className="flex flex-col flex-grow min-h-0">
         <h3 className="text-2xl font-semibold text-gray-900 mb-6 tracking-wide">
           Team Members
         </h3>
-        <ul className="space-y-3 rounded-md" role="list">
-          {members.map((member) => (
-            <li
-              key={member._id}
-              tabIndex={0}
-              role="button"
-              aria-label={`Member ${member.fullName} ${member.isLeader ? "Admin" : "Member"
+        <div
+          className="overflow-y-auto rounded-md border border-gray-300 p-2"
+          style={{ maxHeight: "calc(100vh - 340px)" }}
+        >
+          <ul className="space-y-3" role="list">
+            {members.map((member) => (
+              <li
+                key={member._id}
+                tabIndex={0}
+                role="button"
+                aria-label={`Member ${member.fullName} ${
+                  member.isLeader ? "Admin" : "Member"
                 }${member.isCurrentUser ? ", You" : ""}`}
-              className={`flex items-center justify-between p-3 rounded-lg border transition-shadow cursor-pointer ${member.isCurrentUser
-                ? "bg-sky-100 border-sky-400 shadow-md"
-                : "bg-white border-gray-200 hover:shadow-lg"
+                className={`flex items-center justify-between p-3 rounded-lg border transition-shadow cursor-pointer ${
+                  member.isCurrentUser
+                    ? "bg-sky-100 border-sky-400 shadow-md"
+                    : "bg-white border-gray-200 hover:shadow-lg"
                 }`}
-            >
-              {/* Left: Status + Name */}
-              <div className="flex items-center gap-3 min-w-0">
-                <CircleDot
-                  size={16}
-                  className={`${member.isOnline ? "text-green-500" : "text-red-400"
-                    }`}
-                  strokeWidth={3}
-                />
-                <span
-                  className={`font-medium truncate ${member.isCurrentUser ? "text-sky-900" : "text-gray-900"
-                    }`}
-                  title={member.fullName}
-                >
-                  {member.fullName}
-                  {member.isCurrentUser && " (You)"}
-                </span>
-              </div>
-
-              {/* Right: Role Badge */}
-              <span
-                className={`text-xs font-bold px-3 py-1 rounded-full select-none whitespace-nowrap tracking-wide uppercase ${member.isLeader
-                  ? "bg-gray-900 text-white"
-                  : "bg-gray-200 text-gray-700"
-                  }`}
               >
-                {member.isLeader ? "Admin" : "Member"}
-              </span>
-            </li>
-          ))}
-        </ul>
+                {/* Left: Status + Name */}
+                <div className="flex items-center gap-3 min-w-0">
+                  <CircleDot
+                    size={16}
+                    className={`${
+                      member.isOnline ? "text-green-500" : "text-red-400"
+                    }`}
+                    strokeWidth={3}
+                  />
+                  <span
+                    className={`font-medium truncate ${
+                      member.isCurrentUser ? "text-sky-900" : "text-gray-900"
+                    }`}
+                    title={member.fullName}
+                  >
+                    {member.fullName}
+                    {member.isCurrentUser && " (You)"}
+                  </span>
+                </div>
+
+                {/* Right: Role Badge */}
+                <span
+                  className={`text-xs font-bold px-3 py-1 rounded-full select-none whitespace-nowrap tracking-wide uppercase ${
+                    member.isLeader
+                      ? "bg-gray-900 text-white"
+                      : "bg-gray-200 text-gray-700"
+                  }`}
+                >
+                  {member.isLeader ? "Admin" : "Member"}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
