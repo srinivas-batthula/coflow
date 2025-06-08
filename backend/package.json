@@ -11,6 +11,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@sparticuz/chromium": "^133.0.0",
     "bcryptjs": "^3.0.2",
     "cookie": "^1.0.2",
     "cookie-parser": "^1.4.7",
@@ -27,7 +28,7 @@
     "nodemon": "^3.1.10",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
-    "playwright": "^1.52.0",
+    "playwright-core": "^1.52.0",
     "socket.io": "^4.8.1",
     "swagger-autogen": "^2.23.7",
     "swagger-ui-express": "^5.0.1",
