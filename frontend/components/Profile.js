@@ -9,7 +9,7 @@ export default function Profile({ onEdit, onLogout }) {
   const userId = parts[parts.length - 1];
 
   const [userInfo, setUserInfo] = useState(null);
-  const [loadingProfile, setLoadingProfile] = useState(true); // 👈 new state
+  const [loadingProfile, setLoadingProfile] = useState(false); // 👈 new state
 
   const user = useAuthStore((s) => s.user);
   const token = useAuthStore((s) => s.token);
