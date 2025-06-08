@@ -2,8 +2,6 @@
 require('dotenv').config({ path: './config.env' })
 const Redis = require("ioredis")
 
-const redis = new Redis(process.env.REDIS_URL)
-
 // To filter out only Offline Users from all...
 const sendPushToOfflineUsers = async (io, userIds = [], payload) => {
     try {
@@ -32,6 +30,8 @@ const enqueuePush = async (ids, payload, ping = false) => {   // ids = [userId, 
         return false
     }
     try {
+        const redis = new Redis(process.env.REDIS_URL);
+        
         const allowedIds = [];
 
         for (const id of ids) {

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import {
   Plus,
   Users,
@@ -17,11 +16,9 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 
 export default function TeamsPage() {
-  const router = useRouter();
   const user = useAuthStore((s) => s.user);
   const { loading, error, joinTeam, createTeam, fetchTeams, teams } =
     useTeamStore();
-  console.log(teams);
   const [activeForm, setActiveForm] = useState(null);
   const [formData, setFormData] = useState({
     name: "",

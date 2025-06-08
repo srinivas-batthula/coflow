@@ -5,10 +5,7 @@ const mongoose = require("mongoose")
 const Redis = require("ioredis")
 const webPush = require("web-push")
 
-const redis = new Redis(process.env.REDIS_URL)  // Initialize Redis...
-
 webPush.setVapidDetails('mailto:srinivasb.temp@gmail.com', process.env.VAPID_PUBLIC_KEY, process.env.VAPID_PRIVATE_KEY)    // Setup Web Push (VAPID keys)...
-
 
 const getSubscriptionsForUsers = async (userIds) => {
     try {
@@ -24,6 +21,12 @@ const getSubscriptionsForUsers = async (userIds) => {
 // Listen to Redis Queue...
 const startWorker = async () => {
     console.log("Push-Notification Background-Worker started...");
+    let redis;
+    try {
+        redis = new Redis(process.env.REDIS_URL)  // Initialize Redis...
+    } catch (error) {
+        console.log('Error while connecting to redis (Worker): ', error);
+    }
 
     while (true) {
         try {

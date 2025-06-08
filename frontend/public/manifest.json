@@ -1,36 +1,72 @@
 {
-    "name": "HackPilot",
-    "short_name": "HackPilot",
-    "description": "A powerful productivity tool by  ~ Srinivas & Akash",
+    "name": "CoFlow  ~ Where collaboration finds its rhythm!",
+    "short_name": "CoFlow",
+    "description": "A powerful productivity tool for teams to work collaboratively by  ~ Srinivas B & Akash K",
+    "lang": "en-us",
+    "id": "/",
     "start_url": "/",
     "scope": "/",
     "display": "standalone",
-    "background_color": "rgba(0, 76, 255, 0.562)",
-    "theme_color": "rgba(0, 76, 255, 0.562)",
+    "display_override": [
+        "window-controls-overlay"
+    ],
+    "orientation": "any",
+    "background_color": "#636ee0",
+    "theme_color": "#320398",
     "icons": [
         {
-            "src": "https://verseify.netlify.app/icon.png",
+            "src": "/icon.png",
+            "sizes": "128x128",
+            "type": "image/png"
+        },
+        {
+            "src": "/coflow_192px.png",
             "sizes": "192x192",
             "type": "image/png"
         },
         {
-            "src": "https://verseify.netlify.app/verseify.png",
+            "src": "/coflow_512px.png",
             "sizes": "512x512",
             "type": "image/png"
         }
     ],
     "screenshots": [
         {
-            "src": "https://verseify.netlify.app/desktop-screenshot.png",
+            "src": "/desktop-screenshot.png",
             "sizes": "1280x800",
             "type": "image/png",
             "form_factor": "wide"
         },
         {
-            "src": "https://verseify.netlify.app/mobile-screenshot.png",
+            "src": "/mobile-screenshot.png",
             "sizes": "600x800",
             "type": "image/png",
             "form_factor": "narrow"
+        }
+    ],
+    "features": [
+        "Cross Platform",
+        "Fast",
+        "Simple"
+    ],
+    "categories": [
+        "social",
+        "education",
+        "collaboration",
+        "productivity tools"
+    ],
+    "shortcuts": [
+        {
+            "name": "Your Teams",
+            "short_name": "Teams",
+            "description": "Continue your work directly from teams page!",
+            "url": "/teams",
+            "icons": [
+                {
+                    "src": "/coflow_192px.png",
+                    "sizes": "192x192"
+                }
+            ]
         }
     ]
 }

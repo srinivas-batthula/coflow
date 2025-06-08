@@ -3,12 +3,12 @@ import Layout from "@/components/Layout";
 import { Toaster } from "react-hot-toast";
 
 export const viewport = {
-  themeColor: "rgba(0, 76, 255, 0.562)",
+  themeColor: "#320398",
 };
 
 export const metadata = {
   title: "CoFlow",
-  description: "A-Z Hackathon Team management platform",
+  description: "A-Z Hackathon Team management Productivity platform",
   authors: [{ name: "Srinivas Batthula" }, { name: "Akash Kyadari" }],
 };
 
@@ -17,10 +17,9 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <head>
         {/* Manifest.json.... */}
-        {/* <link rel="manifest" href="https://verseify.netlify.app/manifest.json" /> */}
-
+        <link rel="manifest" href="/manifest.json" />
         {/* Icon...     */}
-        {/* <link rel="icon" href="https://verseify.netlify.app/verseify.png" type="image/x-icon" /> */}
+        <link rel="icon" href="/icon.png" type="image/x-icon" />
       </head>
       <body>
         <Layout>{children}</Layout>

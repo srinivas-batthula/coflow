@@ -120,7 +120,7 @@ module.exports = (io, socket) => {
         };
         io.to(teamId).emit("message_created", result);
         // Push Notifications to all members in `group/team`...
-        // await sendPushToOfflineUsers(io, members_ids, { title: `${socket.user.fullName} sent a message in team -${teamName}`, body: `${message.slice(0, 30)}${message.length > 30 ? '...' : ''}` });
+        await sendPushToOfflineUsers(io, members_ids, { title: `${socket.user.fullName} sent a message in team -${teamName}`, body: `${message.slice(0, 30)}${message.length > 30 ? '...' : ''}` }).catch((err)=>{console.log(err)});
       }
     }
   );

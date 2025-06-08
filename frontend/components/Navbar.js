@@ -28,7 +28,7 @@ export default function Navbar() {
         className="flex items-center gap-3 cursor-pointer select-none"
       >
         <img
-          src="/logosvg1.png"
+          src="/logosvg.png"
           alt="Coflow Logo"
           className="w-32 h-auto md:w-40 object-contain"
         />

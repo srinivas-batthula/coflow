@@ -121,7 +121,7 @@ export default function HomePage() {
           <span>Welcome to</span>
           <span className="ml-3 inline-flex items-center text-[#2A3BD9] scale-250 mt-4">
             <img
-              src="./textlogo.png"
+              src="/textlogo.png"
               alt="Coflow Logo"
               className="h-12 md:h-16 object-contain"
               loading="lazy"
@@ -131,12 +131,12 @@ export default function HomePage() {
 
         <button
           onClick={handleInstallClick}
-          className="mt-4 px-8 py-3 bg-[#320398] hover:bg-[#24026d] text-white rounded-full font-semibold transition-all shadow-lg hover:shadow-xl"
+          className="cursor-pointer mt-4 px-8 py-3 bg-[#320398] hover:bg-[#24026d] text-white rounded-full font-semibold transition-all shadow-lg hover:shadow-xl"
         >
           Get the App
         </button>
 
-        <p className="mt-6 text-xl md:text-2xl max-w-3xl mx-auto text-[#4A51A3]">
+        <p className="mt-6 text-xl md:text-2xl max-w-3xl mx-auto text-[#636ee0]">
           Discover, join, and track hackathons worldwide.
           <span className="block mt-4 text-[#2A3BD9] font-semibold">
             Find your next challenge, collaborate with your team, and showcase

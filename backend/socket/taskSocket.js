@@ -81,7 +81,7 @@ module.exports = (io, socket) => {
         socket.emit("task_created", result); // To leader
         io.to(assigned_to).emit("task_created", result); // To assignee
         // Push Notification to `assignee`...
-        // await sendPushToOfflineUsers(io, [assigned_to], { title: `New Task Alert from ${teamName}`, body: `${result.data.task.slice(0, 30)}${result.data.task.length > 30 ? '...' : ''}` });
+        await sendPushToOfflineUsers(io, [assigned_to], { title: `New Task Alert from ${teamName}`, body: `${result.data.task.slice(0, 30)}${result.data.task.length > 30 ? '...' : ''}` }).catch((err)=>{console.log(err)});
       }
     }
   );
@@ -97,7 +97,7 @@ module.exports = (io, socket) => {
       socket.emit("task_updated", result); // To submitter
       io.to(leaderId).emit("task_updated", result); // To leader
       // Push Notification to `leader`...
-      // await sendPushToOfflineUsers(io, [leaderId], { title: `Task Submitted for review by ${socket.user.fullName}`, body: `${result.data?.task.slice(0, 30)}${result.data?.task.length > 30 ? '...' : ''}` });
+      await sendPushToOfflineUsers(io, [leaderId], { title: `Task Submitted for review by ${socket.user.fullName}`, body: `${result.data?.task.slice(0, 30)}${result.data?.task.length > 30 ? '...' : ''}` }).catch((err)=>{console.log(err)});
     }
   });
 
@@ -114,7 +114,7 @@ module.exports = (io, socket) => {
         socket.emit("task_updated", result); // To leader
         io.to(assigned_to).emit("task_updated", result); // To member
         // Push Notification to `assignee`...
-        // await sendPushToOfflineUsers(io, [assigned_to], { title: `Your Task Approved in ${teamName}`, body: `${result.data?.task.slice(0, 30)}${result.data?.task.length > 30 ? '...' : ''}` });
+        await sendPushToOfflineUsers(io, [assigned_to], { title: `Your Task Approved in ${teamName}`, body: `${result.data?.task.slice(0, 30)}${result.data?.task.length > 30 ? '...' : ''}` }).catch((err)=>{console.log(err)});
       }
     }
   );
@@ -130,7 +130,7 @@ module.exports = (io, socket) => {
       socket.emit("task_updated", result); // To leader
       io.to(assigned_to).emit("task_updated", result); // To member
       // Push Notification to `assignee`...
-      // await sendPushToOfflineUsers(io, [assigned_to], { title: `Added comment for your Task in ${teamName}`, body: `${comment.slice(0, 30)}${comment.length > 30 ? '...' : ''}` });
+      await sendPushToOfflineUsers(io, [assigned_to], { title: `Added comment for your Task in ${teamName}`, body: `${comment.slice(0, 30)}${comment.length > 30 ? '...' : ''}` }).catch((err)=>{console.log(err)});
     }
   });
 };
