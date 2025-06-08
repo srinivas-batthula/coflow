@@ -48,6 +48,11 @@ const update_hackathons = async (req, res) => {        //Requires `pass` -secret
     // Then start scraping task
     scrapeHackathons()
         .then(r => {
+            if (!r) {
+                console.error('Scraping returned no result');
+                return;
+            }
+
             if (r.status === 'success') {
                 console.log('Scraping completed. Items:', r.length);
             } else {
