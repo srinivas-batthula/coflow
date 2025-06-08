@@ -48,7 +48,7 @@ async function scrapeHackathons() {
             result = { status: 'success', length: hackathons.length }
         }
         catch (insertError) {
-            if (!(error.code === 11000 || error.writeErrors)) {
+            if (!(insertError.code === 11000 || insertError.writeErrors)) {
                 // Fallback: write to local JSON file
                 await writeFallbackJson(hackathons)
                 result = { status: 'success', length: hackathons.length }
