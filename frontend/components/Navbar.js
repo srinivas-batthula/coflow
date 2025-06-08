@@ -2,6 +2,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { useRouter } from "next/navigation";
 import { FaUserCircle } from "react-icons/fa";
 import { useRef, useState, useEffect } from "react";
+import toast from "react-hot-toast";
 
 export default function Navbar() {
   const router = useRouter();
@@ -83,6 +84,7 @@ export default function Navbar() {
                   onClick={() => {
                     setOpen(false);
                     logout();
+                    toast.success("You’ve been logged out.");
                     router.push("/");
                   }}
                 >

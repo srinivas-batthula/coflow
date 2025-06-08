@@ -1,47 +1,54 @@
 "use client";
 import { useAuthStore } from "@/store/useAuthStore";
-import { usePathname } from 'next/navigation';
-import {useEffect, useState} from 'react'
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Profile({ onEdit, onLogout }) {
   const pathname = usePathname();
-  const parts = pathname.split('/');
+  const parts = pathname.split("/");
   const userId = parts[parts.length - 1];
 
   const [userInfo, setUserInfo] = useState(null);
+  const [loadingProfile, setLoadingProfile] = useState(true); // 👈 new state
+
   const user = useAuthStore((s) => s.user);
   const token = useAuthStore((s) => s.token);
   const loading = useAuthStore((s) => s.loading);
 
-useEffect(()=>{
-  const fetchUser = async()=>{
-    try {
-      let res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL+`/api/auth/user/${userId}`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        credentials: 'include',
-      });
-      res = await res.json();
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        setLoadingProfile(true); //
+        let res = await fetch(
+          process.env.NEXT_PUBLIC_BACKEND_URL + `/api/auth/user/${userId}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            credentials: "include",
+          }
+        );
+        res = await res.json();
 
-      if(res.success && res.user){
-        setUserInfo(res.user);
+        if (res.success && res.user) {
+          setUserInfo(res.user);
+        }
+      } catch (error) {
+        console.error("Error in profile: " + error);
+      } finally {
+        setLoadingProfile(false); // 👈 stop loading
       }
-    } catch (error) {
-      console.error("Error in profile: "+error);
+    };
+
+    if (user && userId === user._id) {
+      setUserInfo(user);
+    } else {
+      fetchUser();
     }
-  }
+  }, [user, userId]);
 
-  if(userId === user._id){
-    setUserInfo(user);
-  }
-  else{
-    fetchUser();
-  }
-}, [user, userId]);
-
-  if (loading) {
+  if (loadingProfile) {
     return (
       <div className="flex flex-col items-center justify-center h-[60vh]">
         <div className="w-40 h-2 bg-purple-100 rounded-full overflow-hidden mb-4">
@@ -54,7 +61,7 @@ useEffect(()=>{
     );
   }
 
-  if (!userInfo && !loading) {
+  if (!userInfo && !loadingProfile) {
     return (
       <div className="flex flex-col items-center justify-center h-[60vh] text-gray-500 text-xl">
         Please log in to view profile.
@@ -103,21 +110,21 @@ useEffect(()=>{
         </p>
 
         {/* Buttons */}
-        {(userId === user._id) && (
+        {userId === user._id && (
           <div className="flex gap-4 mt-4">
-          <button
-            onClick={onEdit}
-            className="bg-purple-600 text-white px-6 py-2 rounded-xl font-semibold shadow hover:bg-purple-700 transition"
-          >
-            Edit Profile
-          </button>
-          <button
-            onClick={onLogout}
-            className="bg-red-100 text-red-600 px-6 py-2 rounded-xl font-semibold hover:bg-red-200 transition"
-          >
-            Logout
-          </button>
-        </div>
+            <button
+              onClick={onEdit}
+              className="bg-purple-600 text-white px-6 py-2 rounded-xl font-semibold shadow hover:bg-purple-700 transition"
+            >
+              Edit Profile
+            </button>
+            <button
+              onClick={onLogout}
+              className="bg-red-100 text-red-600 px-6 py-2 rounded-xl font-semibold hover:bg-red-200 transition"
+            >
+              Logout
+            </button>
+          </div>
         )}
       </div>
     </div>

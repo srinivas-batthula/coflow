@@ -3,6 +3,7 @@ import Profile from "@/components/Profile";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
+import toast from "react-hot-toast";
 
 export default function ProfilePage() {
   const logout = useAuthStore((s) => s.logout);
@@ -13,6 +14,7 @@ export default function ProfilePage() {
   }, []);
 
   const handleLogout = useCallback(() => {
+    toast.success("You’ve been logged out.");
     logout();
     router.push("/");
   }, [logout, router]);
