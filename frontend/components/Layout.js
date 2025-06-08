@@ -18,6 +18,12 @@ const Layout = ({ children }) => {
   useEffect(() => {
     //Validate User...
     async function validate() {
+      try {
+        await fetch(process.env.NEXT_PUBLIC_BACKEND_URL+'/');
+      } catch (error) {
+        console.error('Backend Server is On Sleep-mode!');
+      }
+
       if (
         typeof window !== "undefined" ? localStorage.getItem("login") : null
       ) {
