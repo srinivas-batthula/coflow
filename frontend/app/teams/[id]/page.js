@@ -20,9 +20,12 @@ export default function TeamSpecificPage() {
 
   useEffect(() => {
     // if (!teams || teams.length === 0) {
-    fetchTeams();
+    // fetchTeams();
     // }
-  }, [fetchTeams]);
+    if (user) {
+      fetchTeams();
+    }
+  }, [fetchTeams, user]);
 
   useEffect(() => {
     if (user?._id && !socket.connected) {

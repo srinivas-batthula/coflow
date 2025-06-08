@@ -29,8 +29,10 @@ export default function TeamsPage() {
   const [alertMsg, setAlertMsg] = useState("");
 
   useEffect(() => {
-    fetchTeams();
-  }, [fetchTeams]);
+    if (user) {
+      fetchTeams();
+    }
+  }, [fetchTeams, user]);
 
   useEffect(() => {
     if (alertMsg) {
@@ -221,9 +223,8 @@ export default function TeamsPage() {
 
                     {/* Fallback Avatar */}
                     <div
-                      className={`w-12 h-12 rounded-full bg-gradient-to-br from-[#6541ec] to-[#320398] text-white font-bold text-lg items-center justify-center shadow-inner ${
-                        team.image_url ? "hidden" : "flex"
-                      }`}
+                      className={`w-12 h-12 rounded-full bg-gradient-to-br from-[#6541ec] to-[#320398] text-white font-bold text-lg items-center justify-center shadow-inner ${team.image_url ? "hidden" : "flex"
+                        }`}
                     >
                       {team.name?.slice(0, 2).toUpperCase()}
                     </div>
