@@ -1,5 +1,5 @@
 
-const CACHE_NAME = `hackpilot-cache-v01`             //Change this to a new version before every New DEPLOY.............................
+const CACHE_NAME = `hackpilot-cache-v02`             //Change this to a new version before every New DEPLOY.............................
 const HOME = self.location.origin;      // Provide a `Deployed` URL...
 
 const STATIC_FILES = [
@@ -36,10 +36,14 @@ self.addEventListener("activate", (event) => {
     self.clients.claim()
 })
 
+let url = HOME;
     // Display Push Notifications...
 self.addEventListener('push', async(event) => {
     console.log("Push received...")
     let data = event.data ? event.data.json() : { title: 'New Alert!', body: 'You have a New Notification from ~HackPilot.' }
+    if(data?.id){
+        url = HOME+`/teams/${id}`;
+    }
 
     const options = {
         body: data.body,
@@ -74,7 +78,7 @@ self.addEventListener('notificationclick', (event) => {
     else if (action === 'open') {
         event.notification.close()
         event.waitUntil(
-            clients.openWindow(HOME)
+            clients.openWindow(url)
         )
     }
     else {
