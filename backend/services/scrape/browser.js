@@ -1,10 +1,14 @@
 // browser.js
 const { chromium } = require('playwright')
-
+const { install } = require('playwright/install');
 
 async function getBrowserPage() {
+    // Ensure required browser binaries are available
+    await install();
+
     const browser = await chromium.launch({
         headless: true,      // `headless: true` -->> Browser is not seen by us (hidden) && `false` -->> Visually seen...
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],  // Optional for Render compatibility
     })
 
     const userAgents = [        // Store these 'userAgents in  `.env` file...
