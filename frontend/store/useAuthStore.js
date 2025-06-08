@@ -62,11 +62,16 @@ export const useAuthStore = create((set) => ({
 
   // Logout action
   logout: async () => {
+    const token = useAuthStore.getState().token;
     set({ loading: true, error: null });
     try {
       const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL+"/api/auth/logout", {
         method: "POST",
         credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`,
+          },
       });
       if (!res.ok) throw new Error("Logout failed");
       set({ user: null, token: null, loading: false });

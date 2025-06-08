@@ -9,7 +9,7 @@ const User = require('../models/userModel.js');
 router.post("/sendEmail", EmailSender);
 router.post("/signup", signup);
 router.post("/login", login);
-router.post("/logout", logout);
+router.post("/logout", protectRoute, logout);
 
 // Validate User  { `/validateUser?q=true` }
 router.get('/validateUser', protectRoute);    // this route is called from frontend every-time user opens the site...

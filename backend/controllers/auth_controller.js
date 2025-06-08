@@ -86,17 +86,27 @@ const login = async (req, res) => {
   }
 };
 
-const logout = (req, res) => {
-  res.clearCookie("token", {
-    path: "/",
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "Strict",
-  });
+const logout = async (req, res) => {
+  try {
+    const result = await User.findByIdAndUpdate(req.user._id, { subscription: null }, { new: true, runValidators: true });
+    
+    res.clearCookie("token", {
+      path: "/",
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+    });
 
-  return res
-    .status(200)
-    .json({ success: true, msg: "Cookie Cleared successfully." });
+    return res
+      .status(200)
+      .json({ success: true, msg: "Cookie Cleared successfully." });
+  }
+  catch (error) {
+    console.error("Error in logout: ", error);
+    return res
+      .status(500)
+      .json({ success: false, msg: "Error while removing subscription!" });
+  }
 };
 
 const protectRoute = async (req, res, next) => {
