@@ -11,7 +11,7 @@
 
 ## Logo
 
-![Logo](https://github.com/srinivas-batthula/hackpilot/blob/main/frontend/public/icon.png)
+![Logo](https://github.com/srinivas-batthula/coflow/blob/main/frontend/public/logosvg.png)
 
 ## ✨ Key Features
 
