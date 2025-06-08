@@ -25,7 +25,7 @@ app.use(cookieParser());
 app.use(express.static("public"));
 
 const corsOptions = {
-  origin: ["http://localhost:3000", process.env.FRONTEND_URL], // Allow frontend domain
+  origin: ["http://localhost:3000", 'https://coflow.netlify.app'], // Allow frontend domain
   credentials: true, // Allow credentials (cookies)
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
