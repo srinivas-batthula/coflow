@@ -36,7 +36,7 @@ export default function Footer() {
         <div className="flex gap-4">
           {/* GitHub */}
           <a
-            href="https://github.com/srinivas-batthula/hackpilot"
+            href="https://github.com/srinivas-batthula/coflow"
             target="_blank"
             rel="noopener noreferrer"
             className="text-[#320398] hover:text-[#220268] transition-colors"

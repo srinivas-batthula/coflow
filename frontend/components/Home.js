@@ -49,11 +49,11 @@ export default function HomePage() {
     selectedCity === "All"
       ? hackathons
       : hackathons?.filter(
-          (h) => h.city.toLowerCase() === selectedCity.toLowerCase()
-        ) || [];
+        (h) => h.city.toLowerCase() === selectedCity.toLowerCase()
+      ) || [];
 
   useEffect(() => {
-    fetchHackathons();
+    fetchHackathons();   // Fetching hackathons from backend...
     const handlePrompt = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
@@ -63,7 +63,8 @@ export default function HomePage() {
       window.removeEventListener("beforeinstallprompt", handlePrompt);
   }, []);
 
-  const handleInstallClick = async () => {
+  const handleInstallClick = async (e) => {
+    e.preventDefault();
     if (deferredPrompt) {
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
@@ -73,7 +74,7 @@ export default function HomePage() {
           : "User dismissed the install."
       );
     } else {
-      alert("PWA install prompt is not available.");
+      alert("PWA install prompt is not available. (Please do refresh!)");
     }
   };
 
@@ -189,11 +190,10 @@ export default function HomePage() {
                         setSelectedCity(city);
                         setShowDropdown(false);
                       }}
-                      className={`block w-full text-left px-4 py-2 text-sm transition-all ${
-                        selectedCity === city
+                      className={`block w-full text-left px-4 py-2 text-sm transition-all ${selectedCity === city
                           ? "bg-[#E6E0FF] text-[#320398] font-semibold"
                           : "hover:bg-gray-100"
-                      }`}
+                        }`}
                     >
                       {city}
                     </button>

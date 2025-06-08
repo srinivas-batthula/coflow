@@ -1,25 +1,87 @@
-# 🚀 CoFlow – A-Z Hackathon Team Management Platform
 
-**CoFlow** is a full-stack hackathon productivity platform that simplifies team creation, project coordination, and real-time collaboration — all in one place.
+#      🚀 ***CoFlow***
+## Built for Hackathons. Ready for Teams. Powered by Realtime.
 
-## 🧩 Features
+**~CoFlow** is a real-time team collaboration tool built for developers and hackathon squads, offering live task assignment, group chat and progress tracking. With intelligent scheduling, offline-friendly notifications, and Redis-powered background workers, it keeps teams in sync — even when they’re not online.
 
-- ✅ Create, join, and manage hackathon teams
-- 🔐 Authentication and authorization with JWT & cookies
-- 💬 Real-time messaging via **Socket.IO**
-- 🧑‍💻 Task management and status tracking
-- 🧭 Online status indicators
-- 🧠 Seen-by indicators for chat
-- 💡 Typing indicators
-- 🎨 Beautiful responsive UI (Tailwind CSS)
-- 🔧 API Documentation via Swagger
 
----
+## Live Links
+- 🔗 **Live Site**: [coflow.netlify.app](https://coflow.netlify.app)
+- 🔗 **API Docs**: [coflow.onrender.com/api-docs](https://coflow.onrender.com/api-docs)
 
-## 🗂 Project Structure
+## Logo
 
-\`\`\`
-hackpilot/
+![Logo](https://github.com/srinivas-batthula/hackpilot/blob/main/frontend/public/icon.png)
+
+## ✨ Key Features
+
+- ✅ Create, Join, and Manage hackathon teams
+- 🔐 Authentication with JWT and Google OAuth
+- 🧑‍💻 Realtime Collaborative Task management and status tracking
+- 💬 Real-time team chat using **Socket.IO**
+- 🕒 Automatically scrape and store hackathon listings every 10 hours using **node-cron** and **Playwright**
+## 🔁 Feature Workflows
+
+#### **1.** Automated Hackathons Sync
+```
+Cron job executes for every 10 hours
+      ⬇
+List of hackathons are scraped from Devpost with various filters
+      ⬇
+Scraped hackathon data is stored in MongoDB
+      ⬇
+If failure → fallback data is stored in JSON file temporarily
+```
+
+#### **2.** Collaborative Tasks flow
+```
+Leader creates and assigns a new task for a member
+      ⬇
+The member submits the task after completion
+      ⬇
+Leader approves / re-assigns the task with comments
+
+```
+
+#### **3.** Real-time group chat
+```
+A user types a message in a team
+      ⬇
+`User-X is typing` indicator is shown for all other members
+      ⬇
+User sends a message
+      ⬇
+That message is broadcasted to all members of that team
+      ⬇
+Received members will be marked as 'seen' in real-time
+```
+
+#### **4.** Push Notifications (for offline users)
+```
+For messages or task updates → a payload with senderId is pushed into Redis-Queue
+      ⬇
+Background worker always listens to the Redis-Queue
+      ⬇
+Worker pops the notification details from the Queue
+      ⬇
+Sends a Push-Notification to that offline user
+```
+
+
+## 🛠 Tech Stack
+
+- **Frontend:** Next.js, React.js, Zustand, Tailwind CSS, Socket.IO Client
+- **Backend:** Node.js, Express.js, Socket.io, Playwright, node-cron
+- **Database:** MongoDB Atlas + Mongoose
+- **API Docs:** Swagger UI
+- **Auth:** JWT + Google OAuth
+- **Push Notifcations:** Web-Push, Redis Queue
+- **Deployment:** Render, Netlify
+
+## 🏗️ Project Structure
+
+```
+coflow/
 ├── backend/
 │ ├── controllers/
 │ ├── models/
@@ -27,105 +89,61 @@ hackpilot/
 │ ├── services/
 │ ├── socket/
 │ ├── utils/
+│ ├── workers/
+│ ├── app.js
 │ ├── server.js
-│ └── swaggerGen.js
+│ └── config.env
 │
 └── frontend/
-├── app/
-├── components/
-├── public/
-├── store/
-├── styles/
-├── utils/
-└── next.config.mjs
-\`\`\`
+│ ├── app/
+│ ├── components/
+│ ├── public/
+│ ├── store/
+│ ├── styles/
+│ ├── utils/
+│ └── .env
+├── LICENSE
+└── Readme.md
+```
+## ⚙️ Local Setup Instructions
 
----
+```git clone https://github.com/srinivas-batthula/coflow```
 
-## 🛠 Tech Stack
+#### For backend
+```
+1. cd backend
+```
+```
+2. npm install
+```
+```
+3. npx playwright install
+```
+```
+4. Setup `config.env` in the root dir `backend/`based on `config.env.example`
+```
+```
+npm start
+```
 
-### Frontend
-
-- [Next.js](https://nextjs.org/)
-- [React](https://react.dev/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Zustand](https://github.com/pmndrs/zustand)
-- [Socket.IO Client](https://socket.io/)
-
-### Backend
-
-- [Node.js](https://nodejs.org/)
-- [Express](https://expressjs.com/)
-- [MongoDB + Mongoose](https://mongoosejs.com/)
-- [Socket.IO](https://socket.io/)
-- [Swagger](https://swagger.io/)
-
----
-
-## 🧪 Backend Setup
-
-1. **Navigate to backend:**
-   \`\`\`bash
-   cd backend
-   \`\`\`
-
-2. **Install dependencies:**
-   \`\`\`bash
-   npm install
-   \`\`\`
-
-3. **Environment configuration:**
-
-   - Copy \`.env.example\` to \`.env\`
-   - Add your MongoDB URI, JWT secret, and other env vars
-
-4. **Run the server:**
-   \`\`\`bash
-   npm run dev
-   \`\`\`
-
-5. **Access API docs:**
-   \`http://localhost:<PORT>/api-docs\`
-
----
-
-## 🎨 Frontend Setup
-
-1. **Navigate to frontend:**
-   \`\`\`bash
-   cd frontend
-   \`\`\`
-
-2. **Install dependencies:**
-   \`\`\`bash
-   npm install
-   \`\`\`
-
-3. **Setup env file:**
-
-   - Copy \`.env.local.example\` to \`.env.local\`
-   - Add \`NEXT_PUBLIC_BACKEND_URL\`
-
-4. **Run the frontend:**
-   \`\`\`bash
-   npm run dev
-   \`\`\`
-
-5. **Visit app:**
-   \`http://localhost:3000\`
-
----
-
-## ▶️ Running the Full Stack
-
-In two terminals:
-
-```bash
-# Terminal 1 - Backend
-cd backend
-npm run dev
-
-# Terminal 2 - Frontend
-cd frontend
+#### For frontend
+```
+1. cd frontend
+```
+```
+2. npm install
+```
+```
+4. Setup `.env` in the root dir `frontend/`based on `.env.example`
+```
+```
 npm run dev
 ```
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/srinivas-batthula/hackpilot/blob/main/LICENSE) file for details.
+## 👥 Contributors
+
+- **Srinivas Batthula [@srinivas-batthula](https://github.com/srinivas-batthula)**
+- **Akash Kyadari [@akash-kyadari](https://github.com/akash-kyadari)**
