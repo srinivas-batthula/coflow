@@ -1,7 +1,7 @@
 // app/teams/[id]/page.js
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useTeamStore } from "@/store/useTeamStore";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -17,6 +17,7 @@ export default function TeamSpecificPage() {
   const router = useRouter();
   const { fetchTeams, teams, loading, error } = useTeamStore();
   const { user, token } = useAuthStore();
+  const [isSocketReady, setIsSocketReady] = useState(false);
 
   useEffect(() => {
     // if (!teams || teams.length === 0) {
@@ -30,12 +31,20 @@ export default function TeamSpecificPage() {
   useEffect(() => {
     if (user?._id && !socket.connected) {
       socket.io.opts.extraHeaders = {
-        // Injecting `token` manually before connection in client-side...
         Authorization: `Bearer ${token}`,
       };
       socket.connect();
     }
+
+    const handleConnect = () => setIsSocketReady(true);
+    const handleDisconnect = () => setIsSocketReady(false);
+
+    socket.on("connect", handleConnect);
+    socket.on("disconnect", handleDisconnect);
+
     return () => {
+      socket.off("connect", handleConnect);
+      socket.off("disconnect", handleDisconnect);
       if (socket.connected) socket.disconnect();
     };
   }, [user, token]);
@@ -68,7 +77,7 @@ export default function TeamSpecificPage() {
   }
 
   // Wait for socket to finish connecting
-  if (!socket.connected && !loading) {
+  if (!isSocketReady && !loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-50 text-gray-600 text-lg">
         Connecting to socket...

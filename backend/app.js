@@ -39,7 +39,7 @@ const limiter = rateLimit({
   //Must to be used in production to prevent attacks...
   windowMs: 1 * 60 * 1000, // 1 minute
   max: 20, // limit each IP to 15 requests per windowMs
-  message: "Too many requests from this IP, please try again after 1 minute",
+  message: { success: false, msg: "Too many requests from this IP, please try again after 1 minute" },
   headers: true,
 });
 app.use(limiter);

@@ -103,7 +103,7 @@ const protectRoute = async (req, res, next) => {
   const { q } = req.query;
   let token = req.cookies?.token;
   token = req.headers.authorization?.split(' ')[1] || '';
-  console.log(token);
+  // console.log(token);
 
   // If no token found, return 401 Unauthorized
   if (!token) {
