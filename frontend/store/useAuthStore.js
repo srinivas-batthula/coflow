@@ -92,7 +92,7 @@ export const useAuthStore = create((set) => ({
           credentials: "include",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token1}`,
+            'Authorization': `Bearer ${token1}`,
           },
         }
       );

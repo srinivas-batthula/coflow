@@ -102,7 +102,7 @@ const logout = (req, res) => {
 const protectRoute = async (req, res, next) => {
   const { q } = req.query;
   let token = req.cookies?.token;
-  // token = req.headers.authorization?.split(' ')[1] || '';
+  token = req.headers.authorization?.split(' ')[1] || '';
   // console.log(req.headers.authorization)
 
   // If no token found, return 401 Unauthorized
