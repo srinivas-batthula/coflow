@@ -4,25 +4,24 @@ const Hackathon = require('../models/hackathonsModel')
 const fs = require('fs').promises
 const path = require('path')
 
-
-
-const get_hackathons = async(req, res)=>{
+const get_hackathons = async (req, res) => {
     try {
         let data
         const result = await Hackathon.find({}).lean()
 
-        if(result.length === 0)
+        if (result.length === 0)
             data = await readFallbackJson()
         else
             data = result
 
-        return res.status(200).json({success: true, length: data.length, data})
+        return res.status(200).json({ success: true, length: data.length, data })
     } catch (error) {
         // console.log('Error fetching hackathons:  ', error)
-        return res.status(500).json({success: false, error})
+        return res.status(500).json({ success: false, error })
     }
 }
-        //Reads Data from Fallback JSON file IF DB fails...
+
+//Reads Data from Fallback JSON file IF DB fails...
 async function readFallbackJson() {
     const filePath = path.join(__dirname, '..', 'fallback', 'hackathons_fallback.json')
 
@@ -36,22 +35,29 @@ async function readFallbackJson() {
     }
 }
 
+const update_hackathons = async (req, res) => {        //Requires `pass` -secret password...
+    const { pass } = req.body;
 
-const update_hackathons = async(req, res)=>{        //Requires `pass` -secret password...
-    const { pass } = req.body
-
-    if(pass === 'bsp_hack'){
-        const r = await scrapeHackathons()
-        if(r.status==='success')
-            return res.status(201).json({success: true, details: 'Hackathons list Scraped & Updated in DB.', length: r.length})
-        else
-            return res.status(500).json({success: false, details: 'Failed to Scrape/Update Hackathons.', length: r.length, error: r.error})
+    if (pass !== 'bsp_hack') {
+        return res.status(401).json({ success: false, details: 'Secrets Sent were Invalid/Not Matched!' });
     }
-    else{
-        return res.status(401).json({success: false, details: 'Secrets Sent were Invalid/Not Matched!'})
-    }
-}
 
+    // Respond immediately
+    res.status(202).json({ success: true, details: 'Scraping started in background.' });
 
+    // Then start scraping task
+    scrapeHackathons()
+        .then(r => {
+            if (r.status === 'success') {
+                console.log('Scraping completed. Items:', r.length);
+            } else {
+                console.error('Scraping failed:', r.error);
+            }
+        })
+        .catch(err => {
+            console.error('Unhandled scraping error:', err);
+        });
+    return;
+};
 
-module.exports = { get_hackathons, update_hackathons }
+module.exports = { get_hackathons, update_hackathons };
