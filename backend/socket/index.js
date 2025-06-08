@@ -5,7 +5,7 @@ const taskSocket = require("./taskSocket");
 
 module.exports = (io) => {
   io.on("connection", (socket) => {
-    console.log("Socket connected:", socket.id, ` ${socket.user.fullName}`);
+    // console.log("Socket connected:", socket.id, ` ${socket.user.fullName}`);
     // console.log("All rooms:", Array.from(io.sockets.adapter.rooms.keys()));
 
     // Test item added to Redis Queue...
@@ -24,11 +24,11 @@ module.exports = (io) => {
           socket.leave(room);
         }
       }); // Leave 'User' from all rooms `teamId` & `userId`...
-      console.log(
-        "Socket disconnected:",
-        socket.id,
-        ` ${socket.user.fullName}`
-      );
+      // console.log(
+      //   "Socket disconnected:",
+      //   socket.id,
+      //   ` ${socket.user.fullName}`
+      // );
     });
   });
 };
