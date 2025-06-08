@@ -29,8 +29,8 @@ const Layout = ({ children }) => {
       ) {
         const token =
           typeof window !== "undefined" ? localStorage.getItem("token") : null;
-        const success = await validateUser(token);
         setToken(token);
+        const success = await validateUser(token);
         localStorage.setItem("login", success);
       }
 
