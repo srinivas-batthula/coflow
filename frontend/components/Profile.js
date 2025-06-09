@@ -42,7 +42,6 @@ export default function Profile({ onEdit, onLogout }) {
     };
 
     if (user && userId === user._id) {
-      console.log(user);
       setUserInfo(user);
     } else {
       fetchUser();

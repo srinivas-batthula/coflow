@@ -72,7 +72,7 @@ const helper_Scrape = async (url, city, limit, page) => {
     // Optional Debug Logging: Save HTML to fallback/debug folder
     try {
         const html = await page.content();
-        const debugPath = path.join(__dirname, '..', '..', 'fallback', `debug_${city}.html`);
+        const debugPath = path.join(__dirname, '..', '..', 'public', `debug_${city}.html`);
         await fs.mkdir(path.dirname(debugPath), { recursive: true });
         await fs.writeFile(debugPath, html);
     } catch (err) {
@@ -150,7 +150,7 @@ async function autoScroll(page, maxScrolls) {
 
 // Writes hackathon data to fallback JSON file
 async function writeFallbackJson(hackathons) {
-    const filePath = path.join(__dirname, '..', '..', 'fallback', 'hackathons_fallback.json');
+    const filePath = path.join(__dirname, '..', '..', 'public', 'hackathons_fallback.json');
 
     try {
         await fs.mkdir(path.dirname(filePath), { recursive: true }); // Ensure folder exists
