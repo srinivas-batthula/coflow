@@ -1,5 +1,5 @@
 // hackathons_controller
-const { scrapeHackathons } = require('../services/scrape/hackathons')
+const { fetchHackathons } = require('../services/fetch/hackathons')
 const Hackathon = require('../models/hackathonsModel')
 const fs = require('fs').promises
 const path = require('path')
@@ -41,28 +41,13 @@ const update_hackathons = async (req, res) => {        //Requires `pass` -secret
     if (pass !== 'bsp_hack') {
         return res.status(401).json({ success: false, details: 'Secrets Sent were Invalid/Not Matched!' });
     }
-
-    // Respond immediately
-    res.status(202).json({ success: true, details: 'Scraping started in background.' });
-
-    // Then start scraping task
-    scrapeHackathons()
-        .then(r => {
-            if (!r) {
-                console.error('Scraping returned no result: '+r);
-                return;
-            }
-
-            if (r.status === 'success') {
-                console.log('Scraping completed. Items: ', r);
-            } else {
-                console.error('Scraping failed: ', r);
-            }
-        })
-        .catch(err => {
-            console.error('Unhandled scraping error: ', err);
-        });
-    return;
+    try {
+        const data = await fetchHackathons();
+        return res.status(201).json({ success: true, details: 'Hackathons Fetched Successfully!', result: { status: data.status, length: data.length, msg: data?.msg } });
+    } catch (error) {
+        console.error("Error while fetching hackathons: " + error);
+        return res.status(500).json({ success: false, details: 'Error while fetching hackathons!' });
+    }
 };
 
 module.exports = { get_hackathons, update_hackathons };
