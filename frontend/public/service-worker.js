@@ -42,7 +42,7 @@ self.addEventListener('push', async(event) => {
     console.log("Push received...", event.data.json())
     let data = event.data ? event.data.json() : { title: 'New Alert!', body: 'You have a New Notification from ~HackPilot.' }
     if(data && data?.id){
-        url = HOME+`/teams/${data.id}`;
+        url = HOME+`/teams/${data.id}`; 
     }
 
     const options = {
