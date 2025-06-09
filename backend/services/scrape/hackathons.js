@@ -41,7 +41,7 @@ async function scrapeHackathons() {
         const existingUrls = new Set(existing.map(h => h.url))
         hackathons = hackathons.filter(h => !existingUrls.has(h.url))
 
-
+        console.log('Scraped Hackathons: '+hackathons.length);
         try {
             // Insert many, ignore duplicates
             await Hackathon.insertMany(hackathons, { ordered: false })
@@ -54,11 +54,11 @@ async function scrapeHackathons() {
                 result = { status: 'success', length: hackathons.length }
             }
             else{
-                result = { status: 'failed', length: 0, insertError }
+                result = { status: 'failed', length: hackathons.length, insertError }
             }
         }
     } catch (error) {
-        result = { status: 'failed', length: 0, error }
+        result = { status: 'failed', length: hackathons.length, error }
     } finally {
         await browser.close()
         await enforceMaxDocs();
@@ -154,7 +154,6 @@ const enforceMaxDocs = async () => {
         const ids = oldDocs.map(doc => doc._id);
         await Hackathon.deleteMany({ _id: { $in: ids } });
     }
-    console.log('countDocuments: ' + count)
 };
 
 // Writes hackathon data to fallback JSON file
