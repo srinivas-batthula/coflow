@@ -58,12 +58,11 @@ async function scrapeHackathons() {
         result = { status: 'failed', length: 0, error }
     } finally {
         await browser.close()
+        await enforceMaxDocs();
     }
 
     return result
 }
-
-
 
 // Scrapes Hackathons for each URL (diff. types)...
 const helper_Scrape = async (url, city, limit, page) => {
@@ -147,6 +146,23 @@ async function autoScroll(page, maxScrolls) {
     }, maxScrolls)
 }
 
+const enforceMaxDocs = async () => {
+    const MAX_DOCS = 70;
+    const count = await Hackathon.countDocuments();
+
+    if (count > MAX_DOCS) {
+        const toDelete = count - MAX_DOCS;
+
+        const oldDocs = await Hackathon.find()
+            .sort({ createdAt: 1 }) // oldest first
+            .limit(toDelete)
+            .select('_id');
+
+        const ids = oldDocs.map(doc => doc._id);
+        await Hackathon.deleteMany({ _id: { $in: ids } });
+    }
+    console.log('countDocuments: ' + count)
+};
 
 // Writes hackathon data to fallback JSON file
 async function writeFallbackJson(hackathons) {
@@ -160,8 +176,5 @@ async function writeFallbackJson(hackathons) {
         console.error('Failed to write fallback JSON:', err);
     }
 }
-
-
-
 
 module.exports = { scrapeHackathons }

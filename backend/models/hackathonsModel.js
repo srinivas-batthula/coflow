@@ -10,7 +10,7 @@ const hackathonSchema = new mongoose.Schema({
     city: String,
     prize: String,
     host: String,
-});
+}, {timestamps: true});
 
 
 module.exports = mongoose.model('hackpilot_hackathons', hackathonSchema);
