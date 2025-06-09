@@ -41,20 +41,22 @@ async function scrapeHackathons() {
         const existingUrls = new Set(existing.map(h => h.url))
         hackathons = hackathons.filter(h => !existingUrls.has(h.url))
 
-        console.log('Scraped Hackathons: '+hackathons.length);
+        console.log('Scraped Hackathons: ' + hackathons.length);
         try {
-            // Insert many, ignore duplicates
-            await Hackathon.insertMany(hackathons, { ordered: false })
-            result = { status: 'success', length: hackathons.length }
-        }
-        catch (insertError) {
-            if (!(insertError.code === 11000 || insertError.writeErrors)) {
-                // Fallback: write to local JSON file
-                await writeFallbackJson(hackathons)
-                result = { status: 'success', length: hackathons.length }
-            }
-            else{
-                result = { status: 'failed', length: hackathons.length, insertError }
+            await Hackathon.insertMany(hackathons, { ordered: false });
+            result = { status: 'success', length: hackathons.length };
+        } catch (insertError) {
+            if (insertError.code === 11000 || insertError.writeErrors) {
+                // Only duplicates — still a success
+                result = {
+                    status: 'partial',
+                    length: insertError.result?.insertedCount || 0,
+                    insertError
+                };
+            } else {
+                // Some other error
+                await writeFallbackJson(hackathons);
+                result = { status: 'failed', msg: 'Stored in backup file.', length: 0, insertError };
             }
         }
     } catch (error) {
@@ -73,9 +75,9 @@ const helper_Scrape = async (url, city, limit, page) => {
 
     // Simulate User-Scroll (to fetch the dynamic content of list of hackathons on devpost.to)...
     if (city === 'Global')
-        await autoScroll(page, 17)
+        await autoScroll(page, 10)  // 17
     else
-        await autoScroll(page, 4)
+        await autoScroll(page, 2)   // 4
 
     await page.waitForSelector('.hackathon-tile')
 
