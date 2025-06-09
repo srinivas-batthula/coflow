@@ -71,7 +71,7 @@ async function scrapeHackathons() {
 
 // Scrapes Hackathons for each URL (diff. types)...
 const helper_Scrape = async (url, city, limit, page) => {
-    await page.goto(url, { waitUntil: 'networkidle' });
+    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 0 });     // waitUntil: 'networkidle'
 
     // Simulate User-Scroll (to fetch the dynamic content of list of hackathons on devpost.to)...
     if (city === 'Global')
