@@ -10,7 +10,7 @@ async function scrapeHackathons() {
     const { browser, page } = await getBrowserPage()
     let hackathons = []
     let url = 'https://devpost.com/hackathons'
-    let result
+    let result = { status: 'failed', length: 0 };
 
     try {
         // Scraping Hackathons...
@@ -70,14 +70,14 @@ const helper_Scrape = async (url, city, limit, page) => {
     await page.goto(url, { waitUntil: 'networkidle' });
 
     // Optional Debug Logging: Save HTML to fallback/debug folder
-    try {
-        const html = await page.content();
-        const debugPath = path.join(__dirname, '..', '..', 'public', `debug_${city}.html`);
-        await fs.mkdir(path.dirname(debugPath), { recursive: true });
-        await fs.writeFile(debugPath, html);
-    } catch (err) {
-        console.error(`Failed to save debug HTML for ${city}:`, err);
-    }
+    // try {
+    //     const html = await page.content();
+    //     const debugPath = path.join(__dirname, '..', '..', 'public', `debug_${city}.html`);
+    //     await fs.mkdir(path.dirname(debugPath), { recursive: true });
+    //     await fs.writeFile(debugPath, html);
+    // } catch (err) {
+    //     console.error(`Failed to save debug HTML for ${city}:`, err);
+    // }
 
     // Simulate User-Scroll (to fetch the dynamic content of list of hackathons on devpost.to)...
     if (city === 'Global')

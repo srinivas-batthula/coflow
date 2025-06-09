@@ -23,7 +23,7 @@ const get_hackathons = async (req, res) => {
 
 //Reads Data from Fallback JSON file IF DB fails...
 async function readFallbackJson() {
-    const filePath = path.join(__dirname, '..', 'fallback', 'hackathons_fallback.json')
+    const filePath = path.join(__dirname, '..', 'public', 'hackathons_fallback.json')
 
     try {
         const fileData = await fs.readFile(filePath, 'utf-8')
@@ -49,18 +49,18 @@ const update_hackathons = async (req, res) => {        //Requires `pass` -secret
     scrapeHackathons()
         .then(r => {
             if (!r) {
-                console.error('Scraping returned no result');
+                console.error('Scraping returned no result: '+r);
                 return;
             }
 
             if (r.status === 'success') {
-                console.log('Scraping completed. Items:', r.length);
+                console.log('Scraping completed. Items: ', r);
             } else {
-                console.error('Scraping failed:', r.error);
+                console.error('Scraping failed: ', r);
             }
         })
         .catch(err => {
-            console.error('Unhandled scraping error:', err);
+            console.error('Unhandled scraping error: ', err);
         });
     return;
 };
