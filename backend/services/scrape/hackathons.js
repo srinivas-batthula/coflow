@@ -53,6 +53,9 @@ async function scrapeHackathons() {
                 await writeFallbackJson(hackathons)
                 result = { status: 'success', length: hackathons.length }
             }
+            else{
+                result = { status: 'failed', length: 0, insertError }
+            }
         }
     } catch (error) {
         result = { status: 'failed', length: 0, error }
@@ -67,16 +70,6 @@ async function scrapeHackathons() {
 // Scrapes Hackathons for each URL (diff. types)...
 const helper_Scrape = async (url, city, limit, page) => {
     await page.goto(url, { waitUntil: 'networkidle' });
-
-    // Optional Debug Logging: Save HTML to fallback/debug folder
-    // try {
-    //     const html = await page.content();
-    //     const debugPath = path.join(__dirname, '..', '..', 'public', `debug_${city}.html`);
-    //     await fs.mkdir(path.dirname(debugPath), { recursive: true });
-    //     await fs.writeFile(debugPath, html);
-    // } catch (err) {
-    //     console.error(`Failed to save debug HTML for ${city}:`, err);
-    // }
 
     // Simulate User-Scroll (to fetch the dynamic content of list of hackathons on devpost.to)...
     if (city === 'Global')
