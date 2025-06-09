@@ -30,16 +30,30 @@ async function scrapeHackathons() {
         // Filter out hackathons that have empty or invalid URLs
         hackathons = hackathons.filter(hackathon => (hackathon.url && hackathon.url.trim() !== '') && (hackathon.title && hackathon.title.trim() !== ''))
 
-        const seen = new Set()
+        // const seen = new Set()
+        // hackathons = hackathons.filter(h => {
+        //     if (seen.has(h.url)) return false
+        //     seen.add(h.url)
+        //     return true
+        // })
+        const seen = new Set();
         hackathons = hackathons.filter(h => {
-            if (seen.has(h.url)) return false
-            seen.add(h.url)
-            return true
-        })
+            const key = `${h.url}|${h.title}`;
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+        });
 
-        const existing = await Hackathon.find({ url: { $in: hackathons.map(h => h.url) } }).select('url')
-        const existingUrls = new Set(existing.map(h => h.url))
-        hackathons = hackathons.filter(h => !existingUrls.has(h.url))
+        // const existing = await Hackathon.find({ url: { $in: hackathons.map(h => h.url) } }).select('url')
+        // const existingUrls = new Set(existing.map(h => h.url))
+        // hackathons = hackathons.filter(h => !existingUrls.has(h.url))
+
+        // Step 1: Query existing hackathons using url and title
+        const existing = await Hackathon.find({
+            $or: hackathons.map(h => ({ url: h.url, title: h.title }))
+        }).select('url title');
+        const existingKeys = new Set(existing.map(h => `${h.url}|${h.title}`));
+        hackathons = hackathons.filter(h => !existingKeys.has(`${h.url}|${h.title}`));
 
         console.log('Scraped Hackathons: ' + hackathons.length);
         try {
@@ -71,7 +85,7 @@ async function scrapeHackathons() {
 
 // Scrapes Hackathons for each URL (diff. types)...
 const helper_Scrape = async (url, city, limit, page) => {
-    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 0 });     // waitUntil: 'networkidle'
+    await page.goto(url, { waitUntil: 'networkidle', timeout: 0 });     // waitUntil: 'networkidle'
 
     // Simulate User-Scroll (to fetch the dynamic content of list of hackathons on devpost.to)...
     if (city === 'Global')
@@ -108,6 +122,7 @@ const helper_Scrape = async (url, city, limit, page) => {
         }),
         { limit, city }       // These are Extra-Arguments passed to Browser's Console (to be executed in browser)...
     )
+    console.log('helper_scrape - ' + city + ': ' + data.length);
     return data
 }
 
