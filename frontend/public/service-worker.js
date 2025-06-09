@@ -39,10 +39,10 @@ self.addEventListener("activate", (event) => {
 let url = HOME;
     // Display Push Notifications...
 self.addEventListener('push', async(event) => {
-    console.log("Push received...")
+    console.log("Push received...", event.data.json())
     let data = event.data ? event.data.json() : { title: 'New Alert!', body: 'You have a New Notification from ~HackPilot.' }
-    if(data?.id){
-        url = HOME+`/teams/${id}`;
+    if(data && data?.id){
+        url = HOME+`/teams/${data.id}`;
     }
 
     const options = {

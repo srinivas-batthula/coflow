@@ -19,16 +19,16 @@
 - 🔐 Authentication with JWT and Google OAuth
 - 🧑‍💻 Realtime Collaborative Task management and status tracking
 - 💬 Real-time team chat using **Socket.IO**
-- 🕒 Automatically scrape and store hackathon listings every 10 hours using **node-cron** and **Playwright**
+- 🕒 Automatically fetch and store recent hackathon listings every 10 hours using **node-cron**
 ## 🔁 Feature Workflows
 
 #### **1.** Automated Hackathons Sync
 ```
 Cron job executes for every 10 hours
       ⬇
-List of hackathons are scraped from Devpost with various filters
+List of hackathons are fetched from Devpost API with various filters
       ⬇
-Scraped hackathon data is stored in MongoDB
+Fetched hackathon data is stored in MongoDB
       ⬇
 If failure → fallback data is stored in JSON file temporarily
 ```
@@ -71,7 +71,7 @@ Sends a Push-Notification to that offline user
 ## 🛠 Tech Stack
 
 - **Frontend:** Next.js, React.js, Zustand, Tailwind CSS, Socket.IO Client
-- **Backend:** Node.js, Express.js, Socket.io, Playwright, node-cron
+- **Backend:** Node.js, Express.js, Socket.io, node-cron
 - **Database:** MongoDB Atlas + Mongoose
 - **API Docs:** Swagger UI
 - **Auth:** JWT + Google OAuth
@@ -115,9 +115,6 @@ coflow/
 ```
 ```
 2. npm install
-```
-```
-3. npx playwright install
 ```
 ```
 4. Setup `config.env` in the root dir `backend/`based on `config.env.example`
