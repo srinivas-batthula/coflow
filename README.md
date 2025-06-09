@@ -73,6 +73,7 @@ Sends a Push-Notification to that offline user
 - **Frontend:** Next.js, React.js, Zustand, Tailwind CSS, Socket.IO Client
 - **Backend:** Node.js, Express.js, Socket.io, node-cron
 - **Database:** MongoDB Atlas + Mongoose
+- **API's:** [Devpost API](https://devpost.com/api/hackathons)
 - **API Docs:** Swagger UI
 - **Auth:** JWT + Google OAuth
 - **Push Notifcations:** Web-Push, Redis Queue
@@ -117,10 +118,10 @@ coflow/
 2. npm install
 ```
 ```
-4. Setup `config.env` in the root dir `backend/`based on `config.env.example`
+3. Setup `config.env` in the root dir `backend/`based on `config.env.example`
 ```
 ```
-npm start
+4. npm start
 ```
 
 #### For frontend
@@ -131,10 +132,10 @@ npm start
 2. npm install
 ```
 ```
-4. Setup `.env` in the root dir `frontend/`based on `.env.example`
+3. Setup `.env` in the root dir `frontend/`based on `.env.example`
 ```
 ```
-npm run dev
+4. npm run dev
 ```
 
 ## 📝 License
