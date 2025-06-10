@@ -51,7 +51,7 @@ const Layout = ({ children }) => {
   useEffect(() => {
     const subscribeUser = async () => {
       // Subscribe the user to notifications...
-      if (user && !user.subscription) {
+      if (user && (!user.subscription || user.subscription===null)) {
         await subscribeToNotifications(token);
       }
     }
