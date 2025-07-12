@@ -6,7 +6,6 @@ const rateLimit = require("express-rate-limit");
 const cors = require("cors");
 const helmet = require("helmet");
 const errorHandler = require("./utils/errorHandler");
-require("./services/cron_jobs/hackathonsUpdater"); // Starting Cron-Jobs...
 const MainRouter = require("./routes/MainRouter");
 const socketAuth = require("./socket/socketAuth");
 const http = require("http");

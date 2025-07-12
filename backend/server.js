@@ -4,6 +4,8 @@ const mongoose = require('mongoose')
 const startWorker = require("./workers/push_notifications")
 require('dotenv').config({path:'./config.env'})
 
+require("./services/cron_jobs/hackathonsUpdater");    // Starting Cron-Jobs (Scheduled)...
+
 
 const ConnectDb = ()=>{
     mongoose.connect(process.env.Mongo_DB_URI)
