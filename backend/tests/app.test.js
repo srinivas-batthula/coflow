@@ -4,7 +4,7 @@ const request = require('supertest');
 const app = require('../app')
 
 
-describe('GET /', () => {
+describe('GET /', () => {               //API test
     it('should return Guide message', async () => {
         const res = await request(app).get('/');
         expect(res.statusCode).toBe(200);
@@ -16,14 +16,14 @@ describe('GET /', () => {
 });
 
 
-describe('GET /api/hackathons', () => {
+describe('GET /api/hackathons', () => {         //Hackathons endpoint test
     it('should return a list of hackathons', async () => {
         const res = await request(app).get('/api/hackathons');
 
         expect(res.statusCode).toBe(200);
         expect(res.body.success).toBe(true);
         expect(Array.isArray(res.body.data)).toBe(true);                     // Check it's an array
-        expect(res.body.data.length).toBeGreaterThan(0);                     // Optional: non-empty
+        expect(res.body.data.length).toBeGreaterThan(0);                     // Check non-empty
 
         const firstHackathon = res.body.data[0];
         expect(firstHackathon).toHaveProperty('title');
