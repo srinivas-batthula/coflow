@@ -7,7 +7,7 @@
 
 ## Live Links
 - 🔗 **Live Site**: [coflow.netlify.app](https://coflow.netlify.app)
-- 🔗 **API Docs**: [coflow.onrender.com/api-docs](https://coflow.onrender.com/api-docs)
+- 🔗 **API Docs**: [coflow.onrender.com/api-docs](https://coflow-backend-bcgk.onrender.com/api-docs)
 
 ## Logo
 
@@ -140,7 +140,7 @@ coflow/
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/srinivas-batthula/hackpilot/blob/main/LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/srinivas-batthula/coflow/blob/main/LICENSE) file for details.
 ## 👥 Contributors
 
 - **Srinivas Batthula [@srinivas-batthula](https://github.com/srinivas-batthula)**

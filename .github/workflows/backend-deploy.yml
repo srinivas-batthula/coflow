@@ -31,22 +31,27 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Extract github-commit hash
-        id: vars
-        run: echo "TAG=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+      # - name: Extract github-commit hash
+      #   id: vars
+      #   run: echo "TAG=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
+      # - name: Build and Push Backend Image
+      #   run: |
+      #     docker build -t ${{ secrets.DOCKER_USERNAME }}/coflow-backend:${{ env.TAG }} ./backend
+      #     docker push ${{ secrets.DOCKER_USERNAME }}/coflow-backend:${{ env.TAG }}
+      
       - name: Build and Push Backend Image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/coflow-backend:${{ env.TAG }} ./backend
-          docker push ${{ secrets.DOCKER_USERNAME }}/coflow-backend:${{ env.TAG }}
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/coflow-backend:latest ./backend
+          docker push ${{ secrets.DOCKER_USERNAME }}/coflow-backend:latest
 
         # Updates `image-tag` in render to new one
-      - name: Update Render service with new image tag
-        run: |
-          curl -X PATCH "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}" \
-            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
-            -H "Content-Type: application/json" \
-            -d "{\"dockerImage\":{\"image\":\"docker.io/${{ env.DOCKER_IMAGE_NAME }}\", \"tag\":\"${{ env.TAG }}\"}}"
+      # - name: Update Render service with new image tag
+      #   run: |
+      #     curl -X PATCH "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}" \
+      #       -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+      #       -H "Content-Type: application/json" \
+      #       -d "{\"dockerImage\":{\"image\":\"docker.io/${{ env.DOCKER_IMAGE_NAME }}\", \"tag\":\"${{ env.TAG }}\"}}"
 
         # Triggers Auto-ReDeploy on Render via deploy-hook
       - name: Trigger Backend Render Re-Deploy
