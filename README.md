@@ -77,7 +77,7 @@ Sends a Push-Notification to that offline user
 - **API Docs:** Swagger UI
 - **Auth:** JWT + Google OAuth
 - **Push Notifcations:** Web-Push, Redis Queue
-- **Deployment:** Render, Netlify
+- **Deployment:** Docker, Render, Netlify
 
 ## 🏗️ Project Structure
 
@@ -93,6 +93,7 @@ coflow/
 │ ├── workers/
 │ ├── app.js
 │ ├── server.js
+│ ├── Dockerfile
 │ └── config.env
 │
 └── frontend/
@@ -102,14 +103,22 @@ coflow/
 │ ├── store/
 │ ├── styles/
 │ ├── utils/
+│ ├── Dockerfile
 │ └── .env
 ├── LICENSE
+├── docker-compose.yml
 └── Readme.md
 ```
+
 ## ⚙️ Local Setup Instructions
 
 ```git clone https://github.com/srinivas-batthula/coflow```
 
+```Setup 'config.env in the root dir 'backend/' based on 'config.env.example'```
+
+```Setup '.env' in the root dir 'frontend/' based on '.env.example'```
+
+### Manual Setup (Without Docker)
 #### For backend
 ```
 1. cd backend
@@ -118,10 +127,7 @@ coflow/
 2. npm install
 ```
 ```
-3. Setup `config.env` in the root dir `backend/`based on `config.env.example`
-```
-```
-4. npm start
+3. npm start
 ```
 
 #### For frontend
@@ -132,10 +138,18 @@ coflow/
 2. npm install
 ```
 ```
-3. Setup `.env` in the root dir `frontend/`based on `.env.example`
+3. npm run dev
 ```
+
+### Run with Docker Compose
+#### Prerequisites
 ```
-4. npm run dev
+- Install Docker & Docker Compose
+```
+
+#### Start the app
+```
+1. docker-compose up --build
 ```
 
 ## 📝 License
