@@ -1,0 +1,23 @@
+node_modules
+
+.next
+
+.vercel
+
+# .env
+
+.env.example
+
+Dockerfile
+
+docker-compose.yml
+
+tests
+
+.git
+
+*.md
+
+npm-debug.log
+
+setup_details.txt

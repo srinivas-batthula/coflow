@@ -1,0 +1,19 @@
+node_modules
+
+# config.env
+
+config.env.example
+
+Dockerfile
+
+docker-compose.yml
+
+tests
+
+.git
+
+*.md
+
+npm-debug.log
+
+setup_details.txt

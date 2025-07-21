@@ -1,0 +1,39 @@
+name: Frontend CI/CD
+
+on:
+  push:
+    paths:
+      - 'frontend/**'
+    branches:
+      - main
+
+jobs:
+  build-and-deploy-frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+        # Login's & Builds and Push's new Image to DockerHub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Extract github-commit hash
+        id: vars
+        run: echo "TAG=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Build and Push Frontend Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/coflow-frontend:${{ env.TAG }} ./frontend
+          docker push ${{ secrets.DOCKER_USERNAME }}/coflow-frontend:${{ env.TAG }}
+
+        # Triggers Auto-ReDeploy on Netlify via deploy-hook
+      # - name: Trigger Frontend Netlify Re-Deploy
+      #   run: curl -X POST ${{ secrets.NETLIFY_HOOK_FRONTEND }}

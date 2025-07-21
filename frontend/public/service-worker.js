@@ -1,5 +1,5 @@
 
-const CACHE_NAME = `hackpilot-cache-v02`             //Change this to a new version before every New DEPLOY.............................
+const CACHE_NAME = `hackpilot-cache-v03`             //Change this to a new version before every New DEPLOY.............................
 const HOME = self.location.origin;      // Provide a `Deployed` URL...
 
 const STATIC_FILES = [
@@ -40,7 +40,7 @@ let url = HOME;
     // Display Push Notifications...
 self.addEventListener('push', async(event) => {
     console.log("Push received...", event.data.json())
-    let data = event.data ? event.data.json() : { title: 'New Alert!', body: 'You have a New Notification from ~HackPilot.' }
+    let data = event.data ? event.data.json() : { title: 'New Alert!', body: 'You have a New Notification from ~CoFlow.' }
     if(data && data?.id){
         url = HOME+`/teams/${data.id}`; 
     }

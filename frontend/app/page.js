@@ -16,7 +16,7 @@ export default async function HPage() {
 
   return (
     <div>
-      <HomePage />
+      <HomePage /> 
     </div>
   );
 }
