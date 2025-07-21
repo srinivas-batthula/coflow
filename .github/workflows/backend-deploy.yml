@@ -1,11 +1,17 @@
 name: Backend CI/CD
 
+
 on:
   push:
     paths:
       - 'backend/**'
     branches:
       - main
+
+
+env:
+  DOCKER_IMAGE_NAME: srinivasbatthula05/coflow-backend
+
 
 jobs:
   build-and-deploy-backend:
@@ -34,6 +40,14 @@ jobs:
           docker build -t ${{ secrets.DOCKER_USERNAME }}/coflow-backend:${{ env.TAG }} ./backend
           docker push ${{ secrets.DOCKER_USERNAME }}/coflow-backend:${{ env.TAG }}
 
+        # Updates `image-tag` in render to new one
+      - name: Update Render service with new image tag
+        run: |
+          curl -X PATCH "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}" \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d "{\"dockerImage\":{\"image\":\"docker.io/${{ env.DOCKER_IMAGE_NAME }}\", \"tag\":\"${{ env.TAG }}\"}}"
+
         # Triggers Auto-ReDeploy on Render via deploy-hook
-      # - name: Trigger Backend Render Re-Deploy
-      #   run: curl -X POST ${{ secrets.RENDER_HOOK_BACKEND }}
+      - name: Trigger Backend Render Re-Deploy
+        run: curl -X POST ${{ secrets.RENDER_HOOK_BACKEND }}
