@@ -118,7 +118,7 @@ coflow/
 
 ```Setup '.env' in the root dir 'frontend/' based on '.env.example'```
 
-### Manual Setup (Without Docker)
+### 1. Manual Setup (Without Docker)
 #### For backend
 ```
 1. cd backend
@@ -141,7 +141,7 @@ coflow/
 3. npm run dev
 ```
 
-### Run with Docker Compose
+### 2. Run with Docker Compose
 #### Prerequisites
 ```
 - Install Docker & Docker Compose
