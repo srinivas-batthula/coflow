@@ -25,7 +25,8 @@ RUN npm install --production
 # Install Playwright + Chromium only if needed
 COPY . .
 RUN if [ "$INSTALL_PLAYWRIGHT" = "true" ]; then \
-      npx playwright install chromium --with-deps && \
+      npx playwright install chromium && \
+      mkdir -p /ms-playwright && \
       cp -r /ms-playwright /playwright-browsers; \
     else \
       mkdir -p /playwright-browsers; \
