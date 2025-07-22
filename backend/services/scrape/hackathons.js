@@ -54,9 +54,11 @@ async function scrapeHackathons() {
                 await writeFallbackJson(hackathons)
                 result = { status: 'success', length: hackathons.length }
             }
+            console.error(insertError)
         }
     } catch (error) {
         result = { status: 'failed', length: 0, error }
+        console.error(error)
     } finally {
         await browser.close()
     }
