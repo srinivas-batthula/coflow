@@ -20,7 +20,7 @@ RUN npm install --production
 COPY . .
 
 # 🧠 Install Chromium to app directory directly
-RUN npx playwright install chromium
+RUN npx playwright install
 
 # 🏁 Stage 2 — Final runtime image
 FROM node:18-slim
