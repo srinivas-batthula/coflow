@@ -1,15 +1,15 @@
-# ==============
-# 🏗️ Stage 1 — Builder
-# ==============
+# ========================
+# 🏗️ Stage 1: Builder
+# ========================
 FROM node:18-slim AS builder
 
 WORKDIR /app
 
-# Use this ARG to control Playwright install (default: true)
+# Arguments and environment
 ARG INSTALL_PLAYWRIGHT=true
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
-# Install Chromium deps (runtime only)
+# Only needed libraries for Chromium (runtime only)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libxcomposite1 libxdamage1 libxrandr2 libatk-bridge2.0-0 \
     libgtk-3-0 libx11-xcb1 libnss3 libasound2 libxshmfence1 \
@@ -18,36 +18,34 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libdbus-1-3 fonts-liberation ca-certificates wget xdg-utils \
  && rm -rf /var/lib/apt/lists/*
 
-# Copy and install packages
+# Copy and install deps
 COPY package*.json ./
 RUN npm install --production
 
-# Install Playwright + Chromium only if needed
+# Copy app files
 COPY . .
+
+# Install Chromium (Playwright) if required
 RUN if [ "$INSTALL_PLAYWRIGHT" = "true" ]; then \
-      npx playwright install chromium && \
-      mkdir -p /ms-playwright && \
-      cp -r /ms-playwright /playwright-browsers; \
-    else \
-      mkdir -p /playwright-browsers; \
-    fi
+    npx playwright install chromium && \
+    mkdir -p /ms-playwright && \
+    cp -r /root/.cache/ms-playwright/chromium* /ms-playwright/; \
+  fi
 
-
-# ==============
-# 🏁 Stage 2 — Final
-# ==============
+# ========================
+# 🏁 Stage 2: Final Image
+# ========================
 FROM node:18-slim
 
 WORKDIR /app
 
-# Set browser path
-ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 ENV NODE_ENV=production
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
-# Create app user
+# Add user
 RUN groupadd -r appgroup && useradd -r -g appgroup appuser
 
-# Install only Chromium deps (no build tools)
+# Install Chromium runtime deps only (no dev tools)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libxcomposite1 libxdamage1 libxrandr2 libatk-bridge2.0-0 \
     libgtk-3-0 libx11-xcb1 libnss3 libasound2 libxshmfence1 \
@@ -56,11 +54,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libdbus-1-3 fonts-liberation ca-certificates wget xdg-utils \
  && rm -rf /var/lib/apt/lists/*
 
-# Copy build files
+# Copy app and browser
 COPY --from=builder /app /app
-COPY --from=builder /playwright-browsers /ms-playwright
+COPY --from=builder /ms-playwright /ms-playwright
 
-# Permissions
 RUN chown -R appuser:appgroup /app /ms-playwright
 USER appuser
 
