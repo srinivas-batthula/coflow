@@ -1,15 +1,9 @@
-# ========================
-# 🏗️ Stage 1: Builder
-# ========================
+# 🏗️ Stage 1 — Builder
 FROM node:18-slim AS builder
 
 WORKDIR /app
 
-# Arguments and environment
-ARG INSTALL_PLAYWRIGHT=true
-ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
-
-# Only needed libraries for Chromium (runtime only)
+# Chromium dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libxcomposite1 libxdamage1 libxrandr2 libatk-bridge2.0-0 \
     libgtk-3-0 libx11-xcb1 libnss3 libasound2 libxshmfence1 \
@@ -18,34 +12,25 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libdbus-1-3 fonts-liberation ca-certificates wget xdg-utils \
  && rm -rf /var/lib/apt/lists/*
 
-# Copy and install deps
+# Copy & install packages
 COPY package*.json ./
 RUN npm install --production
 
-# Copy app files
+# Copy code
 COPY . .
 
-# Install Chromium (Playwright) if required
-RUN if [ "$INSTALL_PLAYWRIGHT" = "true" ]; then \
-    npx playwright install chromium && \
-    mkdir -p /ms-playwright && \
-    cp -r /root/.cache/ms-playwright/chromium* /ms-playwright/; \
-  fi
+# 🧠 Install Chromium to app directory directly
+RUN npx playwright install chromium
 
-# ========================
-# 🏁 Stage 2: Final Image
-# ========================
+# 🏁 Stage 2 — Final runtime image
 FROM node:18-slim
 
 WORKDIR /app
 
 ENV NODE_ENV=production
-ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+ENV PLAYWRIGHT_BROWSERS_PATH=/app/node_modules/playwright-core/.local-browsers
 
-# Add user
-RUN groupadd -r appgroup && useradd -r -g appgroup appuser
-
-# Install Chromium runtime deps only (no dev tools)
+# Chromium deps only
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libxcomposite1 libxdamage1 libxrandr2 libatk-bridge2.0-0 \
     libgtk-3-0 libx11-xcb1 libnss3 libasound2 libxshmfence1 \
@@ -54,11 +39,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libdbus-1-3 fonts-liberation ca-certificates wget xdg-utils \
  && rm -rf /var/lib/apt/lists/*
 
-# Copy app and browser
+# Copy all from builder
 COPY --from=builder /app /app
-COPY --from=builder /ms-playwright /ms-playwright
 
-RUN chown -R appuser:appgroup /app /ms-playwright
+# Create non-root user
+RUN groupadd -r appgroup && useradd -r -g appgroup appuser
+RUN chown -R appuser:appgroup /app
 USER appuser
 
 EXPOSE 8080
