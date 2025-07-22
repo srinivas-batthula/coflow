@@ -45,7 +45,7 @@ const update_hackathons = async (req, res) => {        //Requires `pass` -secret
     try {
         // const data = await fetchHackathons();
         const data = await scrapeHackathons();
-        return res.status(201).json({ success: true, details: 'Hackathons Fetched Successfully!', result: data });
+        return res.status(201).json({ success: true, details: 'Hackathons Fetched Successfully!', result: { status: data.status, length: data.length, error: data?.error, msg: data?.msg } });
     } catch (error) {
         console.error("Error while fetching hackathons: " + error);
         return res.status(500).json({ success: false, details: 'Error while fetching hackathons!' });

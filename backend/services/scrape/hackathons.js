@@ -31,16 +31,21 @@ async function scrapeHackathons() {
         // Filter out hackathons that have empty or invalid URLs
         hackathons = hackathons.filter(hackathon => (hackathon.url && hackathon.url.trim() !== '') && (hackathon.title && hackathon.title.trim() !== ''))
 
-        const seen = new Set()
+        const seen = new Set();         // Unique URLs & Titles...
         hackathons = hackathons.filter(h => {
-            if (seen.has(h.url)) return false
-            seen.add(h.url)
-            return true
-        })
+            const key = `${h.url}|${h.title}`;
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+        });
 
-        const existing = await Hackathon.find({ url: { $in: hackathons.map(h => h.url) } }).select('url')
-        const existingUrls = new Set(existing.map(h => h.url))
-        hackathons = hackathons.filter(h => !existingUrls.has(h.url))
+        // Query existing hackathons using url and title
+        const existing = await Hackathon.find({
+            $or: hackathons.map(h => ({ url: h.url, title: h.title }))
+        }).select('url title');
+
+        const existingKeys = new Set(existing.map(h => `${h.url}|${h.title}`));
+        hackathons = hackathons.filter(h => !existingKeys.has(`${h.url}|${h.title}`));
 
 
         try {
@@ -49,23 +54,49 @@ async function scrapeHackathons() {
             result = { status: 'success', length: hackathons.length }
         }
         catch (insertError) {
-            if (!(insertError.code === 11000 || insertError.writeErrors)) {
-                // Fallback: write to local JSON file
-                await writeFallbackJson(hackathons)
-                result = { status: 'success', length: hackathons.length }
+            if (insertError.code === 11000 || insertError.writeErrors) {
+                // Only duplicates — still a success
+                result = {
+                    status: 'partial',
+                    msg: 'Not stored anywhere either in DB or in JSON file!',
+                    length: insertError.result?.insertedCount || 0,
+                    insertError
+                };
+            } else {
+                await writeFallbackJson(hackathons);
+                result = { status: 'partial', msg: 'Stored in backup file.', length: hackathons.length, insertError };
             }
-            console.error(insertError)
+            console.error('insertError in scrapeHackathons')
         }
     } catch (error) {
         result = { status: 'failed', length: 0, error }
-        console.error(error)
+        console.error('error in scrapeHackathons')
     } finally {
         await browser.close()
+        await enforceMaxDocs();
     }
 
     return result
 }
 
+
+// Removes `docs` from db, IF it's docs are more than 70...
+const enforceMaxDocs = async () => {
+    const MAX_DOCS = 70;
+    const count = await Hackathon.countDocuments();
+
+    if (count > MAX_DOCS) {
+        const toDelete = count - MAX_DOCS;
+
+        const oldDocs = await Hackathon.find()
+            .sort({ createdAt: 1 }) // oldest first
+            .limit(toDelete)
+            .select('_id');
+
+        const ids = oldDocs.map(doc => doc._id);
+        await Hackathon.deleteMany({ _id: { $in: ids } });
+    }
+};
 
 
 // Scrapes Hackathons for each URL (diff. types)...
@@ -150,7 +181,7 @@ async function writeFallbackJson(hackathons) {
         await fs.writeFile(filePath, JSON.stringify(hackathons, null, 2));
         console.log('Fallback JSON written successfully at:', filePath);
     } catch (err) {
-        console.error('Failed to write fallback JSON:', err);
+        console.error('Failed to write fallback JSON');
     }
 }
 
