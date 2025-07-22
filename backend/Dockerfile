@@ -24,11 +24,13 @@ RUN npm install --production
 
 # Install Playwright + Chromium only if needed
 COPY . .
-RUN mkdir -p /ms-playwright && \
-    if [ "$INSTALL_PLAYWRIGHT" = "true" ]; then \
-      npx playwright install chromium && \
-      cp -r ~/.cache/ms-playwright/chromium* /ms-playwright; \
+RUN if [ "$INSTALL_PLAYWRIGHT" = "true" ]; then \
+      npx playwright install chromium --with-deps && \
+      cp -r /ms-playwright /playwright-browsers; \
+    else \
+      mkdir -p /playwright-browsers; \
     fi
+
 
 # ==============
 # 🏁 Stage 2 — Final
@@ -55,7 +57,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Copy build files
 COPY --from=builder /app /app
-COPY --from=builder /ms-playwright /ms-playwright
+COPY --from=builder /playwright-browsers /ms-playwright
 
 # Permissions
 RUN chown -R appuser:appgroup /app /ms-playwright
