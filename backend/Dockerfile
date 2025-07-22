@@ -42,6 +42,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Copy all from builder
 COPY --from=builder /app /app
 
+# Copy downloaded browsers from builder
+COPY --from=builder /root/.cache/ms-playwright /ms-playwright
+
 # Create non-root user
 RUN groupadd -r appgroup && useradd -r -g appgroup appuser
 RUN chown -R appuser:appgroup /app
