@@ -1,33 +1,65 @@
+# ==============
+# 🏗️ Stage 1 — Builder
+# ==============
+FROM node:18-slim AS builder
 
-# A Smaller version of NODE (base image)
-FROM node:18-alpine AS base
-
-# Set working directory
 WORKDIR /app
 
-# Install dependencies separately
+# Use this ARG to control Playwright install (default: true)
+ARG INSTALL_PLAYWRIGHT=true
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+
+# Install Chromium deps (runtime only)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libxcomposite1 libxdamage1 libxrandr2 libatk-bridge2.0-0 \
+    libgtk-3-0 libx11-xcb1 libnss3 libasound2 libxshmfence1 \
+    libxkbcommon0 libpangocairo-1.0-0 libpango-1.0-0 libatk1.0-0 \
+    libdrm2 libcups2 libxfixes3 libgbm1 libxext6 libxrender1 \
+    libdbus-1-3 fonts-liberation ca-certificates wget xdg-utils \
+ && rm -rf /var/lib/apt/lists/*
+
+# Copy and install packages
 COPY package*.json ./
-
-# Avoid running as root
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-
-# Install dependencies
 RUN npm install --production
 
-# Copy application source code
+# Install Playwright + Chromium only if needed
 COPY . .
+RUN mkdir -p /ms-playwright && \
+    if [ "$INSTALL_PLAYWRIGHT" = "true" ]; then \
+      npx playwright install chromium && \
+      cp -r ~/.cache/ms-playwright/chromium* /ms-playwright; \
+    fi
 
-# Change ownership to the non-root user
-RUN chown -R appuser:appgroup /app
+# ==============
+# 🏁 Stage 2 — Final
+# ==============
+FROM node:18-slim
 
-# Use non-root user for security
-USER appuser
+WORKDIR /app
 
-# Expose the port you use
-EXPOSE 8080
-
-# Set environment variables
+# Set browser path
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 ENV NODE_ENV=production
 
-# Start the application
+# Create app user
+RUN groupadd -r appgroup && useradd -r -g appgroup appuser
+
+# Install only Chromium deps (no build tools)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libxcomposite1 libxdamage1 libxrandr2 libatk-bridge2.0-0 \
+    libgtk-3-0 libx11-xcb1 libnss3 libasound2 libxshmfence1 \
+    libxkbcommon0 libpangocairo-1.0-0 libpango-1.0-0 libatk1.0-0 \
+    libdrm2 libcups2 libxfixes3 libgbm1 libxext6 libxrender1 \
+    libdbus-1-3 fonts-liberation ca-certificates wget xdg-utils \
+ && rm -rf /var/lib/apt/lists/*
+
+# Copy build files
+COPY --from=builder /app /app
+COPY --from=builder /ms-playwright /ms-playwright
+
+# Permissions
+RUN chown -R appuser:appgroup /app /ms-playwright
+USER appuser
+
+EXPOSE 8080
 CMD ["npm", "start"]

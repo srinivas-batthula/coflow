@@ -1,5 +1,6 @@
 // hackathons_controller
 const { fetchHackathons } = require('../services/fetch/hackathons')
+const { scrapeHackathons } = require('../services/scrape/hackathons')
 const Hackathon = require('../models/hackathonsModel')
 const fs = require('fs').promises
 const path = require('path')
@@ -42,7 +43,8 @@ const update_hackathons = async (req, res) => {        //Requires `pass` -secret
         return res.status(401).json({ success: false, details: 'Secrets Sent were Invalid/Not Matched!' });
     }
     try {
-        const data = await fetchHackathons();
+        // const data = await fetchHackathons();
+        const data = await scrapeHackathons();
         return res.status(201).json({ success: true, details: 'Hackathons Fetched Successfully!', result: { status: data.status, length: data.length, msg: data?.msg } });
     } catch (error) {
         console.error("Error while fetching hackathons: " + error);
