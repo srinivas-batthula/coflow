@@ -58,7 +58,7 @@ async function scrapeHackathons() {
                 // Only duplicates — still a success
                 result = {
                     status: 'partial',
-                    msg: 'Not stored anywhere either in DB or in JSON file!',
+                    msg: 'All new data is already stored in DB!',
                     length: insertError.result?.insertedCount || 0,
                     insertError
                 };
