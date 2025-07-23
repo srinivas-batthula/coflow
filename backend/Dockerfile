@@ -1,4 +1,5 @@
-# 🏗️ Stage 1 — Builder
+
+# Stage 1 — Builder
 FROM node:18-slim AS builder
 
 WORKDIR /app
@@ -19,10 +20,11 @@ RUN npm install --production
 # Copy code
 COPY . .
 
-# 🧠 Install Chromium to app directory directly
+# Install Chromium to app directory directly
 RUN npx playwright install
 
-# 🏁 Stage 2 — Final runtime image
+
+# Stage 2 — Final runtime image
 FROM node:18-slim
 
 WORKDIR /app
@@ -50,5 +52,6 @@ RUN groupadd -r appgroup && useradd -r -g appgroup appuser
 RUN chown -R appuser:appgroup /app
 USER appuser
 
+# Start the app
 EXPOSE 8080
 CMD ["npm", "start"]
