@@ -8,7 +8,7 @@ const path = require('path')
 const get_hackathons = async (req, res) => {
     try {
         let data
-        const result = await Hackathon.find({}).lean()
+        const result = await Hackathon.find({}).sort({ createdAt: -1 }).lean()
 
         if (result.length === 0)
             data = await readFallbackJson()
