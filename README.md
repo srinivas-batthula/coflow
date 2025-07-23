@@ -19,16 +19,16 @@
 - 🔐 Authentication with JWT and Google OAuth
 - 🧑‍💻 Realtime Collaborative Task management and status tracking
 - 💬 Real-time team chat using **Socket.IO**
-- 🕒 Automatically fetch and store recent hackathon listings every 10 hours using **node-cron**
+- 🕒 Automatically scrape and store recent hackathon listings every 10 hours using **node-cron** & **Playwright**
 ## 🔁 Feature Workflows
 
 #### **1.** Automated Hackathons Sync
 ```
 Cron job executes for every 10 hours
       ⬇
-List of hackathons are fetched from Devpost API with various filters
+List of hackathons are Scraped from sites UnStop & Devpost with various filters
       ⬇
-Fetched hackathon data is stored in MongoDB
+Scraped hackathon data is stored in MongoDB
       ⬇
 If failure → fallback data is stored in JSON file temporarily
 ```
@@ -71,8 +71,8 @@ Sends a Push-Notification to that offline user
 ## 🛠 Tech Stack
 
 - **Frontend:** Next.js, React.js, Zustand, Tailwind CSS, Socket.IO Client
-- **Backend:** Node.js, Express.js, Socket.io, node-cron
-- **Database:** MongoDB Atlas + Mongoose
+- **Backend:** Node.js, Express.js, Socket.io, node-cron, Playwright(Webscraping)
+- **Database:** MongoDB Atlas + Mongoose ODM
 - **API's:** [Devpost API](https://devpost.com/api/hackathons)
 - **API Docs:** Swagger UI
 - **Auth:** JWT + Google OAuth

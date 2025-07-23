@@ -8,6 +8,12 @@ async function unstop( page ) {
     try {
         // Scraping Hackathons...
         let data
+        data = await helper_Scrape(url + '/', 'Global', 10, page)
+        hackathons.push(...data)
+        
+        data = await helper_Scrape(url + '&location-points=19.07283:72.88261', 'Mumbai', 5, page)
+        hackathons.push(...data)
+
         data = await helper_Scrape(url + '&location-points=12.97194:77.59369', 'Bengaluru', 5, page)
         hackathons.push(...data)
 
@@ -46,7 +52,7 @@ const helper_Scrape = async (url, city, limit, page) => {
     await page.waitForSelector('.user_list')
 
     // Use page.$$eval to get data from the hackathon-tiles...
-    const data = await page.$$eval('.user_list', (tiles, { limit, city }) =>
+    const data = await page.$$eval('.cursor-pointer.single_profile', (tiles, { limit, city }) =>
         tiles.slice(0, limit).map((tile) => {
             // Helper to extract all data...
             const data = tile.innerText.includes('days left')
@@ -62,7 +68,7 @@ const helper_Scrape = async (url, city, limit, page) => {
             const prize = /\d/.test(data_parts[3]) ? data_parts[3] : '';
             const date = data_parts[data_parts.length - 1];
             const id = (() => {                             // `ID` is used in constructing URLs...
-                const idAttr = tile.querySelector('div.cursor-pointer')?.getAttribute('id') || '';
+                const idAttr = tile?.getAttribute('id') || '';
                 const match = idAttr.match(/i_(\d+)_\d+/);
                 return match ? match[1] : '';
             })();
@@ -72,6 +78,7 @@ const helper_Scrape = async (url, city, limit, page) => {
             // if (classMatch) id = classMatch[1]
 
             function slugify(text) {
+                if (!text) return '';  // ensure text is not undefined/null
                 return text
                     .toLowerCase()
                     .replace(/[^\w\s-]/g, '')      // Remove special chars except `-`

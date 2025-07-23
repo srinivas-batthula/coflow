@@ -8,7 +8,7 @@ async function devpostapi() {
         let data = [];
         let hackathons = [];
 
-        let res = await fetch('https://devpost.com/api/hackathons?status[]=upcoming&status[]=open&per_page=30');
+        let res = await fetch('https://devpost.com/api/hackathons?status[]=upcoming&status[]=open&per_page=35');
         res = await res.json();
         data.push(...res.hackathons);
         hackathons.push(...data.map((item) => ({ title: item.title, url: item.url, date: item.submission_period_dates, location: item.displayed_location.location, prize: item.prize_amount.match(/<span[^>]*>([\d,]+)<\/span>/)[1].replace(/,/g, ''), host: item.organization_name, city: 'Global' })));

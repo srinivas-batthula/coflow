@@ -18,7 +18,7 @@ async function mainScraper() {
 
     try {
         let res;
-        res = await unstop(page);           // Scraping from UnStop...
+        res = await unstop( page );           // Scraping from UnStop...
         if (res.success === true)
             hackathons.push(...res.data);
 
