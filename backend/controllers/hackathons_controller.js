@@ -50,8 +50,8 @@ const update_hackathons = async (req, res) => {        //Requires `pass` -secret
         console.log(result);
         return;
     } catch (error) {
-        // console.error("Error while Scraping hackathons");
-        return res.status(500).json({ success: false, details: 'Error while fetching hackathons!' });
+        console.error("Error while Scraping hackathons");
+        // return res.status(500).json({ success: false, details: 'Error while fetching hackathons!' });
     }
 };
 
