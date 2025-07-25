@@ -1,5 +1,5 @@
 {
-    "imgUrl": "https://srinivas-batthula.github.io/portfolio/utils/coflow_project.png",
+    "imgUrl": "https://srinivas-batthula.github.io/portfolio/utils/projects/coflow_project.png",
     "title": "CoFlow",
     "des": "'CoFlow' is a real-time collaboration platform built with the MERN stack and Socket.io, designed to streamline team productivity during hackathons and projects. It features live task workflows, group chat, offline-ready push notifications, Redis-backed workers, secure auth, and intelligent scheduling. Experience seamless teamwork, and feel free to connect for contributions or collaborations!",
     "isOneRepo": "true",
