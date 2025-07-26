@@ -8,14 +8,16 @@
         "Express.js",
         "Socket.io",
         "Playwright",
+        "MongoDB",
+        "Swagger Docs",
         "Redis",
         "Docker"
     ],
     "keyFeatures": [
-        "Create & manage hackathon teams with auth",
-        "Real-time team chat & collaborative task tracking",
-        "Auto-scrape and store latest hackathons every 10hrs",
-        "Realtime Push-Notification Alerts"
+        "Built CoFlow with a teammate, a real-time hackathon discovery & team coordination platform",
+        "Implemented Real-time team chat & collaborative task tracking",
+        "Built an automated hackathons scraper using Node-Cron and Playwright for consistent event updates",
+        "Integrated Realtime Push-Notification Alerts using Redis & web-push"
     ],
     "isLiveLink": "true",
     "githubLink": "https://github.com/srinivas-batthula/coflow",
