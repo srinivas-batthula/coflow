@@ -53,7 +53,7 @@
         "social",
         "education",
         "collaboration",
-        "productivity tools"
+        "productivity"
     ],
     "shortcuts": [
         {
@@ -68,5 +68,6 @@
                 }
             ]
         }
-    ]
+    ],
+    "prefer_related_applications": false
 }
