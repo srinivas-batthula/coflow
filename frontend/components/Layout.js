@@ -35,7 +35,7 @@ const Layout = ({ children }) => {
       }
 
       // Register the service worker...        (Note: Use Only in `Production`...)
-      if ('serviceWorker' in navigator) {
+      if ('serviceWorker' in navigator && window.location.hostname !== "localhost") {
         navigator.serviceWorker.register(process.env.NEXT_PUBLIC_HOME + '/service-worker.js', { scope: '/' })
           .then((registration) => {
             console.log('Service Worker registered with scope: ', registration.scope)

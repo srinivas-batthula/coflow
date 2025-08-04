@@ -2,10 +2,12 @@
     "name": "CoFlow  ~ Where collaboration finds its rhythm!",
     "short_name": "CoFlow",
     "description": "A powerful productivity tool for teams to work collaboratively by  ~ Srinivas B & Akash K",
-    "lang": "en-us",
+    "lang": "en-US",
     "id": "/",
     "start_url": "/",
+    "dir": "ltr",
     "scope": "/",
+    "version": "1.0.0",
     "display": "standalone",
     "display_override": [
         "window-controls-overlay"
@@ -15,9 +17,10 @@
     "theme_color": "#320398",
     "icons": [
         {
-            "src": "/icon.png",
-            "sizes": "128x128",
-            "type": "image/png"
+            "src": "/coflow_512px.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
         },
         {
             "src": "/coflow_192px.png",
@@ -25,8 +28,8 @@
             "type": "image/png"
         },
         {
-            "src": "/coflow_512px.png",
-            "sizes": "512x512",
+            "src": "/icon.png",
+            "sizes": "128x128",
             "type": "image/png"
         }
     ],
@@ -35,19 +38,22 @@
             "src": "/desktop-screenshot.png",
             "sizes": "1280x800",
             "type": "image/png",
-            "form_factor": "wide"
+            "form_factor": "wide",
+            "label": "Desktop view of CoFlow dashboard"
         },
         {
             "src": "/mobile-screenshot.png",
             "sizes": "600x800",
             "type": "image/png",
-            "form_factor": "narrow"
+            "form_factor": "narrow",
+            "label": "Mobile interface for team collaboration"
         }
     ],
     "features": [
         "Cross Platform",
         "Fast",
-        "Simple"
+        "Simple",
+        "productivity"
     ],
     "categories": [
         "social",
@@ -69,5 +75,9 @@
             ]
         }
     ],
-    "prefer_related_applications": false
+    "prefer_related_applications": false,
+    "launch_handler": {
+        "client_mode": "navigate-existing"
+    },
+    "edge_side_panel": {}
 }

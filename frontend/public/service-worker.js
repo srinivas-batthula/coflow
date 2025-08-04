@@ -1,6 +1,6 @@
 
-const CACHE_NAME = `hackpilot-cache-v03`             //Change this to a new version before every New DEPLOY.............................
-const HOME = self.location.origin;      // Provide a `Deployed` URL...
+const CACHE_NAME = `coflow-cache-v${new Date().toISOString().slice(0,10)}`             //Change this to a new version before every New DEPLOY.............................
+const HOME = process.env.NEXT_PUBLIC_HOME || "https://coflow.netlify.app";      // Provide a `Deployed` URL... (self.location.origin)
 
 const STATIC_FILES = [
     `${HOME}/`,
@@ -50,15 +50,15 @@ self.addEventListener('push', async(event) => {
         icon: './icon.png',
         badge: './badge.svg',
         vibrate: [150, 80, 150],
-        sound: './notification.wav',
+        sound: './notification.wav',    //Only works on some devices like `mobile`...
         actions: [
             {
                 action: 'open',
-                title: 'open'
+                title: 'Open'
             },
             {
                 action: 'dismiss',
-                title: 'dismiss'
+                title: 'Dismiss'
             },
         ]
     }
