@@ -1,12 +1,14 @@
 
 const CACHE_NAME = `coflow-cache-v${new Date().toISOString().slice(0,10)}`             //Change this to a new version before every New DEPLOY.............................
-const HOME = process.env.NEXT_PUBLIC_HOME || "https://coflow.netlify.app";      // Provide a `Deployed` URL... (self.location.origin)
+const HOME = self.location.origin;      // Provide a `Deployed` URL... (self.location.origin) / "https://coflow.netlify.app"
 
 const STATIC_FILES = [
     `${HOME}/`,
     `${HOME}/manifest.json`,
     `${HOME}/badge.svg`,
     `${HOME}/notification.wav`,
+    `${HOME}/offline.html`,
+    // `${HOME}/_next/static/`,  // <- Next.js static build folder -installed in `fetch` event handler...
 ];
 
 
@@ -20,6 +22,36 @@ self.addEventListener("install", (event) => {
     );
     self.skipWaiting()
 })
+
+    // Intercept fetch requests of same origin to cache and serve static assets & html, css, js files...
+self.addEventListener("fetch", (event) => {
+    event.respondWith(
+        caches.match(event.request).then((cachedResponse) => {
+            if (cachedResponse) {
+                return cachedResponse;
+            }
+
+            // Try fetching from network and cache it
+            return fetch(event.request).then((networkResponse) => {
+                return caches.open(CACHE_NAME).then((cache) => {
+                    // Only cache GET requests and same-origin requests
+                    if (
+                        event.request.method === "GET" &&
+                        event.request.url.startsWith(self.location.origin)
+                    ) {
+                        cache.put(event.request, networkResponse.clone());
+                    }
+                    return networkResponse;
+                });
+            }).catch(() => {
+                // Optionally return a fallback page
+                if (event.request.mode === 'navigate') {
+                    return caches.match(`${HOME}/offline.html`);
+                }
+            });
+        })
+    );
+});
 
     // Activate event: Delete old caches...
 self.addEventListener("activate", (event) => {

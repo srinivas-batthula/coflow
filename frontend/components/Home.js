@@ -5,6 +5,59 @@ import { useHackathonStore } from "../store/useHackathonStore";
 import { useAuthStore } from "../store/useAuthStore";
 import { FaUserCircle } from "react-icons/fa";
 import { SlidersHorizontal } from "lucide-react";
+import { FacebookShareButton, TwitterShareButton, WhatsappShareButton } from 'react-share';
+
+
+const ShareButton = ({ data }) => {                     //data = { url, text }
+  const [canUseWebShare, setCanUseWebShare] = useState(false)
+  const shareUrl = data.url || "https://coflow.netlify.app"
+  const shareText = (data.text) ? data.text : ("Check out this exciting hackathon opportunity!\n For more details Visit at { https://coflow.netlify.app }")
+
+  useEffect(() => {
+    if (navigator.share) {
+      setCanUseWebShare(true)
+    }
+  }, [])
+
+  const handleNativeShare = async () => {
+    try {
+      await navigator.share({
+        title: "CoFlow",
+        text: shareText,
+        url: shareUrl,
+      });
+      console.log("Shared successfully!");
+    } catch (error) {
+      console.error("Error sharing:", error);
+    }
+  }
+
+  return (
+    <div className="flex items-center space-x-2">
+      <button
+        className="text-[#511cc4d6]"
+        style={{fontSize: '1.2rem', cursor: 'pointer' }}
+        onClick={canUseWebShare ? handleNativeShare : undefined}
+      >
+        <i className="fa-solid fa-share" title="Share"></i>
+      </button>
+
+      {!canUseWebShare && (
+        <div className="flex space-x-2">
+          <FacebookShareButton url={shareUrl}>
+            <span className="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-all shadow-md">F</span>
+          </FacebookShareButton>
+          <TwitterShareButton url={shareUrl}>
+            <span className="p-2 rounded-full bg-sky-500 text-white hover:bg-sky-600 transition-all shadow-md">X</span>
+          </TwitterShareButton>
+          <WhatsappShareButton url={shareUrl}>
+            <span className="p-2 rounded-full bg-green-500 text-white hover:bg-green-600 transition-all shadow-md">W</span>
+          </WhatsappShareButton>
+        </div>
+      )}
+    </div>
+  )
+}
 
 const features = [
   {
@@ -191,8 +244,8 @@ export default function HomePage() {
                         setShowDropdown(false);
                       }}
                       className={`block w-full text-left px-4 py-2 text-sm transition-all ${selectedCity === city
-                          ? "bg-[#E6E0FF] text-[#320398] font-semibold"
-                          : "hover:bg-gray-100"
+                        ? "bg-[#E6E0FF] text-[#320398] font-semibold"
+                        : "hover:bg-gray-100"
                         }`}
                     >
                       {city}
@@ -214,15 +267,19 @@ export default function HomePage() {
                 key={hackathon._id}
                 className="bg-white border border-[#E0E0F5] rounded-2xl shadow-md p-6 hover:shadow-lg transition-transform hover:-translate-y-1"
               >
-                <h3 className="text-xl font-bold text-[#320398] mb-3 hover:underline">
-                  <a
-                    href={hackathon.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {hackathon.title}
-                  </a>
-                </h3>
+                <div className="flex justify-between items-start mb-3">
+                  <h3 className="text-xl font-bold text-[#320398] hover:underline">
+                    <a href={hackathon.url} target="_blank" rel="noopener noreferrer">
+                      {hackathon.title}
+                    </a>
+                  </h3>
+                  <ShareButton
+                    data={{
+                      url: hackathon.url,
+                      text: `Check out this exciting hackathon opportunity '${hackathon.title}'!\n For more details Visit at { https://coflow.netlify.app }`,
+                    }}
+                  />
+                </div>
                 <div className="text-gray-700 text-sm space-y-1">
                   <p>
                     <strong>📅 Date:</strong> {hackathon.date}
