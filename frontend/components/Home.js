@@ -276,7 +276,7 @@ export default function HomePage() {
                   <ShareButton
                     data={{
                       url: hackathon.url,
-                      text: `Check out this exciting hackathon opportunity '${hackathon.title}'!\n Hackathon Link -> '${hackathon.url}'\n For more details Visit at { 'https://coflow.netlify.app' }`,
+                      text: `Check out this exciting hackathon opportunity '${hackathon.title}'!\n For more details Visit at { 'https://coflow.netlify.app' }\n Hackathon Link -> '${hackathon.url}'`,
                     }}
                   />
                 </div>
