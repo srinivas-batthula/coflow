@@ -11,7 +11,7 @@ import { FacebookShareButton, TwitterShareButton, WhatsappShareButton } from 're
 const ShareButton = ({ data }) => {                     //data = { url, text }
   const [canUseWebShare, setCanUseWebShare] = useState(false)
   const shareUrl = data.url || "https://coflow.netlify.app"
-  const shareText = (data.text) ? data.text : ("Check out this exciting hackathon opportunity!\n For more details Visit at { https://coflow.netlify.app }")
+  const shareText = (data.text) ? data.text : ("Check out this exciting hackathon opportunity!\n\n For more details Visit at 'https://coflow.netlify.app'\n")
 
   useEffect(() => {
     if (navigator.share) {
@@ -276,7 +276,7 @@ export default function HomePage() {
                   <ShareButton
                     data={{
                       url: hackathon.url,
-                      text: `Check out this exciting hackathon opportunity '${hackathon.title}'!\n For more details Visit at { https://coflow.netlify.app }`,
+                      text: `Check out this exciting hackathon opportunity '${hackathon.title}'!\n\n Hackathon Link -> '${hackathon.url}'\n\n For more details Visit at 'https://coflow.netlify.app'\n`,
                     }}
                   />
                 </div>

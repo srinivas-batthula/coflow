@@ -25,16 +25,16 @@ export default function RootLayout({ children }) {
         {/* <!-- Open Graph Meta Tags --> */}
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://coflow.netlify.app" />
-        <meta property="og:title" content="Check out this exciting hackathon opportunity ~CoFlow" />
+        <meta property="og:title" content="Check out this exciting hackathon opportunity  ~CoFlow" />
         <meta property="og:description" content="Find your next challenge, collaborate with your team, and showcase your innovation. For more opportunities, Visit at { https://coflow.netlify.app }" />
-        <meta property="og:image" content="/icon.png" />
+        <meta property="og:image" content="https://coflow.netlify.app/icon.png" />
 
         {/* <!-- Twitter Card Meta Tags --> */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:url" content="https://coflow.netlify.app" />
-        <meta name="twitter:title" content="Check out this exciting hackathon opportunity ~CoFlow" />
+        <meta name="twitter:title" content="Check out this exciting hackathon opportunity  ~CoFlow" />
         <meta name="twitter:description" content="Find your next challenge, collaborate with your team, and showcase your innovation. For more opportunities, Visit at { https://coflow.netlify.app }" />
-        <meta name="twitter:image" content="/icon.png" />
+        <meta name="twitter:image" content="https://coflow.netlify.app/icon.png" />
 
         {/* FontAwesome icons... */}
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />

@@ -70,7 +70,7 @@ Sends a Push-Notification to that offline user
 
 ## 🛠 Tech Stack
 
-- **Frontend:** Next.js, React.js, Zustand, Tailwind CSS, Socket.IO Client
+- **Frontend:** Next.js, React.js, Zustand, Tailwind CSS, Socket.IO Client, IndexedDB
 - **Backend:** Node.js, Express.js, Socket.io, node-cron, Playwright(Webscraping)
 - **Database:** MongoDB Atlas + Mongoose ODM
 - **API's:** [Devpost API](https://devpost.com/api/hackathons)
