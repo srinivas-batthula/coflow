@@ -77,7 +77,8 @@ Sends a Push-Notification to that offline user
 - **API Docs:** Swagger UI
 - **Auth:** JWT + Google OAuth
 - **Push Notifcations:** Web-Push, Redis Queue
-- **Deployment:** Docker, Render, Netlify
+- **Testing:** Jest, SuperTest
+- **Deployment:** Docker, Render, Netlify, GitHub Actions
 
 ## 🏗️ Project Structure
 
