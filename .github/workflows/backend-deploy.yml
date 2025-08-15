@@ -47,7 +47,7 @@ jobs:
         working-directory: backend
         env:
           Mongo_DB_URI: ${{ secrets.Mongo_DB_URI }}
-          ALLOW_PROD_SEED: true
+          SEED_MODE: fixtures
           BACKEND_ENV: test
         run: npm test
 

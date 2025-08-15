@@ -1,0 +1,109 @@
+[
+  {
+    "subscription": null,
+    "_id": "6845c865862cd80fb918838a",
+    "fullName": "Srinivas Batthula",
+    "email": "srinivasbatthula.mypc@gmail.com",
+    "is_from_google": false,
+    "createdAt": "2025-06-08T17:29:09.554Z",
+    "updatedAt": "2025-08-15T12:51:58.464Z",
+    "__v": 0,
+    "password": "$2b$13$nuunP8NQJAoqcFDxJSMcaOtFFC56R.Q/ePDfiXrBFV9vTHghnHUR."
+  },
+  {
+    "_id": "6846624980186edfef696eef",
+    "fullName": "BANOTH MANJYA",
+    "email": "banothmanjya4@gmail.com",
+    "is_from_google": true,
+    "createdAt": "2025-06-09T04:25:45.417Z",
+    "updatedAt": "2025-06-09T04:25:45.417Z",
+    "__v": 0
+  },
+  {
+    "subscription": null,
+    "_id": "6846d200c46e4727eef5ec9b",
+    "fullName": "Srinivas Batthula",
+    "email": "srinivasbatthula05.official@gmail.com",
+    "is_from_google": true,
+    "createdAt": "2025-06-09T12:22:24.592Z",
+    "updatedAt": "2025-06-10T10:40:06.748Z",
+    "__v": 0
+  },
+  {
+    "subscription": null,
+    "_id": "6847c3fb7703147a3f23c970",
+    "fullName": "crackoo",
+    "email": "crackoo231@gmail.com",
+    "is_from_google": false,
+    "createdAt": "2025-06-10T05:34:51.103Z",
+    "updatedAt": "2025-07-23T15:17:30.658Z",
+    "__v": 0,
+    "password": "$2b$13$8Dk7KpZiervLZrkf86o.1e3M7PdUEG9.XelmD7TEisPOWi7paloty"
+  },
+  {
+    "_id": "68482ee5c69a0cf7881a4979",
+    "fullName": "Panda Bishwanath Kumar ",
+    "email": "pandapravatkumar5@gmail.com",
+    "password": "$2b$13$Le9LBk.fe.vCq/WebRKkjOm9ERkjc6jnNOryxjLdR.8msSDQfSMBW",
+    "is_from_google": false,
+    "createdAt": "2025-06-10T13:11:01.928Z",
+    "updatedAt": "2025-06-10T13:11:01.928Z",
+    "__v": 0
+  },
+  {
+    "_id": "6849575f4e1eb377bd0cde68",
+    "fullName": "Dinesh",
+    "email": "dinesh88884444@gmail.com",
+    "is_from_google": true,
+    "createdAt": "2025-06-11T10:15:59.086Z",
+    "updatedAt": "2025-06-11T10:15:59.086Z",
+    "__v": 0
+  },
+  {
+    "_id": "684a95dcd0b122f1975ca4bf",
+    "fullName": "palthya Nitish kumar chouhan",
+    "email": "pnkc05@gmail.com",
+    "is_from_google": true,
+    "createdAt": "2025-06-12T08:54:52.987Z",
+    "updatedAt": "2025-06-12T08:54:52.987Z",
+    "__v": 0
+  },
+  {
+    "subscription": null,
+    "_id": "685157078f4c2d2624c91ff8",
+    "fullName": "Gowtham Avula",
+    "email": "avulagowtham241@gmail.com",
+    "is_from_google": true,
+    "createdAt": "2025-06-17T11:52:39.045Z",
+    "updatedAt": "2025-06-17T11:56:10.194Z",
+    "__v": 0
+  },
+  {
+    "_id": "6853a46421670b95f2c48dcb",
+    "fullName": "Kamalakar Chitla",
+    "email": "kamalakarchitla@gmail.com",
+    "is_from_google": true,
+    "createdAt": "2025-06-19T05:47:16.128Z",
+    "updatedAt": "2025-06-19T05:47:16.128Z",
+    "__v": 0
+  },
+  {
+    "_id": "685589baab6fbc05c4297423",
+    "fullName": "Aᴋᴀꜱʜ ᴋʏᴀᴅᴀʀɪ",
+    "email": "akashkyadari231@gmail.com",
+    "is_from_google": true,
+    "createdAt": "2025-06-20T16:18:02.086Z",
+    "updatedAt": "2025-06-20T16:18:02.086Z",
+    "__v": 0
+  },
+  {
+    "subscription": null,
+    "_id": "686771161347a22f5194c9d2",
+    "fullName": "P Dinesh",
+    "email": "dinesh8888844444@gmail.com",
+    "is_from_google": true,
+    "createdAt": "2025-07-04T06:13:42.553Z",
+    "updatedAt": "2025-07-04T06:15:09.309Z",
+    "__v": 0
+  }
+]
