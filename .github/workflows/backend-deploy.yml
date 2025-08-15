@@ -22,34 +22,34 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         
-      # # Setup Node.js with cache
-      # - name: Set up Node.js
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: 18
-      #     cache: 'npm'
-      #     cache-dependency-path: backend/package-lock.json
+      # Setup Node.js with cache
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
 
-      # # Cache MongoDB binaries for mongodb-memory-server
-      # - name: Cache MongoDB binaries
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: ~/.cache/mongodb-binaries
-      #     key: ${{ runner.os }}-mongodb-binaries
+      # Cache MongoDB binaries for mongodb-memory-server
+      - name: Cache MongoDB binaries
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/mongodb-binaries
+          key: ${{ runner.os }}-mongodb-binaries
 
-      # # Install dependencies (cached)
-      # - name: Install dependencies
-      #   working-directory: backend
-      #   run: npm install
+      # Install dependencies (cached)
+      - name: Install dependencies
+        working-directory: backend
+        run: npm install
         
       # Run Tests (Jest + SuperTest)
-      # - name: Run Tests
-      #   working-directory: backend
-      #   env:
-      #     Mongo_DB_URI: ${{ secrets.Mongo_DB_URI }}
-      #     ALLOW_PROD_SEED: true
-      #     BACKEND_ENV: test
-      #   run: npm test
+      - name: Run Tests
+        working-directory: backend
+        env:
+          Mongo_DB_URI: ${{ secrets.Mongo_DB_URI }}
+          ALLOW_PROD_SEED: true
+          BACKEND_ENV: test
+        run: npm test
 
         # Set up Docker BuildX
       - name: Set up Docker Buildx
