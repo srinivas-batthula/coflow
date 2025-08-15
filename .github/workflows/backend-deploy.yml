@@ -22,25 +22,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         
-      # Setup Node.js with cache
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-          cache: 'npm'
-          cache-dependency-path: backend/package-lock.json
+      # # Setup Node.js with cache
+      # - name: Set up Node.js
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: 18
+      #     cache: 'npm'
+      #     cache-dependency-path: backend/package-lock.json
 
-      # Cache MongoDB binaries for mongodb-memory-server
-      - name: Cache MongoDB binaries
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/mongodb-binaries
-          key: ${{ runner.os }}-mongodb-binaries
+      # # Cache MongoDB binaries for mongodb-memory-server
+      # - name: Cache MongoDB binaries
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: ~/.cache/mongodb-binaries
+      #     key: ${{ runner.os }}-mongodb-binaries
 
-      # Install dependencies (cached)
-      - name: Install dependencies
-        working-directory: backend
-        run: npm install
+      # # Install dependencies (cached)
+      # - name: Install dependencies
+      #   working-directory: backend
+      #   run: npm install
         
       # Run Tests (Jest + SuperTest)
       # - name: Run Tests
@@ -51,18 +51,9 @@ jobs:
       #     BACKEND_ENV: test
       #   run: npm test
 
-        # Set up Docker BuildX with cache
+        # Set up Docker BuildX
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
-      # Cache Docker layers
-      - name: Cache Docker layers
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ hashFiles('backend/package-lock.json', 'backend/Dockerfile') }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
 
         # Login's & Builds and Push's new Image to DockerHub
       - name: Login to Docker Hub
@@ -75,17 +66,9 @@ jobs:
       - name: Build and Push Backend Image
         run: |
           docker build \
-            --cache-from=type=local,src=/tmp/.buildx-cache \
-            --cache-to=type=local,dest=/tmp/.buildx-cache-new \
             -t ${{ secrets.DOCKER_USERNAME }}/coflow-backend:latest \
             ./backend
           docker push ${{ secrets.DOCKER_USERNAME }}/coflow-backend:latest
-
-      # Move cache to avoid overwriting on failure
-      - name: Move Docker cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
         # Triggers Auto-ReDeploy on Render via deploy-hook
       - name: Trigger Backend Render Re-Deploy

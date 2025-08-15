@@ -8,7 +8,7 @@ require('jest-extended');
 let mongoServer;
 
 
-beforeAll(async () => { 
+beforeAll(async () => {
     try {
         await mongoose.connect(process.env.Mongo_DB_URI);   // Directly Run Tests in Cloud-Atlas DB...
 
