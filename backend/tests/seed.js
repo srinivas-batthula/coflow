@@ -11,17 +11,17 @@ const Hackathon = require('../models/hackathonsModel');
 async function seedDatabase() {
     try {
         if (process.env.ALLOW_PROD_SEED === 'true') {
-            console.warn('⚠ : Cloning data from PRODUCTION-DB into test DB!');
+            console.log('⚠ : Cloning data from PRODUCTION-DB into test DB!');
 
             const prodConn = await mongoose.createConnection(process.env.Mongo_DB_URI);
 
-            const prodUsers = await prodConn.model('User', User.schema).find({});
-            const prodHackathons = await prodConn.model('Hackathon', Hackathon.schema).find({});
+            const prodUsers = await prodConn.model('hackpilot_users', User.schema).find({});
+            const prodHackathons = await prodConn.model('hackpilot_hackathons', Hackathon.schema).find({});
 
             await prodConn.close();
 
-            await mongoose.model('User', User.schema).insertMany(prodUsers.map(d => d.toObject()));
-            await mongoose.model('Hackathon', Hackathon.schema).insertMany(prodHackathons.map(d => d.toObject()));
+            await mongoose.model('hackpilot_users', User.schema).insertMany(prodUsers.map(d => d.toObject()));
+            await mongoose.model('hackpilot_hackathons', Hackathon.schema).insertMany(prodHackathons.map(d => d.toObject()));
         }
         else {
             console.log('⚠ : Seeding from LOCAL-fixtures into test DB!');
@@ -34,8 +34,8 @@ async function seedDatabase() {
                 { title: 'Sample Hackathon', url: 'https://devpost.com/api/hackathons', date: new Date().toISOString(), location: 'Online', city: 'Global', prize: '100,000', host: 'BSP' }
             ];
 
-            await mongoose.model('User', User.schema).insertMany(sampleUsers);
-            await mongoose.model('Hackathon', Hackathon.schema).insertMany(sampleHackathons);
+            await mongoose.model('hackpilot_users', User.schema).insertMany(sampleUsers);
+            await mongoose.model('hackpilot_hackathons', Hackathon.schema).insertMany(sampleHackathons);
         }
     }
     catch (err) {
