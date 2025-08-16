@@ -16,10 +16,11 @@ async function seedDatabase() {
         const usersData = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'users.json'), 'utf8'));
         const hackathonsData = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'hackathons.json'), 'utf8'));
 
-        console.log(usersData);
-
         await mongoose.model('hackpilot_users', User.schema).insertMany(usersData);
         await mongoose.model('hackpilot_hackathons', Hackathon.schema).insertMany(hackathonsData);
+
+        const result = await Hackathon.find({}).sort({ createdAt: -1 }).lean();
+        console.log(result);
     }
     catch (err) {
         console.error('Failed to Seed Data to Local-DB : -> ', err);
