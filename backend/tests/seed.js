@@ -19,8 +19,8 @@ async function seedDatabase() {
         await mongoose.model('hackpilot_users', User.schema).insertMany(usersData);
         await mongoose.model('hackpilot_hackathons', Hackathon.schema).insertMany(hackathonsData);
 
-        const result = await Hackathon.find({}).sort({ createdAt: -1 }).lean();
-        console.log(result);
+        // const result = await Hackathon.find({}).sort({ createdAt: -1 }).lean();
+        // console.log(result);
     }
     catch (err) {
         console.error('Failed to Seed Data to Local-DB : -> ', err);
