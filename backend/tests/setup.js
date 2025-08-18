@@ -14,7 +14,7 @@ beforeAll(async () => {
         console.log(process.env.BACKEND_ENV);
         let memUri;
 
-        if (BACKEND_ENV === 'test') {
+        if (process.env.BACKEND_ENV === 'test') {
             mongoServer = await MongoMemoryServer.create();
             memUri = mongoServer.getUri();
         }
