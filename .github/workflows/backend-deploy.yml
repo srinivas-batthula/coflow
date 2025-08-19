@@ -37,8 +37,8 @@ jobs:
       - name: Run Tests
         working-directory: backend
         env:
-          TEST_EMAIL: srinivasb.temp@gmail.com              # ${{ secrets.TEST_EMAIL }}
-          TEST_PASSWORD: 1234           # ${{ secrets.TEST_PASSWORD }}
+          TEST_EMAIL: srinivasb.temp@gmail.com      # ${{ secrets.TEST_EMAIL }}
+          TEST_PASSWORD: 1234                       # ${{ secrets.TEST_PASSWORD }}
           SEED_MODE: fixtures
           BACKEND_ENV: test
         run: npm test

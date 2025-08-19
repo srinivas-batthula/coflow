@@ -23,7 +23,7 @@ async function seedDatabase() {
             password: process.env.TEST_PASSWORD,
             fullName: "Srinivas"
         };
-        await mongoose.model('hackpilot_users', User.schema).create(testUser);
+        await User.create(testUser);  // uses schema + pre-save hooks
     }
     catch (err) {
         console.error('Failed to Seed Data to Local-DB : -> ', err);
