@@ -10,7 +10,7 @@ const fs = require('fs');
  */
 async function seedDatabase() {
     try {
-        console.log('⚠ Seeding from static fixtures!');
+        console.log('⚠ Seeding from static fixtures!'+process.env.TEST_EMAIL);
 
         const usersData = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'users.json'), 'utf8'));
         const hackathonsData = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'hackathons.json'), 'utf8'));

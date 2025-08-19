@@ -22,6 +22,7 @@ describe('Auth API', () => {
             const res = await request(app)
                 .post('/api/auth/login')
                 .send({ email: process.env.TEST_EMAIL, password: process.env.TEST_PASSWORD });
+            console.log(process.env.TEST_EMAIL);
 
             expect(res.statusCode).toBe(201);
             expect(res.body.success).toBe(true);
