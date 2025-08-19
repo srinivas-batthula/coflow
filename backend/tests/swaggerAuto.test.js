@@ -31,7 +31,7 @@ afterAll(() => {
 
 
 // dynamically create tests
-describe('🔍 API Tests from Swagger', () => {
+describe('Automated API Tests from Swagger', () => {
     for (const [routePath, methods] of Object.entries(swaggerDoc.paths)) {
         for (const [method, operation] of Object.entries(methods)) {
             test(`${method.toUpperCase()} ${routePath}`, async () => {

@@ -34,10 +34,7 @@
     "web-push": "^3.6.7"
   },
   "devDependencies": {
-    "ajv": "^8.17.1",
-    "ajv-formats": "^3.0.1",
     "jest": "^30.0.4",
-    "jest-extended": "^6.0.0",
     "jest-openapi": "^0.14.1",
     "mongodb-memory-server": "10.1.4",
     "openapi-sampler": "^1.6.1",

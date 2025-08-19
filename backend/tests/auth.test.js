@@ -1,8 +1,8 @@
 // tests/auth.test.js
-
 const request = require('supertest');
 const app = require('../app')
 const jwt = require('jsonwebtoken');
+
 let token;
 
 
@@ -54,7 +54,7 @@ describe('Auth API', () => {
         });
 
         it('should return 401/400 for invalid credentials', async () => {
-            const fakeToken = jwt.sign({ email: 'nonexistent@example.com' }, 'wrong-secret', { expiresIn: '1s' });
+            const fakeToken = jwt.sign({ email: 'nonexistent@example.com' }, 'wrong-secret', { expiresIn: '10s' });
 
             const res = await request(app)
                 .get('/api/auth/validateUser?q=true')

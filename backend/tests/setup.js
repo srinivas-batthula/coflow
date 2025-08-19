@@ -1,10 +1,9 @@
 // tests/setup.js
 const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');         // Comment in Development Mode &&  Use only in CI/CD...
+const { MongoMemoryServer } = require('mongodb-memory-server');
 const path = require('path');
-const jestOpenAPI = require('jest-openapi').default;
 const seedDatabase = require('./seed');
-// require('jest-extended');
+const jestOpenAPI = require('jest-openapi').default;
 
 let mongoServer;
 
@@ -17,7 +16,7 @@ beforeAll(async () => {
         const swaggerPath = path.join(__dirname, '../docs/swagger.json');
         jestOpenAPI(require(swaggerPath));
 
-        console.log(process.env.BACKEND_ENV);
+        console.log("Testing in : "+process.env.BACKEND_ENV);
 
         mongoServer = await MongoMemoryServer.create();
         const memUri = mongoServer.getUri();

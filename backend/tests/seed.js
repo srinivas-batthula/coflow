@@ -2,14 +2,12 @@
 const mongoose = require('mongoose');
 const User = require('../models/userModel');
 const Hackathon = require('../models/hackathonsModel');
-const bcrypt = require('bcryptjs');
 const path = require('path');
 const fs = require('fs');
 
 /**
-    * Seeds an in-memory DB with data from the local fixture data.
+    * Seeds an In-Memory DB with data from the local fixture data.
  */
-
 async function seedDatabase() {
     try {
         console.log('⚠ Seeding from static fixtures!');
@@ -22,7 +20,7 @@ async function seedDatabase() {
 
         const testUser = {                  // Insert Test User...
             email: process.env.TEST_EMAIL,
-            password: process.env.TEST_PASSWORD, 
+            password: process.env.TEST_PASSWORD,
             fullName: "Srinivas"
         };
         await mongoose.model('hackpilot_users', User.schema).create(testUser);
