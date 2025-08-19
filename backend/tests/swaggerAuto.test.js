@@ -50,9 +50,9 @@ describe('Automated API Tests from Swagger', () => {
                 const res = await req;
                 const expectedCodes = Object.keys(operation.responses);
 
-                if (!expectedCodes.includes(String(res.status))) {
-                    console.warn(`⚠️ ${method.toUpperCase()} ${routePath} returned ${res.status}, not in spec: [${expectedCodes.join(', ')}]`);
-                }
+                // if (!expectedCodes.includes(String(res.status))) {       // Logging the response status codes...
+                //     console.warn(`⚠️ ${method.toUpperCase()} ${routePath} returned ${res.status}, not in spec: [${expectedCodes.join(', ')}]`);
+                // }
                 expect(res.status).toBeGreaterThanOrEqual(200);
                 expect(res.status).toBeLessThan(600);
 
