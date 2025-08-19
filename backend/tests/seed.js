@@ -2,6 +2,7 @@
 const mongoose = require('mongoose');
 const User = require('../models/userModel');
 const Hackathon = require('../models/hackathonsModel');
+const bcrypt = require('bcryptjs');
 const path = require('path');
 const fs = require('fs');
 
@@ -12,15 +13,19 @@ const fs = require('fs');
 async function seedDatabase() {
     try {
         console.log('⚠ Seeding from static fixtures!');
-        
+
         const usersData = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'users.json'), 'utf8'));
         const hackathonsData = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'hackathons.json'), 'utf8'));
 
         await mongoose.model('hackpilot_users', User.schema).insertMany(usersData);
         await mongoose.model('hackpilot_hackathons', Hackathon.schema).insertMany(hackathonsData);
 
-        // const result = await Hackathon.find({}).sort({ createdAt: -1 }).lean();
-        // console.log(result);
+        const testUser = {                  // Insert Test User...
+            email: process.env.TEST_EMAIL,
+            password: process.env.TEST_PASSWORD,
+            fullName: "Srinivas"
+        };
+        await mongoose.model('hackpilot_users', User.schema).create(testUser);
     }
     catch (err) {
         console.error('Failed to Seed Data to Local-DB : -> ', err);

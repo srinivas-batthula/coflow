@@ -1,28 +1,28 @@
 // tests/setup.js
 const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');         // Comment in Development Mode &&  Use only in CI/CD...
+const path = require('path');
+const jestOpenAPI = require('jest-openapi').default;
 const seedDatabase = require('./seed');
-require('jest-extended');
+// require('jest-extended');
 
 let mongoServer;
 
 
 beforeAll(async () => {
     try {
-        // await mongoose.connect(process.env.Mongo_DB_URI);   // Directly Run Tests from Cloud-Atlas DB only in Local-DEV...
+        // await mongoose.connect(process.env.Mongo_DB_URI);   // Directly Run Tests from Cloud-Atlas DB only in Local-DEV... "mongodb://localhost:27017/testdb"
+        
+        // Load Swagger spec for jest-openapi
+        const swaggerPath = path.join(__dirname, '../docs/swagger.json');
+        jestOpenAPI(require(swaggerPath));
 
         console.log(process.env.BACKEND_ENV);
-        let memUri;
 
-        if (process.env.BACKEND_ENV === 'test') {
-            mongoServer = await MongoMemoryServer.create();
-            memUri = mongoServer.getUri();
-        }
-        else {
-            memUri = "mongodb://localhost:27017/testdb";
-        }
+        mongoServer = await MongoMemoryServer.create();
+        const memUri = mongoServer.getUri();
 
-        await mongoose.connect(memUri);
+        await mongoose.connect(memUri);     // Connect to virtual-db to safely handle data
 
         await seedDatabase();       // Add Data to local-DB for testing...
     }

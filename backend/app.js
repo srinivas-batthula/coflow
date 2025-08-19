@@ -11,7 +11,7 @@ const socketAuth = require("./socket/socketAuth");
 const http = require("http");
 const { Server } = require("socket.io");
 const swaggerUi = require("swagger-ui-express")
-const swaggerDocument = require("./swagger.json")
+const swaggerDocument = require("./docs/swagger.json")
 
 const app = express();  
 

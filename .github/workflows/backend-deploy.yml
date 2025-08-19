@@ -37,8 +37,8 @@ jobs:
       - name: Run Tests
         working-directory: backend
         env:
-          Mongo_DB_URI: ${{ secrets.Mongo_DB_URI }}
-          JWT_SECRET: supersecretkey123
+          TEST_EMAIL: srinivasb.temp@gmail.com
+          TEST_PASSWORD: 1234
           SEED_MODE: fixtures
           BACKEND_ENV: test
         run: npm test

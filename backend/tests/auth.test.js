@@ -21,7 +21,7 @@ describe('Auth API', () => {
         it('should return a token for valid credentials', async () => {
             const res = await request(app)
                 .post('/api/auth/login')
-                .send({ email: 'srinivasbatthula.mypc@gmail.com', password: '1234' });
+                .send({ email: process.env.TEST_EMAIL, password: process.env.TEST_PASSWORD });
 
             expect(res.statusCode).toBe(201);
             expect(res.body.success).toBe(true);

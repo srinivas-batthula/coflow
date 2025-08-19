@@ -1,0 +1,2 @@
+--->> To update local data `fixtures` from cloud-db Run,,
+    ` node scripts/export-fixtures.js `

@@ -135,10 +135,10 @@
               "type": "object",
               "properties": {
                 "email": {
-                  "example": "any"
+                  "example": "srinivasbatthula.mypc@gmail.com"
                 },
                 "password": {
-                  "example": "any"
+                  "example": "1234"
                 }
               }
             }
