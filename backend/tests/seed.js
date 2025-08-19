@@ -24,6 +24,9 @@ async function seedDatabase() {
             fullName: "Srinivas"
         };
         await User.create(testUser);  // uses schema + pre-save hooks
+
+        const users = await User.find({}).lean();
+        console.log(users);
     }
     catch (err) {
         console.error('Failed to Seed Data to Local-DB : -> ', err);
