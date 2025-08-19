@@ -37,6 +37,7 @@ jobs:
       - name: Run Tests
         working-directory: backend
         env:
+          Mongo_DB_URI: ${{ secrets.Mongo_DB_URI }}
           TEST_EMAIL: srinivasb.temp@gmail.com
           TEST_PASSWORD: 1234
           SEED_MODE: fixtures
