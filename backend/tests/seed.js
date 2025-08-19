@@ -22,7 +22,7 @@ async function seedDatabase() {
 
         const testUser = {                  // Insert Test User...
             email: process.env.TEST_EMAIL,
-            password: process.env.TEST_PASSWORD,
+            password: process.env.TEST_PASSWORD, 
             fullName: "Srinivas"
         };
         await mongoose.model('hackpilot_users', User.schema).create(testUser);
