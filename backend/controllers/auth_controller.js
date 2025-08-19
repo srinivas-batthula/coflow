@@ -2,13 +2,14 @@ require("dotenv").config({ path: "./config.env" });
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel.js");
 
+
 const generateToken = (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET, {
     expiresIn: "7d",
   });
 };
 
-// Set cookie options (secure, HTTP-only in production)
+// Set cookie options (secure, HTTP-only in production && Only when frontend & backend are on same origin)
 const cookieOptions = {
   path: "/",
   httpOnly: true,
@@ -36,7 +37,7 @@ const signup = async (req, res) => {
     await newUser.save();
 
     const token = generateToken(newUser._id);
-    res.cookie("token", token, cookieOptions);
+    // res.cookie("token", token, cookieOptions);
 
     return res
       .status(201)
@@ -73,7 +74,7 @@ const login = async (req, res) => {
         .json({ success: false, msg: "Password Not Matched!" });
 
     const token = generateToken(user._id);
-    res.cookie("token", token, cookieOptions);
+    // res.cookie("token", token, cookieOptions);
 
     return res
       .status(201)
@@ -82,7 +83,7 @@ const login = async (req, res) => {
     console.error("error in login Route: " + err.message);
     return res
       .status(500)
-      .json({ success: false, msg: "Error while Logging-In!" });
+      .json({ success: false, msg: "catch: Error while Logging-In!" });
   }
 };
 
@@ -90,22 +91,22 @@ const logout = async (req, res) => {
   try {
     const result = await User.findByIdAndUpdate(req.user._id, { subscription: null }, { new: true, runValidators: true });
     
-    res.clearCookie("token", {
-      path: "/",
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
-    });
+    // res.clearCookie("token", {
+    //   path: "/",
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production",
+    //   sameSite: "Strict",
+    // });
 
     return res
       .status(200)
-      .json({ success: true, msg: "Cookie Cleared successfully." });
+      .json({ success: true, msg: "Token/Cookie Cleared successfully." });
   }
   catch (error) {
     console.error("Error in logout: ", error);
     return res
       .status(500)
-      .json({ success: false, msg: "Error while removing subscription!" });
+      .json({ success: false, msg: "Error while removing subscription or Clearing Cookie/Token!" });
   }
 };
 
@@ -126,6 +127,7 @@ const protectRoute = async (req, res, next) => {
     // Verify the token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     // console.log(jwt.decode(token))
+
     // Fetch the user from the database using userId from decoded token
     const user = await User.findById(decoded.userId);
 

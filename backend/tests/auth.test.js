@@ -28,6 +28,7 @@ describe('Auth API', () => {
             expect(res.body).toHaveProperty('token');
             expect(typeof res.body.token).toBe('string');
             token = res.body.token;
+            console.log(res.body.msg || 'No `msg` field in response-obj!');
         });
 
         it('should return 401/400 for invalid credentials', async () => {
@@ -37,6 +38,7 @@ describe('Auth API', () => {
 
             expect([401, 400, 500]).toContain(res.statusCode);
             expect(res.body.success).toBe(false);
+            console.log(res.body.msg || 'No `msg` field in response-obj!');
         });
     });
 
@@ -50,7 +52,7 @@ describe('Auth API', () => {
             expect(res.body.success).toBe(true);
             expect(res.body.auth).toBe(true);
             expect(res.body).toHaveProperty('user');
-            console.log('validateUser:  ', res.body.user);
+            console.log(res.body.msg || 'No `msg` field in response-obj!');
         });
 
         it('should return 401/400 for invalid credentials', async () => {
@@ -63,6 +65,7 @@ describe('Auth API', () => {
             expect([401, 404]).toContain(res.statusCode);
             expect(res.body.success).toBe(false);
             expect(res.body.auth).toBe(false);
+            console.log(res.body.msg || 'No `msg` field in response-obj!');
         });
     });
 
@@ -72,6 +75,7 @@ describe('Auth API', () => {
 
             expect(res.statusCode).toBe(200);
             expect(res.body.success).toBe(true);
+            console.log(res.body.msg || 'No `msg` field in response-obj!');
         });
     });
 });
