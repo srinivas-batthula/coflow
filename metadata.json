@@ -9,9 +9,9 @@
         "Socket.io",
         "Playwright",
         "MongoDB",
-        "Swagger Docs",
         "Redis",
-        "Docker"
+        "Docker",
+        "jest/supertest"
     ],
     "keyFeatures": [
         "Built CoFlow with a teammate, a real-time hackathon discovery & team coordination platform",

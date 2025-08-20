@@ -1,14 +1,14 @@
 // tests/swaggerAuto.test.js
-const request = require('supertest');
+const request = require('supertest');   // Sends requests to http API endpoints
 const fs = require('fs');
 const path = require('path');
-const sampler = require('openapi-sampler');
+const sampler = require('openapi-sampler');     // generates fake body data for requests
+const app = require('../app');      //Express App
 
 // load swagger.json
 const swaggerPath = path.join(__dirname, '../docs/swagger.json');
 const swaggerDoc = JSON.parse(fs.readFileSync(swaggerPath, 'utf8'));
 
-const app = require('../app');      //Express App
 
 // helper: build request body using schema (openapi-sampler)
 function buildFakeRequestBody(schema) {
@@ -30,9 +30,9 @@ afterAll(() => {
 });
 
 
-// dynamically create tests
+// Dynamically create tests for all API endpoints & validate them based on `swagger.json` schema...
 describe('Automated API Tests from Swagger', () => {
-    for (const [routePath, methods] of Object.entries(swaggerDoc.paths)) {
+    for (const [routePath, methods] of Object.entries(swaggerDoc.paths)) {  // Request each endpoint in `swagger.json` by traversing through them...
         for (const [method, operation] of Object.entries(methods)) {
             test(`${method.toUpperCase()} ${routePath}`, async () => {
                 const apiPrefix = swaggerDoc.basePath || '';
@@ -44,7 +44,7 @@ describe('Automated API Tests from Swagger', () => {
                 if (operation.requestBody && operation.requestBody.content) {
                     const content = operation.requestBody.content['application/json'];
                     if (content && content.schema) {
-                        const fakeBody = buildFakeRequestBody(content.schema);
+                        const fakeBody = buildFakeRequestBody(content.schema);  // generating fake body data using `openapi-sampler`
                         req = req.send(fakeBody).set('Content-Type', 'application/json');
                     }
                 }
@@ -53,14 +53,14 @@ describe('Automated API Tests from Swagger', () => {
                 const res = await req;
                 const expectedCodes = Object.keys(operation.responses);
 
-                // if (!expectedCodes.includes(String(res.status))) {       // Logging the response status codes...
+                // if (!expectedCodes.includes(String(res.status))) {       // Logging the false response status codes...
                 //     console.warn(`⚠️ ${method.toUpperCase()} ${routePath} returned ${res.status}, not in spec: [${expectedCodes.join(', ')}m  ]`);
                 // }
 
                 expect(res.status).toBeGreaterThanOrEqual(200);
                 expect(res.status).toBeLessThan(600);
 
-                // Validate response against Swagger schema...
+                // Validate response against Swagger schema by using `jestOpenAPI`...
                 // expect(res).toSatisfyApiSpec();
             }, 20000); // increase timeout in case endpoints are slow
         }
