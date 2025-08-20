@@ -11,7 +11,7 @@ const fs = require('fs');
  */
 async function seedDatabase() {
     try {
-        console.log('⚠ Seeding from static fixtures!'+process.env.TEST_EMAIL);
+        console.log('⚠ Seeding from static fixtures!');
 
         const usersData = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'users.json'), 'utf8'));
         const hackathonsData = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'hackathons.json'), 'utf8'));
@@ -29,7 +29,6 @@ async function seedDatabase() {
         await User.create(testUser);  // uses schema + pre-save hooks
 
         const users = await User.find({}).lean();
-        console.log(users);
     }
     catch (err) {
         console.error('Failed to Seed Data to Local-DB : -> ', err);
