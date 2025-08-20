@@ -35,7 +35,10 @@ describe('Automated API Tests from Swagger', () => {
     for (const [routePath, methods] of Object.entries(swaggerDoc.paths)) {
         for (const [method, operation] of Object.entries(methods)) {
             test(`${method.toUpperCase()} ${routePath}`, async () => {
-                let req = request(app)[method](routePath.replace(/{/g, ':').replace(/}/g, ''));
+                const apiPrefix = swaggerDoc.basePath || '';
+                let req = request(app)[method](
+                    apiPrefix + routePath.replace(/{/g, ':').replace(/}/g, '')
+                );
 
                 // if body is required
                 if (operation.requestBody && operation.requestBody.content) {
@@ -51,11 +54,14 @@ describe('Automated API Tests from Swagger', () => {
                 const expectedCodes = Object.keys(operation.responses);
 
                 // if (!expectedCodes.includes(String(res.status))) {       // Logging the response status codes...
-                //     console.warn(`⚠️ ${method.toUpperCase()} ${routePath} returned ${res.status}, not in spec: [${expectedCodes.join(', ')}]`);
+                //     console.warn(`⚠️ ${method.toUpperCase()} ${routePath} returned ${res.status}, not in spec: [${expectedCodes.join(', ')}m  ]`);
                 // }
+
                 expect(res.status).toBeGreaterThanOrEqual(200);
                 expect(res.status).toBeLessThan(600);
 
+                // Validate response against Swagger schema...
+                // expect(res).toSatisfyApiSpec();
             }, 20000); // increase timeout in case endpoints are slow
         }
     }

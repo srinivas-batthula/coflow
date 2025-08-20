@@ -2,6 +2,7 @@
 const mongoose = require('mongoose');
 const User = require('../models/userModel');
 const Hackathon = require('../models/hackathonsModel');
+const Team = require('../models/TeamModel');
 const path = require('path');
 const fs = require('fs');
 
@@ -14,9 +15,11 @@ async function seedDatabase() {
 
         const usersData = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'users.json'), 'utf8'));
         const hackathonsData = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'hackathons.json'), 'utf8'));
+        const teamsData = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures', 'teams.json'), 'utf8'));
 
         await mongoose.model('hackpilot_users', User.schema).insertMany(usersData);
         await mongoose.model('hackpilot_hackathons', Hackathon.schema).insertMany(hackathonsData);
+        await mongoose.model('hackpilot_teams', Team.schema).insertMany(teamsData);
 
         const testUser = {                  // Insert Test User...
             email: process.env.TEST_EMAIL,
