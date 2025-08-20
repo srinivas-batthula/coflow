@@ -92,6 +92,8 @@ coflow/
 │ ├── socket/
 │ ├── utils/
 │ ├── workers/
+│ ├── scripts/
+│ ├── tests/
 │ ├── app.js
 │ ├── server.js
 │ ├── Dockerfile
