@@ -22,14 +22,14 @@ describe('Auth API', () => {
             const res = await request(app)
                 .post('/api/auth/login')
                 .send({ email: process.env.TEST_EMAIL, password: process.env.TEST_PASSWORD });
-            console.log(process.env.TEST_EMAIL);
+            console.log(process.env.TEST_EMAIL+process.env.TEST_PASSWORD);
 
             expect(res.statusCode).toBe(201);
             expect(res.body.success).toBe(true);
             expect(res.body).toHaveProperty('token');
             expect(typeof res.body.token).toBe('string');
             token = res.body.token;
-            console.log(res.body.msg || 'No `msg` field in response-obj!');
+            console.log(res.body || 'No `msg` field in response-obj!');
         });
 
         it('should return 401/400 for invalid credentials', async () => {
