@@ -10,10 +10,10 @@ const MainRouter = require("./routes/MainRouter");
 const socketAuth = require("./socket/socketAuth");
 const http = require("http");
 const { Server } = require("socket.io");
-const swaggerUi = require("swagger-ui-express")
-const swaggerDocument = require("./docs/swagger.json")
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./docs/swagger.json");
 
-const app = express();  
+const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 
