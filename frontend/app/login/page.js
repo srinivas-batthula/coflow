@@ -31,10 +31,12 @@ export default function AuthPage() {
   const [showSignup, setShowSignup] = React.useState(false);
   const token = useSearchParams().get("token") || "";
   const is_from_google = useSearchParams().get("google") || "";
+  const is_from_github = useSearchParams().get("github") || "";
   const router = useRouter();
+
   useEffect(() => {
     // Setting Token When User logged in via `Google`...
-    if (is_from_google === "true") {
+    if (is_from_google === "true" || is_from_github === "true") {
       typeof window !== "undefined"
         ? localStorage.setItem("login", true)
         : null;
@@ -45,13 +47,24 @@ export default function AuthPage() {
     }
   }, [token, is_from_google]);
 
-  const handleOAuth = async (e) => {
+  const handleGoogleOAuth = async (e) => {  // Send the user to the backend to start the `Google OAuth` flow
     e.preventDefault();
     try {
-      // Send the user to the backend to start the `Google OAuth` flow
       typeof window !== "undefined"
         ? (window.location.href =
-            process.env.NEXT_PUBLIC_BACKEND_URL + "/api/auth/google")
+          process.env.NEXT_PUBLIC_BACKEND_URL + "/api/auth/google")
+        : null; // Redirect to backend route
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleGithubOAuth = async (e) => {  // Send the user to the backend to start the `GitHub OAuth` flow
+    e.preventDefault();
+    try {
+      typeof window !== "undefined"
+        ? (window.location.href =
+          process.env.NEXT_PUBLIC_BACKEND_URL + "/api/auth/github")
         : null; // Redirect to backend route
     } catch (error) {
       console.log(error);
@@ -71,10 +84,11 @@ export default function AuthPage() {
       <div className="w-full max-w-5xl h-[650px] flex flex-col md:flex-row bg-white rounded-3xl shadow-2xl overflow-hidden transition-all duration-700 ease-in-out">
         {/* Form Side */}
         <div
-          className={`w-full md:w-1/2 h-full flex flex-col items-center justify-center order-1 ${
-            showSignup ? "md:order-2" : "md:order-1"
-          } transition-all duration-700 ease-in-out`}
+          className={`w-full md:w-1/2 h-full flex flex-col items-center justify-center order-1 ${showSignup ? "md:order-2" : "md:order-1"
+            } transition-all duration-700 ease-in-out`}
         >
+
+          {/* Login Forms... */}
           <div className="w-full h-fit flex items-center justify-center">
             {showSignup ? (
               <SignupForm onSwitch={() => setShowSignup(false)} />
@@ -82,9 +96,10 @@ export default function AuthPage() {
               <LoginForm onSwitch={() => setShowSignup(true)} />
             )}
           </div>
-          {/* Google OAuth2.0 */}
+
+          {/* Google OAuth btn... */}
           <button
-            onClick={handleOAuth}
+            onClick={handleGoogleOAuth}
             className="mt-6 flex items-center justify-center gap-3 px-6 py-2 rounded-xl bg-white border border-gray-300 shadow hover:bg-gray-100 transition-all duration-150 text-black font-semibold text-lg cursor-pointer"
             style={{ minWidth: 260 }}
           >
@@ -115,12 +130,32 @@ export default function AuthPage() {
             </svg>
             Continue with Google
           </button>
+          {/* GitHub OAuth btn... */}
+          <button
+            onClick={handleGithubOAuth}
+            className="mt-4 flex items-center justify-center gap-3 px-6 py-2 rounded-xl bg-black border border-gray-800 shadow hover:bg-gray-700 transition-all duration-150 text-white font-semibold text-lg cursor-pointer"
+            style={{ minWidth: 260 }}
+          >
+            <svg
+              className="w-6 h-6"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fillRule="evenodd"
+                d="M12 0C5.37 0 0 5.48 0 12.25c0 5.42 3.44 10.01 8.21 11.64.6.11.82-.27.82-.6v-2.16c-3.34.74-4.04-1.64-4.04-1.64-.55-1.43-1.34-1.81-1.34-1.81-1.09-.77.08-.76.08-.76 1.2.09 1.83 1.25 1.83 1.25 1.07 1.87 2.8 1.33 3.48 1.02.11-.79.42-1.33.76-1.63-2.67-.31-5.47-1.37-5.47-6.08 0-1.34.46-2.44 1.23-3.3-.12-.31-.54-1.57.12-3.27 0 0 1.01-.33 3.3 1.26a11.23 11.23 0 016 0c2.29-1.59 3.3-1.26 3.3-1.26.66 1.7.24 2.96.12 3.27.77.86 1.23 1.96 1.23 3.3 0 4.72-2.8 5.76-5.47 6.07.43.37.82 1.1.82 2.22v3.29c0 .34.22.72.82.6C20.56 22.26 24 17.67 24 12.25 24 5.48 18.63 0 12 0z"
+                clipRule="evenodd"
+              />
+            </svg>
+            Continue with GitHub
+          </button>
+
         </div>
         {/* Art Side */}
         <div
-          className={`hidden md:flex w-1/2 h-full items-center justify-center bg-gradient-to-br from-purple-100 to-blue-100 order-2 ${
-            showSignup ? "md:order-1" : "md:order-2"
-          } transition-all duration-700 ease-in-out`}
+          className={`hidden md:flex w-1/2 h-full items-center justify-center bg-gradient-to-br from-purple-100 to-blue-100 order-2 ${showSignup ? "md:order-1" : "md:order-2"
+            } transition-all duration-700 ease-in-out`}
         >
           <AuthArt isSignup={showSignup} />
         </div>

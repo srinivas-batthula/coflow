@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true, lowercase: true },
   password: { type: String},
   is_from_google: { type: Boolean, default: false },
+  is_from_github: { type: Boolean, default: false },
   subscription: {
     endpoint: {
       type: String
