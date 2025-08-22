@@ -75,7 +75,7 @@ Sends a Push-Notification to that offline user
 - **Database:** MongoDB Atlas + Mongoose ODM
 - **API's:** [Devpost API](https://devpost.com/api/hackathons)
 - **API Docs:** Swagger UI
-- **Auth:** JWT + Google OAuth
+- **Auth:** JWT + Google & GitHub OAuth
 - **Push Notifcations:** Web-Push, Redis Queue
 - **Testing:** Jest, SuperTest
 - **Deployment:** Docker, Render, Netlify, GitHub Actions
