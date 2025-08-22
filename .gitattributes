@@ -1,0 +1,49 @@
+# Auto-detect text files and normalize line endings to LF
+* text=auto
+
+# JavaScript, TypeScript, and JSON should always use LF endings
+*.js   text eol=lf
+*.jsx  text eol=lf
+*.ts   text eol=lf
+*.tsx  text eol=lf
+*.json text eol=lf
+
+# HTML/CSS files
+*.html text eol=lf
+*.css  text eol=lf
+*.scss text eol=lf
+
+# Markdown and documentation
+*.md   text eol=lf
+*.txt  text eol=lf
+
+# Shell and config scripts
+*.sh   text eol=lf
+*.env* text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+
+# Treat images and binaries as binary (no diff/merge)
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.svg  binary
+*.ico  binary
+*.woff binary
+*.woff2 binary
+*.ttf  binary
+*.eot  binary
+
+# Ignore diffs for compiled/minified/bundled files
+*.min.js -diff
+*.bundle.js -diff
+
+# Ignore build output in archives
+build/** export-ignore
+dist/**  export-ignore
+node_modules/** export-ignore
+
+# GitHub linguist overrides
+package-lock.json linguist-generated
+yarn.lock         linguist-generated
