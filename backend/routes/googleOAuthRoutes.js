@@ -54,7 +54,7 @@ router.get(
             return res
                 .status(201)
                 .redirect(
-                    process.env.FRONTEND_URL + `/login?token=${token}&google=true`
+                    process.env.FRONTEND_URL + `/login?token=${token}oauth=true&type=google`
                 );
         } catch (error) {
             return res.status(500).redirect(process.env.FRONTEND_URL + "/login");

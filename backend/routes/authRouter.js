@@ -29,7 +29,7 @@ router.patch("/update", protectRoute, updateUserDetails);
 //      OAuth2.0 Routes...
 // ====================
 router.use('/google', googleOAuthRoutes);   // Google OAuth2.0 Routes
-router.use('/github', githubOAuthRoutes);   // Google OAuth2.0 Routes
+router.use('/github', githubOAuthRoutes);   // GitHub OAuth2.0 Routes
 
 
 module.exports = router;
