@@ -48,7 +48,7 @@ app.use(limiter);
 
 app.use(helmet());
 
-app.use(passport.initialize()); //Initialize OAuth2.0
+app.use(passport.initialize()); //Initialize OAuth2.0 .
 
 // Register OAuth strategies
 require('./strategies/googleStrategy')(passport);
