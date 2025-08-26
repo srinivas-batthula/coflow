@@ -1,13 +1,13 @@
 [
-  {
-    "subscription": null,
-    "_id": "6845c865862cd80fb918838a",
-    "fullName": "Srinivas Batthula",
-    "email": "srinivasbatthula.mypc@gmail.com",
-    "is_from_google": false,
-    "createdAt": "2025-06-08T17:29:09.554Z",
-    "updatedAt": "2025-08-15T12:51:58.464Z",
-    "__v": 0,
-    "password": "$2b$13$nuunP8NQJAoqcFDxJSMcaOtFFC56R.Q/ePDfiXrBFV9vTHghnHUR."
-  }
+    {
+        "subscription": null,
+        "_id": "6845c865862cd80fb918838a",
+        "fullName": "Srinivas Batthula",
+        "email": "srinivasbatthula.mypc@gmail.com",
+        "is_from_google": false,
+        "createdAt": "2025-06-08T17:29:09.554Z",
+        "updatedAt": "2025-08-15T12:51:58.464Z",
+        "__v": 0,
+        "password": "$2b$13$nuunP8NQJAoqcFDxJSMcaOtFFC56R.Q/ePDfiXrBFV9vTHghnHUR."
+    }
 ]

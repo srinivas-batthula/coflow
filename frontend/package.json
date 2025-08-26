@@ -1,31 +1,31 @@
 {
-  "name": "hackpilot",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "lint:check": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix"
-  },
-  "dependencies": {
-    "dotenv": "^16.5.0",
-    "emoji-picker-react": "^4.12.2",
-    "idb": "^8.0.3",
-    "lucide-react": "^0.511.0",
-    "next": "15.2.1",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-hot-toast": "^2.5.2",
-    "react-icons": "^5.5.0",
-    "react-share": "^5.2.2",
-    "socket.io-client": "^4.8.1",
-    "zustand": "^5.0.4"
-  },
-  "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4"
-  }
+    "name": "hackpilot",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "lint": "next lint",
+        "lint:check": "eslint . --ext .js,.jsx,.ts,.tsx",
+        "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix"
+    },
+    "dependencies": {
+        "dotenv": "^16.5.0",
+        "emoji-picker-react": "^4.12.2",
+        "idb": "^8.0.3",
+        "lucide-react": "^0.511.0",
+        "next": "15.2.1",
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0",
+        "react-hot-toast": "^2.5.2",
+        "react-icons": "^5.5.0",
+        "react-share": "^5.2.2",
+        "socket.io-client": "^4.8.1",
+        "zustand": "^5.0.4"
+    },
+    "devDependencies": {
+        "@tailwindcss/postcss": "^4",
+        "tailwindcss": "^4"
+    }
 }

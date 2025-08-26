@@ -1,11 +1,11 @@
 const router = require('express').Router();
 const {
-  signup,
-  login,
-  logout,
-  protectRoute,
-  getUserDetails,
-  updateUserDetails,
+    signup,
+    login,
+    logout,
+    protectRoute,
+    getUserDetails,
+    updateUserDetails,
 } = require('../controllers/auth_controller.js');
 const EmailSender = require('../services/notifications/emailSender.js');
 const googleOAuthRoutes = require('./googleOAuthRoutes.js');

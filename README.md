@@ -183,7 +183,7 @@ coflow/
 
 ## **_Before Committing your changes to GitHub_**
 
-##### Follow the standards mentioned in [coflow/test_instructions.txt](https://github.com/srinivas-batthula/coflow/blob/main/test_instructions.txt) file for successful CI/CD checks.
+#### **--->>>** Follow the standards mentioned in [**coflow/test_instructions.txt**](https://github.com/srinivas-batthula/coflow/blob/main/test_instructions.txt) file for successful CI/CD checks.
 
 ## 📝 License
 

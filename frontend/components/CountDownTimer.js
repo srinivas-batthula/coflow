@@ -2,46 +2,46 @@ import { useEffect, useState } from 'react';
 
 // CountdownTimer component (only re-renders itself every second)
 function CountdownTimer({ deadline }) {
-  const [timeLeft, setTimeLeft] = useState('');
+    const [timeLeft, setTimeLeft] = useState('');
 
-  useEffect(() => {
-    if (!deadline) {
-      setTimeLeft('');
-      return;
-    }
+    useEffect(() => {
+        if (!deadline) {
+            setTimeLeft('');
+            return;
+        }
 
-    const updateCountdown = () => {
-      const now = new Date();
-      const deadlineDate = new Date(deadline);
-      const diff = deadlineDate - now;
+        const updateCountdown = () => {
+            const now = new Date();
+            const deadlineDate = new Date(deadline);
+            const diff = deadlineDate - now;
 
-      if (diff <= 0) {
-        setTimeLeft('Deadline passed, but you can still submit.');
-      } else {
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-        const minutes = Math.floor((diff / (1000 * 60)) % 60);
-        const seconds = Math.floor((diff / 1000) % 60);
+            if (diff <= 0) {
+                setTimeLeft('Deadline passed, but you can still submit.');
+            } else {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                const minutes = Math.floor((diff / (1000 * 60)) % 60);
+                const seconds = Math.floor((diff / 1000) % 60);
 
-        let timeString = '';
-        if (days > 0) timeString += `${days}d `;
-        timeString += `${hours.toString().padStart(2, '0')}h `;
-        timeString += `${minutes.toString().padStart(2, '0')}m `;
-        timeString += `${seconds.toString().padStart(2, '0')}s`;
+                let timeString = '';
+                if (days > 0) timeString += `${days}d `;
+                timeString += `${hours.toString().padStart(2, '0')}h `;
+                timeString += `${minutes.toString().padStart(2, '0')}m `;
+                timeString += `${seconds.toString().padStart(2, '0')}s`;
 
-        setTimeLeft(`Time left: ${timeString}`);
-      }
-    };
+                setTimeLeft(`Time left: ${timeString}`);
+            }
+        };
 
-    updateCountdown();
+        updateCountdown();
 
-    const intervalId = setInterval(updateCountdown, 1000);
-    return () => clearInterval(intervalId);
-  }, [deadline]);
+        const intervalId = setInterval(updateCountdown, 1000);
+        return () => clearInterval(intervalId);
+    }, [deadline]);
 
-  return (
-    <p
-      className="
+    return (
+        <p
+            className="
       mt-1
       text-red-600
       font-semibold
@@ -56,11 +56,11 @@ function CountdownTimer({ deadline }) {
       ease-in-out
       aria-live-politeness
     "
-      aria-live="polite"
-    >
-      {timeLeft}
-    </p>
-  );
+            aria-live="polite"
+        >
+            {timeLeft}
+        </p>
+    );
 }
 
 export default CountdownTimer;

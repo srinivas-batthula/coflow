@@ -1,28 +1,28 @@
 [
-  {
-    "_id": "687f6d5243c7235093bb91f1",
-    "title": "Google Maps Platform Awards",
-    "url": "https://googlemapsplatformawards.devpost.com/?ref_feature=challenge&ref_medium=discover",
-    "date": "May 20 - Jul 31, 2025",
-    "location": "Online",
-    "city": "Global",
-    "prize": "$0",
-    "host": "Google",
-    "__v": 0,
-    "createdAt": "2025-07-22T10:52:02.827Z",
-    "updatedAt": "2025-07-22T10:52:02.827Z"
-  },
-  {
-    "_id": "687f6d5243c7235093bb9214",
-    "title": "RevenueCat Shipaton 2025",
-    "url": "https://revenuecat-shipaton-2025.devpost.com/?ref_feature=challenge&ref_medium=discover",
-    "date": "Aug 01 - Oct 01, 2025",
-    "location": "Online",
-    "city": "Global",
-    "prize": "$274,000",
-    "host": "RevenueCat",
-    "__v": 0,
-    "createdAt": "2025-07-22T10:52:02.924Z",
-    "updatedAt": "2025-07-22T10:52:02.924Z"
-  }
+    {
+        "_id": "687f6d5243c7235093bb91f1",
+        "title": "Google Maps Platform Awards",
+        "url": "https://googlemapsplatformawards.devpost.com/?ref_feature=challenge&ref_medium=discover",
+        "date": "May 20 - Jul 31, 2025",
+        "location": "Online",
+        "city": "Global",
+        "prize": "$0",
+        "host": "Google",
+        "__v": 0,
+        "createdAt": "2025-07-22T10:52:02.827Z",
+        "updatedAt": "2025-07-22T10:52:02.827Z"
+    },
+    {
+        "_id": "687f6d5243c7235093bb9214",
+        "title": "RevenueCat Shipaton 2025",
+        "url": "https://revenuecat-shipaton-2025.devpost.com/?ref_feature=challenge&ref_medium=discover",
+        "date": "Aug 01 - Oct 01, 2025",
+        "location": "Online",
+        "city": "Global",
+        "prize": "$274,000",
+        "host": "RevenueCat",
+        "__v": 0,
+        "createdAt": "2025-07-22T10:52:02.924Z",
+        "updatedAt": "2025-07-22T10:52:02.924Z"
+    }
 ]

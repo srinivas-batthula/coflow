@@ -1,81 +1,81 @@
 name: Backend deployment
 
 on:
-  push:
-    paths:
-      - "backend/**" # Run only if `backend` files change
-      - "eslint.config.mjs"
-      - ".prettierrc"
-      - "package.json"
-      - "package-lock.json"
-      - ".github/workflows/*.yml"
-    branches:
-      - main # Trigger only on `main` branch
+    push:
+        paths:
+            - 'backend/**' # Run only if `backend` files change
+            - 'eslint.config.mjs'
+            - '.prettierrc'
+            - 'package.json'
+            - 'package-lock.json'
+            - '.github/workflows/*.yml'
+        branches:
+            - main # Trigger only on `main` branch
 
 env:
-  DOCKER_IMAGE_NAME: srinivasbatthula05/coflow-backend
+    DOCKER_IMAGE_NAME: srinivasbatthula05/coflow-backend
 
 jobs:
-  lint-and-test: # Job-1
-    runs-on: ubuntu-latest
+    lint-and-test: # Job-1
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3 # Pull repo code
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3 # Pull repo code
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18 # Use Node-18
+            - name: Set up Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 18 # Use Node-18
 
-      # Clean Install of all deps
-      - name: Install root devDependencies (for prettier & eslint)
-        run: npm ci # Clean install deps
-        working-directory: .
+            # Clean Install of all deps
+            - name: Install root devDependencies (for prettier & eslint)
+              run: npm ci # Clean install deps
+              working-directory: .
 
-      - name: Install dependencies (./backend)
-        run: npm ci # Clean install deps
-        working-directory: backend
+            - name: Install dependencies (./backend)
+              run: npm ci # Clean install deps
+              working-directory: backend
 
-      - name: Run Prettier Check (from repo root ./coflow) # To 'fix' any 'issues' related to Formatting(prettier) & Linting(EsLint),
-        run: npm run format:check # Enforce code formatting       # Visit at ``` coflow/test_instructions.txt ```...
+            - name: Run Prettier Check (from repo root ./coflow) # To 'fix' any 'issues' related to Formatting(prettier) & Linting(EsLint),
+              run: npm run format:check # Enforce code formatting       # Visit at ``` coflow/test_instructions.txt ```...
 
-      - name: Run ESLint (only in ./backend dir)
-        run: npm run lint:check # Lint backend files
-        working-directory: backend
+            - name: Run ESLint (only in ./backend dir)
+              run: npm run lint:check # Lint backend files
+              working-directory: backend
 
-      - name: Run Tests (Jest + SuperTest)
-        working-directory: backend # Run Backend Tests
-        env:
-          TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
-          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
-          SEED_MODE: fixtures
-          BACKEND_ENV: test
-        run: npm test
+            - name: Run Tests (Jest + SuperTest)
+              working-directory: backend # Run Backend Tests
+              env:
+                  TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
+                  TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+                  SEED_MODE: fixtures
+                  BACKEND_ENV: test
+              run: npm test
 
-  build-and-deploy: # Job-2
-    runs-on: ubuntu-latest
-    needs: lint-and-test # Only runs if Lints & Tests passed successfully
+    build-and-deploy: # Job-2
+        runs-on: ubuntu-latest
+        needs: lint-and-test # Only runs if Lints & Tests passed successfully
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3 # Pull repo code
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3 # Pull repo code
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3 # Enable advanced Docker builds
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3 # Enable advanced Docker builds
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+            - name: Login to Docker Hub
+              uses: docker/login-action@v3
+              with:
+                  username: ${{ secrets.DOCKER_USERNAME }}
+                  password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and Push Backend Image
-        run: | # Build & Push Image to Docker-Hub
-          docker build \
-            -t ${{ secrets.DOCKER_USERNAME }}/coflow-backend:latest \
-            ./backend
-          docker push ${{ secrets.DOCKER_USERNAME }}/coflow-backend:latest
+            - name: Build and Push Backend Image
+              run: | # Build & Push Image to Docker-Hub
+                  docker build \
+                    -t ${{ secrets.DOCKER_USERNAME }}/coflow-backend:latest \
+                    ./backend
+                  docker push ${{ secrets.DOCKER_USERNAME }}/coflow-backend:latest
 
-      - name: Trigger Backend instance Re-Deploy # Triggers Auto-ReDeploy on Render via deploy-hook
-        run: curl -X POST ${{ secrets.RENDER_HOOK_BACKEND }}
+            - name: Trigger Backend instance Re-Deploy # Triggers Auto-ReDeploy on Render via deploy-hook
+              run: curl -X POST ${{ secrets.RENDER_HOOK_BACKEND }}

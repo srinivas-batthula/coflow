@@ -24,25 +24,25 @@ app.use(cookieParser());
 app.use(express.static('public'));
 
 const corsOptions = {
-  origin: ['http://localhost:3000', 'https://coflow.netlify.app'], // Allow frontend domain
-  credentials: true, // Allow credentials (cookies)
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  exposedHeaders: ['Authorization'],
-  maxAge: 600,
+    origin: ['http://localhost:3000', 'https://coflow.netlify.app'], // Allow frontend domain
+    credentials: true, // Allow credentials (cookies)
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['Authorization'],
+    maxAge: 600,
 };
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 
 const limiter = rateLimit({
-  //Must to be used in production to prevent attacks...
-  windowMs: 1 * 60 * 1000, // 1 minute
-  max: 20, // limit each IP to 15 requests per windowMs
-  message: {
-    success: false,
-    msg: 'Too many requests from this IP, please try again after 1 minute',
-  },
-  headers: true,
+    //Must to be used in production to prevent attacks...
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 20, // limit each IP to 15 requests per windowMs
+    message: {
+        success: false,
+        msg: 'Too many requests from this IP, please try again after 1 minute',
+    },
+    headers: true,
 });
 app.use(limiter);
 
@@ -57,8 +57,8 @@ require('./strategies/githubStrategy')(passport);
 // WebSocket connection...
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: corsOptions,
-  transports: ['websocket'],
+    cors: corsOptions,
+    transports: ['websocket'],
 });
 // WebSockets Auth Middleware
 io.use(socketAuth);
@@ -71,10 +71,10 @@ require('./socket/index')(io);
 
 // REST API...
 app.get('/', async (req, res) => {
-  return res.status(200).json({
-    status: 'success',
-    details: `You are Viewing a Non-API Route (${req.url}), Use '/api/' for all other endpoints to access them`,
-  });
+    return res.status(200).json({
+        status: 'success',
+        details: `You are Viewing a Non-API Route (${req.url}), Use '/api/' for all other endpoints to access them`,
+    });
 });
 
 // Serve Swagger UI Docs...
@@ -84,10 +84,10 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api', MainRouter);
 
 app.use((req, res) => {
-  return res.status(404).json({
-    status: 'Not Found',
-    details: `Requested path/method {${req.url} & ${req.method}} Not Found`,
-  });
+    return res.status(404).json({
+        status: 'Not Found',
+        details: `Requested path/method {${req.url} & ${req.method}} Not Found`,
+    });
 });
 
 app.use(errorHandler);
