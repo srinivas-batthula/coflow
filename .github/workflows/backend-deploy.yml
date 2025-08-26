@@ -4,6 +4,11 @@ on:
   push:
     paths:
       - "backend/**" # Run only if `backend` files change
+      - "eslint.config.mjs"
+      - ".prettierrc"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/*.yml"
     branches:
       - main # Trigger only on `main` branch
 
@@ -23,7 +28,12 @@ jobs:
         with:
           node-version: 18 # Use Node-18
 
-      - name: Install dependencies
+      # Clean Install of all deps
+      - name: Install root devDependencies (for prettier & eslint)
+        run: npm ci # Clean install deps
+        working-directory: .
+
+      - name: Install dependencies (./backend)
         run: npm ci # Clean install deps
         working-directory: backend
 
