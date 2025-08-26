@@ -1,11 +1,11 @@
-"use client";
-import { useAuthStore } from "@/store/useAuthStore";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+'use client';
+import { useAuthStore } from '@/store/useAuthStore';
+import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function Profile({ onEdit, onLogout }) {
   const pathname = usePathname();
-  const parts = pathname.split("/");
+  const parts = pathname.split('/');
   const userId = parts[parts.length - 1];
 
   const [userInfo, setUserInfo] = useState(null);
@@ -13,29 +13,25 @@ export default function Profile({ onEdit, onLogout }) {
 
   const user = useAuthStore((s) => s.user);
   const token = useAuthStore((s) => s.token);
-  const loading = useAuthStore((s) => s.loading);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         setLoadingProfile(true); //
-        let res = await fetch(
-          process.env.NEXT_PUBLIC_BACKEND_URL + `/api/auth/user/${userId}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            credentials: "include",
-          }
-        );
+        let res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/api/auth/user/${userId}`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          credentials: 'include',
+        });
         res = await res.json();
 
         if (res.success && res.user) {
           setUserInfo(res.user);
         }
       } catch (error) {
-        console.error("Error in profile: " + error);
+        console.error('Error in profile: ' + error);
       } finally {
         setLoadingProfile(false); // 👈 stop loading
       }
@@ -46,7 +42,7 @@ export default function Profile({ onEdit, onLogout }) {
     } else {
       fetchUser();
     }
-  }, [user, userId]);
+  }, [user, userId, token]);
 
   if (loadingProfile) {
     return (
@@ -81,16 +77,12 @@ export default function Profile({ onEdit, onLogout }) {
         {/* Avatar */}
         <div className="w-32 h-32 bg-gradient-to-br from-purple-100 to-blue-100 rounded-full flex items-center justify-center shadow-md border-4 border-white ring-2 ring-purple-100">
           <span className="text-5xl font-bold text-purple-700">
-            {userInfo.fullName?.[0]?.toUpperCase() ||
-              userInfo.email?.[0]?.toUpperCase() ||
-              "U"}
+            {userInfo.fullName?.[0]?.toUpperCase() || userInfo.email?.[0]?.toUpperCase() || 'U'}
           </span>
         </div>
 
         {/* Name */}
-        <h2 className="text-3xl font-bold text-gray-800">
-          {userInfo.fullName || "Unnamed User"}
-        </h2>
+        <h2 className="text-3xl font-bold text-gray-800">{userInfo.fullName || 'Unnamed User'}</h2>
 
         {/* Email */}
         <p className="text-md text-gray-600">
@@ -99,14 +91,14 @@ export default function Profile({ onEdit, onLogout }) {
 
         {/* Joined Date */}
         <p className="text-sm text-gray-400">
-          <strong>Joined:</strong>{" "}
+          <strong>Joined:</strong>{' '}
           {userInfo.createdAt
             ? new Date(userInfo.createdAt).toLocaleDateString(undefined, {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
               })
-            : "N/A"}
+            : 'N/A'}
         </p>
 
         {/* Buttons */}

@@ -6,10 +6,7 @@
     "version": "1.0.0"
   },
   "basePath": "/api",
-  "schemes": [
-    "https",
-    "http"
-  ],
+  "schemes": ["https", "http"],
   "paths": {
     "/hackathons": {
       "get": {

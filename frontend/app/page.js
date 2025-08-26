@@ -1,7 +1,7 @@
-import HomePage from "@/components/Home";
+import HomePage from '@/components/Home';
 
 export default async function HPage() {
-            // SSR won't work in Netlify (deployment)...
+  // SSR won't work in Netlify (deployment)...
   // let data = []
   // try {
   //   const res = await fetch(
@@ -16,7 +16,7 @@ export default async function HPage() {
 
   return (
     <div>
-      <HomePage /> 
+      <HomePage />
     </div>
   );
 }

@@ -1,8 +1,8 @@
 // models/hackathonsModel.js
 const mongoose = require('mongoose');
 
-
-const hackathonSchema = new mongoose.Schema({
+const hackathonSchema = new mongoose.Schema(
+  {
     title: { type: String, unique: true },
     url: { type: String, unique: true },
     date: String,
@@ -10,7 +10,8 @@ const hackathonSchema = new mongoose.Schema({
     city: String,
     prize: String,
     host: String,
-}, {timestamps: true});
-
+  },
+  { timestamps: true }
+);
 
 module.exports = mongoose.model('hackpilot_hackathons', hackathonSchema);

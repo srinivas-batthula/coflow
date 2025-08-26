@@ -1,0 +1,70 @@
+
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+
+# =========================
+# Global
+# =========================
+
+### VisualStudioCode ###
+.vscode/*
+
+# dependencies
+**/node_modules/
+
+# Editors / IDEs
+.vscode/
+.idea/
+*.swp
+
+# Env files (keep local only)
+.env
+*.env
+.env.local
+.env.*.local
+**/.env
+**/*.env
+**/.env.local
+**/.env.*.local
+
+
+# =========================
+# Frontend (React / Next.js)
+# =========================
+
+# Build files
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/dist/
+frontend/.turbo/
+frontend/.vercel/
+
+# Cache
+frontend/.cache
+frontend/.eslintcache
+
+# Testing
+frontend/coverage/
+
+# vercel
+.vercel
+
+
+# =========================
+# Backend (Express / Node.js)
+# =========================
+
+# Build files
+backend/dist/
+backend/build/
+backend/coverage/
+
+
+# =========================
+# Misc
+# =========================
+
+# Typescript cache
+*.tsbuildinfo
+next-env.d.ts

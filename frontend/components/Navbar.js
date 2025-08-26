@@ -1,8 +1,9 @@
-import { useAuthStore } from "@/store/useAuthStore";
-import { useRouter } from "next/navigation";
-import { FaUserCircle } from "react-icons/fa";
-import { useRef, useState, useEffect } from "react";
-import toast from "react-hot-toast";
+import { useAuthStore } from '@/store/useAuthStore';
+import { useRouter } from 'next/navigation';
+import { FaUserCircle } from 'react-icons/fa';
+import { useRef, useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
+import Image from 'next/image';
 
 export default function Navbar() {
   const router = useRouter();
@@ -18,17 +19,17 @@ export default function Navbar() {
         setOpen(false);
       }
     }
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
   }, [open]);
 
   return (
     <nav className="flex items-center justify-between px-10 py-4 bg-white shadow-md sticky top-0 z-50">
       <div
-        onClick={() => router.push("/")}
+        onClick={() => router.push('/')}
         className="flex items-center gap-3 cursor-pointer select-none"
       >
-        <img
+        <Image
           src="/logosvg.png"
           alt="Coflow Logo"
           className="w-32 h-auto md:w-40 object-contain"
@@ -39,7 +40,7 @@ export default function Navbar() {
         {user && (
           <button
             className="px-3 py-2 rounded-xl bg-[#ECE3FF] text-[#400F7D] font-semibold text-lg shadow hover:bg-[#DED0FB] transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#7854C4] cursor-pointer"
-            onClick={() => router.push("/teams")}
+            onClick={() => router.push('/teams')}
           >
             My Teams
           </button>
@@ -48,7 +49,7 @@ export default function Navbar() {
         {!user && (
           <button
             className="px-4 py-2 rounded-xl bg-[#400F7D] text-white font-semibold text-lg shadow hover:scale-105 hover:bg-[#5729A9] transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#7854C4] cursor-pointer"
-            onClick={() => router.push("/login")}
+            onClick={() => router.push('/login')}
           >
             Signup / Login
           </button>
@@ -59,7 +60,7 @@ export default function Navbar() {
             <button
               className="flex items-center justify-center w-12 h-12 rounded-full bg-[#ECE3FF] border-2 border-[#400F7D] text-[#400F7D] shadow hover:shadow-lg hover:scale-105 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#7854C4] cursor-pointer"
               onClick={() => setOpen((v) => !v)}
-              title={user?.firstName || "Profile"}
+              title={user?.firstName || 'Profile'}
               aria-label="User menu"
             >
               <FaUserCircle className="text-3xl md:text-4xl drop-shadow" />
@@ -84,8 +85,8 @@ export default function Navbar() {
                   onClick={() => {
                     setOpen(false);
                     logout();
-                    toast.success("You’ve been logged out.");
-                    router.push("/");
+                    toast.success('You’ve been logged out.');
+                    router.push('/');
                   }}
                 >
                   Logout

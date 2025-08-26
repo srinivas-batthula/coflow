@@ -1,73 +1,61 @@
-import { useEffect, useState, useRef } from "react";
-import {
-  Plus,
-  UserCircle2,
-  ListChecks,
-  Flag,
-  ScrollText,
-  Filter,
-} from "lucide-react";
-import CreateTaskModal from "./CreateTask";
-import TaskModal from "./TaskModal";
-import toast from "react-hot-toast";
+import { useEffect, useState, useRef } from 'react';
+import { Plus, UserCircle2, ListChecks, Flag, ScrollText, Filter } from 'lucide-react';
+import CreateTaskModal from './CreateTask';
+import TaskModal from './TaskModal';
+import toast from 'react-hot-toast';
 
 export default function TasksSection({ team, user, socket }) {
   const [tasks, setTasks] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [filterBy, setFilterBy] = useState("all");
+  const [filterBy, setFilterBy] = useState('all');
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef();
 
   const filteredTasks =
-    filterBy === "all"
-      ? tasks
-      : tasks.filter((t) => t.assigned_to === filterBy);
+    filterBy === 'all' ? tasks : tasks.filter((t) => t.assigned_to === filterBy);
 
-  const members_ids = team.member_details.map((member)=>( member._id ));
+  const members_ids = team.member_details.map((member) => member._id);
 
   useEffect(() => {
     if (!socket?.connected || !team?._id || !user?._id) return;
 
-    socket.emit("task_history", {
+    socket.emit('task_history', {
       teamId: team._id,
       userId: user._id,
       is_leader: user._id === team.leader,
     });
 
-    socket.on("task_history", ({ success, data }) => {
-      if (success){
-        setTasks(data)
+    socket.on('task_history', ({ success, data }) => {
+      if (success) {
+        setTasks(data);
         // console.log('task_history: On reload');
+      } else {
+        toast.error('Failed to load tasks');
       }
-      else{
-        toast.error("Failed to load tasks")
-      }
-      socket.emit('onlineUsers', { teamId: team._id, members_ids })
+      socket.emit('onlineUsers', { teamId: team._id, members_ids });
     });
 
-    socket.on("task_created", ({ success, data }) => {
+    socket.on('task_created', ({ success, data }) => {
       if (success) {
         setTasks((prev) => [data, ...prev]);
-        toast.success("Task created");
-      } else toast.error("Failed to create task");
+        toast.success('Task created');
+      } else toast.error('Failed to create task');
     });
 
-    socket.on("task_updated", ({ success, data }) => {
+    socket.on('task_updated', ({ success, data }) => {
       if (success) {
         setTasks((prev) =>
           prev
             .map((t) => (t._id === data._id ? data : t))
             .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
         );
-        setSelectedTask((prev) =>
-          prev && prev._id === data._id ? data : prev
-        );
+        setSelectedTask((prev) => (prev && prev._id === data._id ? data : prev));
 
         const isAssignee = data.assigned_to === user._id;
         const isLeader = user._id === team.leader;
         if (isAssignee || isLeader) {
-          toast.success("Task updated");
+          toast.success('Task updated');
         }
       }
     });
@@ -78,20 +66,20 @@ export default function TasksSection({ team, user, socket }) {
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      socket.off("task_history");
-      socket.off("task_created");
-      socket.off("task_updated");
-      document.removeEventListener("mousedown", handleClickOutside);
+      socket.off('task_history');
+      socket.off('task_created');
+      socket.off('task_updated');
+      document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [socket, team, user]);
+  }, [socket, team, user, members_ids]);
 
   const handleCreateTask = (newTask) => {
     if (!newTask.task || !newTask.assigned_to)
-      return toast.error("Task name and assignee required");
+      return toast.error('Task name and assignee required');
 
-    socket.emit("task_create", {
+    socket.emit('task_create', {
       task: newTask.task,
       assigned_to: newTask.assigned_to,
       description: newTask.description,
@@ -103,10 +91,10 @@ export default function TasksSection({ team, user, socket }) {
   };
 
   const updateStatus = (task, newStatus) => {
-    if (newStatus === "under review") {
-      socket.emit("task_review", { taskId: task._id, leaderId: team.leader });
-    } else if (newStatus === "completed") {
-      socket.emit("task_approve", {
+    if (newStatus === 'under review') {
+      socket.emit('task_review', { taskId: task._id, leaderId: team.leader });
+    } else if (newStatus === 'completed') {
+      socket.emit('task_approve', {
         taskId: task._id,
         teamName: team.name,
         assigned_to: task.assigned_to,
@@ -115,13 +103,18 @@ export default function TasksSection({ team, user, socket }) {
   };
 
   const addComment = (task, comment) => {
-    if (!comment) return toast.error("Comment is required");
-    socket.emit("task_comment", { taskId: task._id, comment, teamName: team.name, assigned_to: task.assigned_to, });
-    toast.success("Comment added");
+    if (!comment) return toast.error('Comment is required');
+    socket.emit('task_comment', {
+      taskId: task._id,
+      comment,
+      teamName: team.name,
+      assigned_to: task.assigned_to,
+    });
+    toast.success('Comment added');
   };
 
   const getMemberName = (id) =>
-    team.member_details.find((m) => m._id === id)?.fullName || "Unknown";
+    team.member_details.find((m) => m._id === id)?.fullName || 'Unknown';
 
   return (
     <div className="flex flex-col max-w-5xl h-full mx-auto p-6">
@@ -129,7 +122,7 @@ export default function TasksSection({ team, user, socket }) {
       <div className="flex justify-between items-center mb-2">
         <h2 className="text-2xl font-bold text-black flex items-center gap-2">
           <ListChecks className="w-6 h-6" />
-          {user._id !== team.leader ? "Tasks Assigned to You" : "Tasks"}
+          {user._id !== team.leader ? 'Tasks Assigned to You' : 'Tasks'}
         </h2>
         <div className="flex items-center gap-3 relative" ref={dropdownRef}>
           {user._id === team.leader && (
@@ -149,11 +142,12 @@ export default function TasksSection({ team, user, socket }) {
                   <ul className="py-1 text-sm text-gray-700">
                     <li
                       onClick={() => {
-                        setFilterBy("all");
+                        setFilterBy('all');
                         setShowDropdown(false);
                       }}
-                      className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${filterBy === "all" ? "font-semibold bg-gray-50" : ""
-                        }`}
+                      className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
+                        filterBy === 'all' ? 'font-semibold bg-gray-50' : ''
+                      }`}
                     >
                       All
                     </li>
@@ -166,10 +160,9 @@ export default function TasksSection({ team, user, socket }) {
                             setFilterBy(member._id);
                             setShowDropdown(false);
                           }}
-                          className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${filterBy === member._id
-                            ? "font-semibold bg-gray-50"
-                            : ""
-                            }`}
+                          className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
+                            filterBy === member._id ? 'font-semibold bg-gray-50' : ''
+                          }`}
                         >
                           {member.fullName}
                         </li>
@@ -194,9 +187,9 @@ export default function TasksSection({ team, user, socket }) {
       {/* Current Filter Info */}
       {user._id === team.leader && (
         <p className="text-sm text-gray-600 mb-4 pl-1">
-          Showing tasks of{" "}
+          Showing tasks of{' '}
           <span className="font-medium text-gray-800">
-            {filterBy === "all" ? "all members" : getMemberName(filterBy)}
+            {filterBy === 'all' ? 'all members' : getMemberName(filterBy)}
           </span>
         </p>
       )}
@@ -218,19 +211,19 @@ export default function TasksSection({ team, user, socket }) {
               </p>
               <p className="text-sm text-gray-600 flex items-center gap-1 mt-1">
                 <UserCircle2 className="w-4 h-4 text-gray-400" />
-                Assigned to:{" "}
-                <span className="ml-1">{getMemberName(task.assigned_to)}</span>
+                Assigned to: <span className="ml-1">{getMemberName(task.assigned_to)}</span>
               </p>
               <p className="text-sm text-gray-600 flex items-center gap-1 mt-1">
                 <Flag className="w-4 h-4 text-gray-400" />
                 Status:
                 <span
-                  className={`ml-2 px-2 py-0.5 text-xs rounded-full font-medium capitalize ${task.status === "pending"
-                    ? "bg-yellow-100 text-yellow-800"
-                    : task.status === "under review"
-                      ? "bg-blue-100 text-blue-800"
-                      : "bg-green-100 text-green-800"
-                    }`}
+                  className={`ml-2 px-2 py-0.5 text-xs rounded-full font-medium capitalize ${
+                    task.status === 'pending'
+                      ? 'bg-yellow-100 text-yellow-800'
+                      : task.status === 'under review'
+                        ? 'bg-blue-100 text-blue-800'
+                        : 'bg-green-100 text-green-800'
+                  }`}
                 >
                   {task.status}
                 </span>
@@ -243,7 +236,7 @@ export default function TasksSection({ team, user, socket }) {
       {/* Modals */}
       {selectedTask && (
         <TaskModal
-          key={selectedTask._id + (selectedTask.updatedAt || "")}
+          key={selectedTask._id + (selectedTask.updatedAt || '')}
           task={selectedTask}
           user={user}
           team={team}

@@ -1,21 +1,14 @@
-"use client";
+'use client';
 
-import React, { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import useMessageStore from "@/store/useChatStore";
-import EmojiPicker from "emoji-picker-react";
-import { Users, Smile, CheckCheck as Eye, Send, X } from "lucide-react";
+import { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import useMessageStore from '@/store/useChatStore';
+import EmojiPicker from 'emoji-picker-react';
+import { Users, Smile, CheckCheck as Eye, Send, X } from 'lucide-react';
 
 export default function ChatSection({ team, user, socket }) {
-  const {
-    messages,
-    setMessages,
-    addMessage,
-    updateMessage,
-    setLoading,
-    error,
-    setError,
-  } = useMessageStore();
+  const { messages, setMessages, addMessage, updateMessage, setLoading, error, setError } =
+    useMessageStore();
 
   const router = useRouter();
   const [typingUsers, setTypingUsers] = useState({});
@@ -32,14 +25,14 @@ export default function ChatSection({ team, user, socket }) {
   useEffect(() => {
     let timeout;
     const handleTyping = () => {
-      socket.emit("message_start_typing", {
+      socket.emit('message_start_typing', {
         teamId: team._id,
         userId: user._id,
         name: user.fullName,
       });
       clearTimeout(timeout);
       timeout = setTimeout(() => {
-        socket.emit("message_stop_typing", {
+        socket.emit('message_stop_typing', {
           teamId: team._id,
           userId: user._id,
         });
@@ -49,9 +42,9 @@ export default function ChatSection({ team, user, socket }) {
     const input = inputRef.current;
     if (!input) return;
 
-    input.addEventListener("input", handleTyping);
+    input.addEventListener('input', handleTyping);
     return () => {
-      input.removeEventListener("input", handleTyping);
+      input.removeEventListener('input', handleTyping);
       clearTimeout(timeout);
     };
   }, [socket, team._id, user._id, user.fullName]);
@@ -70,12 +63,12 @@ export default function ChatSection({ team, user, socket }) {
       });
     };
 
-    socket.on("message_started_typing", handleUserTyping);
-    socket.on("message_stopped_typing", handleUserStopTyping);
+    socket.on('message_started_typing', handleUserTyping);
+    socket.on('message_stopped_typing', handleUserStopTyping);
 
     return () => {
-      socket.off("message_started_typing", handleUserTyping);
-      socket.off("message_stopped_typing", handleUserStopTyping);
+      socket.off('message_started_typing', handleUserTyping);
+      socket.off('message_stopped_typing', handleUserStopTyping);
     };
   }, [socket, user._id]);
 
@@ -84,7 +77,7 @@ export default function ChatSection({ team, user, socket }) {
       if (success) {
         setMessages(data);
       } else {
-        setError("Failed to load messages.");
+        setError('Failed to load messages.');
       }
       setLoading(false);
     };
@@ -93,14 +86,14 @@ export default function ChatSection({ team, user, socket }) {
       if (success) {
         addMessage(data);
         if (user._id !== data.sender._id) {
-          socket.emit("message_mark_seen", {
+          socket.emit('message_mark_seen', {
             message_id: data._id,
             sender_id: data.sender._id,
             sender_name: data.sender.name,
           });
         }
       } else {
-        setError("Failed to create message.");
+        setError('Failed to create message.');
       }
     };
 
@@ -111,21 +104,22 @@ export default function ChatSection({ team, user, socket }) {
     };
 
     setLoading(true);
-    socket.emit("message_history", { teamId: team._id });
+    socket.emit('message_history', { teamId: team._id });
 
-    socket.off("message_history", handleHistory);
-    if (!socket.hasListeners("message_history")) {
-      socket.on("message_history", handleHistory);
+    socket.off('message_history', handleHistory);
+    if (!socket.hasListeners('message_history')) {
+      socket.on('message_history', handleHistory);
     }
-    socket.on("message_created", handleCreated);
-    socket.on("message_updated", handleUpdated);
+    socket.on('message_created', handleCreated);
+    socket.on('message_updated', handleUpdated);
 
     return () => {
-      socket.off("message_history", handleHistory);
-      socket.off("message_created", handleCreated);
-      socket.off("message_updated", handleUpdated);
+      socket.off('message_history', handleHistory);
+      socket.off('message_created', handleCreated);
+      socket.off('message_updated', handleUpdated);
     };
-  }, [team?._id]);
+    //  }, [team?._id]);
+  }, [team?._id, socket, addMessage, updateMessage, user._id, setMessages, setError, setLoading]);
 
   useEffect(() => {
     const scroll = scrollRef.current;
@@ -137,41 +131,37 @@ export default function ChatSection({ team, user, socket }) {
       if (
         emojiPickerRef.current &&
         !emojiPickerRef.current.contains(event.target) &&
-        !event.target.closest("#emoji-toggle-btn")
+        !event.target.closest('#emoji-toggle-btn')
       ) {
         setShowEmojiPicker(false);
       }
 
-      if (
-        seenModalOpen &&
-        modalRef.current &&
-        !modalRef.current.contains(event.target)
-      ) {
+      if (seenModalOpen && modalRef.current && !modalRef.current.contains(event.target)) {
         setSeenModalOpen(false);
         setAnchorRect(null);
       }
     }
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showEmojiPicker, seenModalOpen]);
 
   const handleSend = () => {
     const msg = inputRef.current?.value.trim();
     if (!msg) return;
-    socket.emit("message_create", {
+    socket.emit('message_create', {
       message: msg,
       teamId: team._id,
       teamName: team.name,
       members_ids,
       userId: user._id,
     });
-    inputRef.current.value = "";
+    inputRef.current.value = '';
     setShowEmojiPicker(false);
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
@@ -181,10 +171,10 @@ export default function ChatSection({ team, user, socket }) {
     const date = new Date(dateString);
     let hours = date.getHours();
     let minutes = date.getMinutes();
-    const ampm = hours >= 12 ? "PM" : "AM";
+    const ampm = hours >= 12 ? 'PM' : 'AM';
     hours %= 12;
     hours = hours || 12;
-    minutes = minutes < 10 ? "0" + minutes : minutes;
+    minutes = minutes < 10 ? '0' + minutes : minutes;
     return `${hours}:${minutes} ${ampm}`;
   };
 
@@ -196,9 +186,7 @@ export default function ChatSection({ team, user, socket }) {
 
   const getAvatarStyle = (isTyping) =>
     `w-6 h-6 rounded-full ${
-      isTyping
-        ? "bg-purple-600 text-white animate-pulse"
-        : "bg-indigo-200 text-indigo-800"
+      isTyping ? 'bg-purple-600 text-white animate-pulse' : 'bg-indigo-200 text-indigo-800'
     } text-xs font-semibold flex items-center justify-center ring-1 ring-white shadow-sm transition-transform transform hover:scale-105`;
 
   const handleMessageClick = (msg, e) => {
@@ -207,7 +195,7 @@ export default function ChatSection({ team, user, socket }) {
     const seenNames = (msg.seen_by || [])
       .map((id) => {
         const member = team.member_details.find((m) => m._id === id);
-        return member ? member.fullName || member.name || "Unknown" : null;
+        return member ? member.fullName || member.name || 'Unknown' : null;
       })
       .filter(Boolean);
 
@@ -223,17 +211,14 @@ export default function ChatSection({ team, user, socket }) {
     const seenByAll = msg.seen_by?.length === team.member_details?.length - 1;
 
     return (
-      <div
-        key={key}
-        className={`flex ${isMine ? "justify-end" : "justify-start"} my-1 px-1`}
-      >
+      <div key={key} className={`flex ${isMine ? 'justify-end' : 'justify-start'} my-1 px-1`}>
         {!isMine && (
           <div
             onClick={() => router.push(`/profile/${msg.sender._id}`)}
             className="cursor-pointer flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-purple-600 to-indigo-600 text-white flex items-center justify-center font-semibold mr-2 select-none hover:ring-1 hover:ring-purple-400 hover:ring-offset-0 transition"
             title={msg.sender.name}
           >
-            {msg?.sender?.name?.toUpperCase().slice(0, 2) || "U"}
+            {msg?.sender?.name?.toUpperCase().slice(0, 2) || 'U'}
           </div>
         )}
 
@@ -244,10 +229,10 @@ export default function ChatSection({ team, user, socket }) {
           <div
             className={`px-3 py-2 rounded-lg shadow break-words whitespace-pre-wrap transition-colors ${
               isMine
-                ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-br-none"
-                : "bg-white text-gray-900 border border-gray-300 rounded-bl-none hover:shadow-md"
+                ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-br-none'
+                : 'bg-white text-gray-900 border border-gray-300 rounded-bl-none hover:shadow-md'
             }`}
-            style={{ fontSize: "0.85rem", lineHeight: 1.2 }}
+            style={{ fontSize: '0.85rem', lineHeight: 1.2 }}
           >
             {!isMine && (
               <div
@@ -260,7 +245,7 @@ export default function ChatSection({ team, user, socket }) {
             <div className="text-sm leading-snug">{msg.message}</div>
             <div
               className={`text-[0.65rem] mt-0.5 text-right select-none ${
-                isMine ? "text-white/70" : "text-gray-400"
+                isMine ? 'text-white/70' : 'text-gray-400'
               }`}
             >
               {formatAMPM(msg.createdAt)}
@@ -285,7 +270,7 @@ export default function ChatSection({ team, user, socket }) {
     if (!seenModalOpen || !anchorRect) return null;
 
     const style = {
-      position: "absolute",
+      position: 'absolute',
       top: anchorRect.top + window.scrollY - 20,
       left: anchorRect.left + window.scrollX - 180,
     };
@@ -309,9 +294,7 @@ export default function ChatSection({ team, user, socket }) {
           </button>
         </div>
         {seenUsers.length === 0 ? (
-          <p className="text-xs text-gray-500 select-none">
-            No one has seen this yet.
-          </p>
+          <p className="text-xs text-gray-500 select-none">No one has seen this yet.</p>
         ) : (
           <ul className="space-y-0.5 max-h-40 overflow-y-auto scrollbar-thin scrollbar-thumb-purple-300">
             {seenUsers.map((name, i) => (
@@ -336,9 +319,7 @@ export default function ChatSection({ team, user, socket }) {
         <div className="flex items-center justify-between px-4 py-2 border-b shadow-sm bg-gradient-to-r from-indigo-100 to-purple-100 rounded-t-xl flex-shrink-0">
           <div className="flex items-center gap-3">
             <Users className="h-6 w-6 text-indigo-700" />
-            <span className="text-lg font-semibold text-indigo-800 truncate">
-              {team.name}
-            </span>
+            <span className="text-lg font-semibold text-indigo-800 truncate">{team.name}</span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -347,11 +328,7 @@ export default function ChatSection({ team, user, socket }) {
                 ? Object.entries(typingUsers)
                 : team.member_details.map((m) => [m._id, m.fullName])
               ).map(([id, name]) => (
-                <div
-                  key={id}
-                  className={getAvatarStyle(typingUsers[id])}
-                  title={name}
-                >
+                <div key={id} className={getAvatarStyle(typingUsers[id])} title={name}>
                   {name.slice(0, 2).toUpperCase()}
                 </div>
               ))}

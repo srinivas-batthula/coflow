@@ -1,22 +1,22 @@
-"use client";
-import Profile from "@/components/Profile";
-import { useAuthStore } from "@/store/useAuthStore";
-import { useRouter } from "next/navigation";
-import { useCallback } from "react";
-import toast from "react-hot-toast";
+'use client';
+import Profile from '@/components/Profile';
+import { useAuthStore } from '@/store/useAuthStore';
+import { useRouter } from 'next/navigation';
+import { useCallback } from 'react';
+import toast from 'react-hot-toast';
 
 export default function ProfilePage() {
   const logout = useAuthStore((s) => s.logout);
   const router = useRouter();
 
   const handleEdit = useCallback(() => {
-    alert("Edit profile coming soon!");
+    alert('Edit profile coming soon!');
   }, []);
 
   const handleLogout = useCallback(() => {
-    toast.success("You’ve been logged out.");
+    toast.success('You’ve been logged out.');
     logout();
-    router.push("/");
+    router.push('/');
   }, [logout, router]);
 
   return (

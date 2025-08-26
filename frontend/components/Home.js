@@ -1,42 +1,44 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import { useHackathonStore } from "../store/useHackathonStore";
-import { useAuthStore } from "../store/useAuthStore";
-import { FaUserCircle } from "react-icons/fa";
-import { SlidersHorizontal } from "lucide-react";
+import { useEffect, useState } from 'react';
+import { useHackathonStore } from '../store/useHackathonStore';
+import { useAuthStore } from '../store/useAuthStore';
+import { SlidersHorizontal } from 'lucide-react';
 import { FacebookShareButton, TwitterShareButton, WhatsappShareButton } from 'react-share';
+import Image from 'next/image';
 
-
-const ShareButton = ({ data }) => {                     //data = { url, text }
-  const [canUseWebShare, setCanUseWebShare] = useState(false)
-  const shareUrl = data.url || "https://coflow.netlify.app"
-  const shareText = (data.text) ? data.text : ("Check out this exciting hackathon opportunity!\n For more details Visit at { 'https://coflow.netlify.app' }")
+const ShareButton = ({ data }) => {
+  //data = { url, text }
+  const [canUseWebShare, setCanUseWebShare] = useState(false);
+  const shareUrl = data.url || 'https://coflow.netlify.app';
+  const shareText = data.text
+    ? data.text
+    : "Check out this exciting hackathon opportunity!\n For more details Visit at { 'https://coflow.netlify.app' }";
 
   useEffect(() => {
     if (navigator.share) {
-      setCanUseWebShare(true)
+      setCanUseWebShare(true);
     }
-  }, [])
+  }, []);
 
   const handleNativeShare = async () => {
     try {
       await navigator.share({
-        title: "CoFlow",
+        title: 'CoFlow',
         text: shareText,
         url: shareUrl,
       });
-      console.log("Shared successfully!");
+      console.log('Shared successfully!');
     } catch (error) {
-      console.error("Error sharing:", error);
+      console.error('Error sharing:', error);
     }
-  }
+  };
 
   return (
     <div className="flex items-center space-x-2">
       <button
         className="text-[#511cc4d6]"
-        style={{fontSize: '1.2rem', cursor: 'pointer' }}
+        style={{ fontSize: '1.2rem', cursor: 'pointer' }}
         onClick={canUseWebShare ? handleNativeShare : undefined}
       >
         <i className="fa-solid fa-share" title="Share"></i>
@@ -45,76 +47,79 @@ const ShareButton = ({ data }) => {                     //data = { url, text }
       {!canUseWebShare && (
         <div className="flex space-x-2">
           <FacebookShareButton url={shareUrl}>
-            <span className="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-all shadow-md">F</span>
+            <span className="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-all shadow-md">
+              F
+            </span>
           </FacebookShareButton>
           <TwitterShareButton url={shareUrl}>
-            <span className="p-2 rounded-full bg-sky-500 text-white hover:bg-sky-600 transition-all shadow-md">X</span>
+            <span className="p-2 rounded-full bg-sky-500 text-white hover:bg-sky-600 transition-all shadow-md">
+              X
+            </span>
           </TwitterShareButton>
           <WhatsappShareButton url={shareUrl}>
-            <span className="p-2 rounded-full bg-green-500 text-white hover:bg-green-600 transition-all shadow-md">W</span>
+            <span className="p-2 rounded-full bg-green-500 text-white hover:bg-green-600 transition-all shadow-md">
+              W
+            </span>
           </WhatsappShareButton>
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
 const features = [
   {
-    icon: "🌍",
-    title: "Discover Hackathons",
-    desc: "Browse and filter a curated list of global hackathons. Never miss an opportunity to innovate and compete.",
-    bgColor: "bg-[#E8E7F9]",
-    iconColor: "#4C3F91",
+    icon: '🌍',
+    title: 'Discover Hackathons',
+    desc: 'Browse and filter a curated list of global hackathons. Never miss an opportunity to innovate and compete.',
+    bgColor: 'bg-[#E8E7F9]',
+    iconColor: '#4C3F91',
   },
   {
-    icon: "📝",
-    title: "Project Tracking",
-    desc: "After login, update your team’s project, assign tasks, and mark completion to keep everyone in sync.",
-    bgColor: "bg-[#DDE9F7]",
-    iconColor: "#3753B5",
+    icon: '📝',
+    title: 'Project Tracking',
+    desc: 'After login, update your team’s project, assign tasks, and mark completion to keep everyone in sync.',
+    bgColor: 'bg-[#DDE9F7]',
+    iconColor: '#3753B5',
   },
   {
-    icon: "🏆",
-    title: "Prizes & Hosts",
-    desc: "See prize pools, event hosts, and all key details at a glance. Find the perfect event for your team.",
-    bgColor: "bg-[#D9D8F7]",
-    iconColor: "#3B368C",
+    icon: '🏆',
+    title: 'Prizes & Hosts',
+    desc: 'See prize pools, event hosts, and all key details at a glance. Find the perfect event for your team.',
+    bgColor: 'bg-[#D9D8F7]',
+    iconColor: '#3B368C',
   },
   {
-    icon: "🤝",
-    title: "Team Collaboration",
-    desc: "Collaborate with your team, share updates, and stay organized throughout the hackathon journey.",
-    bgColor: "bg-[#F5F7FC]",
-    iconColor: "#4A51A3",
+    icon: '🤝',
+    title: 'Team Collaboration',
+    desc: 'Collaborate with your team, share updates, and stay organized throughout the hackathon journey.',
+    bgColor: 'bg-[#F5F7FC]',
+    iconColor: '#4A51A3',
   },
 ];
 
 export default function HomePage() {
   const { hackathons, loading, error, fetchHackathons } = useHackathonStore();
-  const user = useAuthStore((s) => s.user);
+  // const user = useAuthStore((s) => s.user);
   const authLoading = useAuthStore((s) => s.loading);
-  const [selectedCity, setSelectedCity] = useState("All");
+  const [selectedCity, setSelectedCity] = useState('All');
   const [showDropdown, setShowDropdown] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState(null);
 
   const filteredHackathons =
-    selectedCity === "All"
+    selectedCity === 'All'
       ? hackathons
-      : hackathons?.filter(
-        (h) => h.city.toLowerCase() === selectedCity.toLowerCase()
-      ) || [];
+      : hackathons?.filter((h) => h.city.toLowerCase() === selectedCity.toLowerCase()) || [];
 
   useEffect(() => {
-    fetchHackathons();   // Fetching hackathons from backend...
+    fetchHackathons(); // Fetching hackathons from backend...
     const handlePrompt = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
     };
-    window.addEventListener("beforeinstallprompt", handlePrompt);
-    return () =>
-      window.removeEventListener("beforeinstallprompt", handlePrompt);
-  }, []);
+    window.addEventListener('beforeinstallprompt', handlePrompt);
+    return () => window.removeEventListener('beforeinstallprompt', handlePrompt);
+  }, [fetchHackathons]);
 
   const handleInstallClick = async (e) => {
     e.preventDefault();
@@ -122,12 +127,10 @@ export default function HomePage() {
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
       console.log(
-        outcome === "accepted"
-          ? "User accepted the install."
-          : "User dismissed the install."
+        outcome === 'accepted' ? 'User accepted the install.' : 'User dismissed the install.'
       );
     } else {
-      alert("PWA install prompt is not available. (Please do refresh!)");
+      alert('PWA install prompt is not available. (Please do refresh!)');
     }
   };
 
@@ -149,15 +152,9 @@ export default function HomePage() {
               stroke="currentColor"
               strokeWidth="4"
             ></circle>
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8v8z"
-            ></path>
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
           </svg>
-          <span className="text-[#320398] text-xl font-semibold">
-            Loading...
-          </span>
+          <span className="text-[#320398] text-xl font-semibold">Loading...</span>
         </div>
       </div>
     );
@@ -174,7 +171,7 @@ export default function HomePage() {
         <h1 className="flex gap-12 flex-col md:flex-row items-center justify-center text-5xl md:text-6xl font-extrabold mb-6 leading-tight font-inter tracking-tight">
           <span>Welcome to</span>
           <span className="ml-3 inline-flex items-center text-[#2A3BD9] scale-250 mt-4">
-            <img
+            <Image
               src="/textlogo.png"
               alt="Coflow Logo"
               className="h-12 md:h-16 object-contain"
@@ -193,8 +190,7 @@ export default function HomePage() {
         <p className="mt-6 text-xl md:text-2xl max-w-3xl mx-auto text-[#636ee0]">
           Discover, join, and track hackathons worldwide.
           <span className="block mt-4 text-[#2A3BD9] font-semibold">
-            Find your next challenge, collaborate with your team, and showcase
-            your innovation.
+            Find your next challenge, collaborate with your team, and showcase your innovation.
           </span>
         </p>
       </section>
@@ -208,7 +204,7 @@ export default function HomePage() {
           >
             <div
               className={`${f.bgColor} rounded-full p-5 mb-5 inline-flex justify-center items-center`}
-              style={{ color: f.iconColor, fontSize: "3rem" }}
+              style={{ color: f.iconColor, fontSize: '3rem' }}
               aria-label={f.title}
               role="img"
             >
@@ -235,23 +231,22 @@ export default function HomePage() {
 
             {showDropdown && (
               <div className="absolute right-0 mt-2 w-44 rounded-xl bg-white text-gray-800 shadow-xl z-50 overflow-hidden">
-                {["All", "Hyderabad", "Mumbai", "Bengaluru", "Global"].map(
-                  (city) => (
-                    <button
-                      key={city}
-                      onClick={() => {
-                        setSelectedCity(city);
-                        setShowDropdown(false);
-                      }}
-                      className={`block w-full text-left px-4 py-2 text-sm transition-all ${selectedCity === city
-                        ? "bg-[#E6E0FF] text-[#320398] font-semibold"
-                        : "hover:bg-gray-100"
-                        }`}
-                    >
-                      {city}
-                    </button>
-                  )
-                )}
+                {['All', 'Hyderabad', 'Mumbai', 'Bengaluru', 'Global'].map((city) => (
+                  <button
+                    key={city}
+                    onClick={() => {
+                      setSelectedCity(city);
+                      setShowDropdown(false);
+                    }}
+                    className={`block w-full text-left px-4 py-2 text-sm transition-all ${
+                      selectedCity === city
+                        ? 'bg-[#E6E0FF] text-[#320398] font-semibold'
+                        : 'hover:bg-gray-100'
+                    }`}
+                  >
+                    {city}
+                  </button>
+                ))}
               </div>
             )}
           </div>
@@ -285,10 +280,8 @@ export default function HomePage() {
                     <strong>📅 Date:</strong> {hackathon.date}
                   </p>
                   <p>
-                    <strong>🌐 Location:</strong> {hackathon.location}{" "}
-                    <span className="text-xs text-gray-400">
-                      ({hackathon.city})
-                    </span>
+                    <strong>🌐 Location:</strong> {hackathon.location}{' '}
+                    <span className="text-xs text-gray-400">({hackathon.city})</span>
                   </p>
                   <p>
                     <strong>🏆 Prize:</strong> {hackathon.prize}
@@ -310,9 +303,7 @@ export default function HomePage() {
               </div>
             ))
           ) : (
-            <p className="text-center text-gray-400 col-span-full">
-              No hackathons found.
-            </p>
+            <p className="text-center text-gray-400 col-span-full">No hackathons found.</p>
           )}
         </div>
       </section>

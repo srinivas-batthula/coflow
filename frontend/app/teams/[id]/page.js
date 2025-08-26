@@ -1,16 +1,16 @@
 // app/teams/[id]/page.js
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { useTeamStore } from "@/store/useTeamStore";
-import { useAuthStore } from "@/store/useAuthStore";
+import { useEffect, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { useTeamStore } from '@/store/useTeamStore';
+import { useAuthStore } from '@/store/useAuthStore';
 
-import ParticipantsSection from "@/components/ParticipantSection";
-import ChatSection from "@/components/ChatSection";
-import TasksSection from "@/components/TaskSection";
+import ParticipantsSection from '@/components/ParticipantSection';
+import ChatSection from '@/components/ChatSection';
+import TasksSection from '@/components/TaskSection';
 
-import socket from "@/utils/socket";
+import socket from '@/utils/socket';
 
 export default function TeamSpecificPage() {
   const { id } = useParams();
@@ -39,12 +39,12 @@ export default function TeamSpecificPage() {
     const handleConnect = () => setIsSocketReady(true);
     const handleDisconnect = () => setIsSocketReady(false);
 
-    socket.on("connect", handleConnect);
-    socket.on("disconnect", handleDisconnect);
+    socket.on('connect', handleConnect);
+    socket.on('disconnect', handleDisconnect);
 
     return () => {
-      socket.off("connect", handleConnect);
-      socket.off("disconnect", handleDisconnect);
+      socket.off('connect', handleConnect);
+      socket.off('disconnect', handleDisconnect);
       if (socket.connected) socket.disconnect();
     };
   }, [user, token]);
@@ -85,10 +85,9 @@ export default function TeamSpecificPage() {
     );
   }
 
-  const sectionStyle =
-    "rounded-xl overflow-hidden border border-gray-200 bg-white h-full";
+  const sectionStyle = 'rounded-xl overflow-hidden border border-gray-200 bg-white h-full';
 
-  const scrollableContent = "h-full overflow-y-auto p-2";
+  const scrollableContent = 'h-full overflow-y-auto p-2';
 
   return (
     <>

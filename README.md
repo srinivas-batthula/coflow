@@ -1,11 +1,14 @@
+# 🚀 **_CoFlow_**
 
-#      🚀 ***CoFlow***
 ## Built for Hackathons. Ready for Teams. Powered by Realtime.
 
-**~CoFlow** is a real-time team collaboration tool built for developers and hackathon squads, offering live task assignment, group chat and progress tracking. With intelligent scheduling, offline-friendly notifications, and Redis-powered background workers, it keeps teams in sync — even when they’re not online.
-
+**~CoFlow** is a real-time team collaboration tool built for developers and hackathon squads,
+offering live task assignment, group chat and progress tracking. With intelligent scheduling,
+offline-friendly notifications, and Redis-powered background workers, it keeps teams in sync — even
+when they’re not online.
 
 ## Live Links
+
 - 🔗 **Live Site**: [coflow.netlify.app](https://coflow.netlify.app)
 - 🔗 **API Docs**: [coflow.onrender.com/api-docs](https://coflow-backend-bcgk.onrender.com/api-docs)
 
@@ -19,10 +22,13 @@
 - 🔐 Authentication with JWT and Google OAuth
 - 🧑‍💻 Realtime Collaborative Task management and status tracking
 - 💬 Real-time team chat using **Socket.IO**
-- 🕒 Automatically scrape and store recent hackathon listings every 10 hours using **node-cron** & **Playwright**
+- 🕒 Automatically scrape and store recent hackathon listings every 10 hours using **node-cron** &
+  **Playwright**
+
 ## 🔁 Feature Workflows
 
 #### **1.** Automated Hackathons Sync
+
 ```
 Cron job executes for every 10 hours
       ⬇
@@ -34,6 +40,7 @@ If failure → fallback data is stored in JSON file temporarily
 ```
 
 #### **2.** Collaborative Tasks flow
+
 ```
 Leader creates and assigns a new task for a member
       ⬇
@@ -44,6 +51,7 @@ Leader approves / re-assigns the task with comments
 ```
 
 #### **3.** Real-time group chat
+
 ```
 A user types a message in a team
       ⬇
@@ -57,6 +65,7 @@ Received members will be marked as 'seen' in real-time
 ```
 
 #### **4.** Push Notifications (for offline users)
+
 ```
 For messages or task updates → a payload with senderId is pushed into Redis-Queue
       ⬇
@@ -66,7 +75,6 @@ Worker pops the notification details from the Queue
       ⬇
 Sends a Push-Notification to that offline user
 ```
-
 
 ## 🛠 Tech Stack
 
@@ -115,49 +123,61 @@ coflow/
 
 ## ⚙️ Local Setup Instructions
 
-```git clone https://github.com/srinivas-batthula/coflow```
+`git clone https://github.com/srinivas-batthula/coflow`
 
-```Setup 'config.env in the root dir 'backend/' based on 'config.env.example'```
+`Setup 'config.env in the root dir 'backend/' based on 'config.env.example'`
 
-```Setup '.env' in the root dir 'frontend/' based on '.env.example'```
+`Setup '.env' in the root dir 'frontend/' based on '.env.example'`
 
 ### 1. Manual Setup (Without Docker)
+
 #### For backend
+
 ```
 1. cd backend
 ```
+
 ```
 2. npm install
 ```
+
 ```
 3. npm start
 ```
 
 #### For frontend
+
 ```
 1. cd frontend
 ```
+
 ```
 2. npm install
 ```
+
 ```
 3. npm run dev
 ```
 
 ### 2. Run with Docker Compose
+
 #### Prerequisites
+
 ```
 - Install Docker & Docker Compose
 ```
 
 #### Start the app
+
 ```
 1. docker-compose up --build
 ```
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/srinivas-batthula/coflow/blob/main/LICENSE) file for details.
+This project is licensed under the MIT License - see the
+[LICENSE](https://github.com/srinivas-batthula/coflow/blob/main/LICENSE) file for details.
+
 ## 👥 Contributors
 
 - **Srinivas Batthula [@srinivas-batthula](https://github.com/srinivas-batthula)**

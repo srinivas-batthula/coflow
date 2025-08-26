@@ -10,7 +10,9 @@
   "scripts": {
     "test": "jest",
     "start": "nodemon server.js",
-    "docs": "node scripts/swaggerGen.js"
+    "docs": "node scripts/swaggerGen.js",
+    "lint:check": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "author": "Srinivas Batthula",
   "license": "ISC",

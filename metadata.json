@@ -1,25 +1,15 @@
 {
-    "imgUrl": "https://srinivas-batthula.github.io/portfolio/utils/projects/coflow_project.png",
-    "title": "CoFlow",
-    "description": "Real-time MERN app with live hackathons, tasks, chat, push alerts for team projects.",
-    "techStack": [
-        "Next.Js",
-        "Zustand",
-        "Express.js",
-        "Socket.io",
-        "Playwright",
-        "MongoDB",
-        "Redis",
-        "Docker",
-        "jest/supertest"
-    ],
-    "keyFeatures": [
-        "Built CoFlow with a teammate, a real-time hackathon discovery & team coordination platform",
-        "Implemented Real-time team chat & collaborative task tracking",
-        "Built an automated hackathons scraper using Node-Cron and Playwright for consistent event updates",
-        "Integrated Realtime Push-Notification Alerts using Redis"
-    ],
-    "isLiveLink": "true",
-    "githubLink": "https://github.com/srinivas-batthula/coflow",
-    "liveLink": "https://coflow.netlify.app"
+  "imgUrl": "https://srinivas-batthula.github.io/portfolio/utils/projects/coflow_project.png",
+  "title": "CoFlow",
+  "description": "Real-time MERN app with live hackathons, tasks, chat, push alerts for team projects.",
+  "techStack": ["Next.Js", "Zustand", "Express.js", "Socket.io", "Playwright", "MongoDB", "Redis", "Docker", "jest/supertest"],
+  "keyFeatures": [
+    "Built CoFlow with a teammate, a real-time hackathon discovery & team coordination platform",
+    "Implemented Real-time team chat & collaborative task tracking",
+    "Built an automated hackathons scraper using Node-Cron and Playwright for consistent event updates",
+    "Integrated Realtime Push-Notification Alerts using Redis"
+  ],
+  "isLiveLink": "true",
+  "githubLink": "https://github.com/srinivas-batthula/coflow",
+  "liveLink": "https://coflow.netlify.app"
 }

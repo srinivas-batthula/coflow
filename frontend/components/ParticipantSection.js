@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { CircleDot, Copy } from "lucide-react";
+import { useEffect, useState } from 'react';
+import { CircleDot, Copy } from 'lucide-react';
 
 export default function ParticipantsSection({ team, user, onBack, socket }) {
   const [onlineUsers, setOnlineUsers] = useState([]);
@@ -17,17 +17,17 @@ export default function ParticipantsSection({ team, user, onBack, socket }) {
   useEffect(() => {
     if (!socket?.connected || !team?._id || !user?._id) return;
 
-    socket.on("onlineUsers", ({ onlineMembers }) => {
+    socket.on('onlineUsers', ({ onlineMembers }) => {
       setOnlineUsers(onlineMembers);
     });
 
-    socket.on("newUser_offline", ({ userId }) => {
+    socket.on('newUser_offline', ({ userId }) => {
       setOnlineUsers((prev) => prev.filter((id) => id !== userId));
     });
 
     return () => {
-      socket.off("onlineUsers");
-      socket.off("newUser_offline");
+      socket.off('onlineUsers');
+      socket.off('newUser_offline');
     };
   }, [socket, team, user]);
 
@@ -55,31 +55,22 @@ export default function ParticipantsSection({ team, user, onBack, socket }) {
           stroke="currentColor"
           strokeWidth={2}
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M15 19l-7-7 7-7"
-          />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
         </svg>
         Back
       </button>
 
       {/* Team Title + Copy Team ID */}
       <div className="flex items-center mb-7 space-x-3">
-        <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">
-          {team.name}
-        </h2>
+        <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">{team.name}</h2>
 
         <button
           onClick={handleCopy}
           aria-label="Copy Team ID to clipboard"
           className="flex items-center justify-center p-1 rounded-md border border-gray-300 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-sky-500 transition"
-          title={copied ? "Copied!" : "Copy Team ID"}
+          title={copied ? 'Copied!' : 'Copy Team ID'}
         >
-          <Copy
-            size={20}
-            className={`text-gray-600 ${copied ? "text-green-600" : ""}`}
-          />
+          <Copy size={20} className={`text-gray-600 ${copied ? 'text-green-600' : ''}`} />
         </button>
       </div>
 
@@ -90,7 +81,7 @@ export default function ParticipantsSection({ team, user, onBack, socket }) {
             Description
           </span>
           <p className="text-gray-800 text-sm leading-relaxed flex-1 min-w-[180px]">
-            {team.project_description || "No project description provided."}
+            {team.project_description || 'No project description provided.'}
           </p>
         </div>
 
@@ -114,12 +105,10 @@ export default function ParticipantsSection({ team, user, onBack, socket }) {
 
       {/* Members List */}
       <div className="flex flex-col flex-grow min-h-0">
-        <h3 className="text-2xl font-semibold text-gray-900 mb-6 tracking-wide">
-          Team Members
-        </h3>
+        <h3 className="text-2xl font-semibold text-gray-900 mb-6 tracking-wide">Team Members</h3>
         <div
           className="overflow-y-auto rounded-md border border-gray-300 p-2"
-          style={{ maxHeight: "calc(100vh - 340px)" }}
+          style={{ maxHeight: 'calc(100vh - 340px)' }}
         >
           <ul className="space-y-3" role="list">
             {members.map((member) => (
@@ -128,43 +117,39 @@ export default function ParticipantsSection({ team, user, onBack, socket }) {
                 tabIndex={0}
                 role="button"
                 aria-label={`Member ${member.fullName} ${
-                  member.isLeader ? "Admin" : "Member"
-                }${member.isCurrentUser ? ", You" : ""}`}
+                  member.isLeader ? 'Admin' : 'Member'
+                }${member.isCurrentUser ? ', You' : ''}`}
                 className={`flex items-center justify-between p-3 rounded-lg border transition-shadow cursor-pointer ${
                   member.isCurrentUser
-                    ? "bg-sky-100 border-sky-400 shadow-md"
-                    : "bg-white border-gray-200 hover:shadow-lg"
+                    ? 'bg-sky-100 border-sky-400 shadow-md'
+                    : 'bg-white border-gray-200 hover:shadow-lg'
                 }`}
               >
                 {/* Left: Status + Name */}
                 <div className="flex items-center gap-3 min-w-0">
                   <CircleDot
                     size={16}
-                    className={`${
-                      member.isOnline ? "text-green-500" : "text-red-400"
-                    }`}
+                    className={`${member.isOnline ? 'text-green-500' : 'text-red-400'}`}
                     strokeWidth={3}
                   />
                   <span
                     className={`font-medium truncate ${
-                      member.isCurrentUser ? "text-sky-900" : "text-gray-900"
+                      member.isCurrentUser ? 'text-sky-900' : 'text-gray-900'
                     }`}
                     title={member.fullName}
                   >
                     {member.fullName}
-                    {member.isCurrentUser && " (You)"}
+                    {member.isCurrentUser && ' (You)'}
                   </span>
                 </div>
 
                 {/* Right: Role Badge */}
                 <span
                   className={`text-xs font-bold px-3 py-1 rounded-full select-none whitespace-nowrap tracking-wide uppercase ${
-                    member.isLeader
-                      ? "bg-gray-900 text-white"
-                      : "bg-gray-200 text-gray-700"
+                    member.isLeader ? 'bg-gray-900 text-white' : 'bg-gray-200 text-gray-700'
                   }`}
                 >
-                  {member.isLeader ? "Admin" : "Member"}
+                  {member.isLeader ? 'Admin' : 'Member'}
                 </span>
               </li>
             ))}

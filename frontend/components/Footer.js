@@ -5,7 +5,7 @@ export default function Footer() {
         {/* Brand & Year */}
         <div className="flex items-center gap-3">
           <span
-            onClick={() => (window.location.href = "/")}
+            onClick={() => (window.location.href = '/')}
             className="font-black text-3xl text-[#320398] tracking-tight cursor-pointer"
             style={{ fontFamily: "'Inter', sans-serif" }}
           >
@@ -22,13 +22,9 @@ export default function Footer() {
             Empowering Innovators, Teams & Communities
           </span>
           <span>
-            CoFlow is your launchpad to discover, join, and win hackathons
-            worldwide.
+            CoFlow is your launchpad to discover, join, and win hackathons worldwide.
             <br className="hidden md:inline" />
-            <span className="text-[#320398] font-semibold">
-              {" "}
-              Build. Collaborate. Win. Repeat.
-            </span>
+            <span className="text-[#320398] font-semibold"> Build. Collaborate. Win. Repeat.</span>
           </span>
         </div>
 

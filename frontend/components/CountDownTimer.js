@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 // CountdownTimer component (only re-renders itself every second)
 function CountdownTimer({ deadline }) {
-  const [timeLeft, setTimeLeft] = useState("");
+  const [timeLeft, setTimeLeft] = useState('');
 
   useEffect(() => {
     if (!deadline) {
-      setTimeLeft("");
+      setTimeLeft('');
       return;
     }
 
@@ -16,18 +16,18 @@ function CountdownTimer({ deadline }) {
       const diff = deadlineDate - now;
 
       if (diff <= 0) {
-        setTimeLeft("Deadline passed, but you can still submit.");
+        setTimeLeft('Deadline passed, but you can still submit.');
       } else {
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
         const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
         const minutes = Math.floor((diff / (1000 * 60)) % 60);
         const seconds = Math.floor((diff / 1000) % 60);
 
-        let timeString = "";
+        let timeString = '';
         if (days > 0) timeString += `${days}d `;
-        timeString += `${hours.toString().padStart(2, "0")}h `;
-        timeString += `${minutes.toString().padStart(2, "0")}m `;
-        timeString += `${seconds.toString().padStart(2, "0")}s`;
+        timeString += `${hours.toString().padStart(2, '0')}h `;
+        timeString += `${minutes.toString().padStart(2, '0')}m `;
+        timeString += `${seconds.toString().padStart(2, '0')}s`;
 
         setTimeLeft(`Time left: ${timeString}`);
       }

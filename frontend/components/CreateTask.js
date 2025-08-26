@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
-import toast from "react-hot-toast";
+import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 
 export default function CreateTaskModal({ team, onClose, onCreate }) {
-  const [task, setTask] = useState("");
-  const [description, setDescription] = useState("");
-  const [assignedTo, setAssignedTo] = useState("");
-  const [deadline, setDeadline] = useState("");
+  const [task, setTask] = useState('');
+  const [description, setDescription] = useState('');
+  const [assignedTo, setAssignedTo] = useState('');
+  const [deadline, setDeadline] = useState('');
 
   useEffect(() => {
-    document.body.classList.add("overflow-hidden");
+    document.body.classList.add('overflow-hidden');
     return () => {
-      document.body.classList.remove("overflow-hidden");
+      document.body.classList.remove('overflow-hidden');
     };
   }, []);
 
@@ -19,7 +19,7 @@ export default function CreateTaskModal({ team, onClose, onCreate }) {
       _id: Date.now().toString(),
       task,
       description,
-      status: "pending",
+      status: 'pending',
       assigned_to: assignedTo,
       teamId: team._id,
       comments: [],
@@ -32,7 +32,7 @@ export default function CreateTaskModal({ team, onClose, onCreate }) {
   return (
     <div
       className="fixed left-0 right-0 bottom-0 top-[64px] z-50 flex items-center justify-center backdrop-blur-sm"
-      style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
+      style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}
     >
       <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 relative border border-gray-200">
         <button
@@ -43,16 +43,14 @@ export default function CreateTaskModal({ team, onClose, onCreate }) {
           &times;
         </button>
 
-        <h2 className="text-2xl font-bold text-black mb-2">
-          Create a New Task
-        </h2>
+        <h2 className="text-2xl font-bold text-black mb-2">Create a New Task</h2>
         <p className="text-sm text-gray-500 mb-5">
           Fill in the task details and assign it to a team member.
         </p>
 
         <div className="mb-4">
           <label className="block text-sm font-semibold text-black mb-1">
-            Task Title <span style={{color:'red'}}>*</span>
+            Task Title <span style={{ color: 'red' }}>*</span>
           </label>
           <input
             type="text"
@@ -64,9 +62,7 @@ export default function CreateTaskModal({ team, onClose, onCreate }) {
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-semibold text-black mb-1">
-            Description
-          </label>
+          <label className="block text-sm font-semibold text-black mb-1">Description</label>
           <textarea
             className="w-full border border-gray-300 p-2 rounded text-black placeholder-gray-400 resize-none"
             placeholder="Short description (max 250 chars)"
@@ -82,9 +78,7 @@ export default function CreateTaskModal({ team, onClose, onCreate }) {
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-semibold text-black mb-1">
-            Deadline
-          </label>
+          <label className="block text-sm font-semibold text-black mb-1">Deadline</label>
           <input
             type="datetime-local"
             className="w-full border border-gray-300 p-2 rounded text-black focus:ring-2 focus:ring-blue-500"
@@ -95,8 +89,8 @@ export default function CreateTaskModal({ team, onClose, onCreate }) {
               if (selectedTime >= Date.now()) {
                 setDeadline(e.target.value);
               } else {
-                toast.error("Please select a future date and time.");
-                setDeadline(""); // Optional: clear invalid input
+                toast.error('Please select a future date and time.');
+                setDeadline(''); // Optional: clear invalid input
               }
             }}
           />
@@ -104,7 +98,7 @@ export default function CreateTaskModal({ team, onClose, onCreate }) {
 
         <div className="mb-6">
           <label className="block text-sm font-semibold text-black mb-1">
-            Assign To <span style={{color:'red'}}>*</span>
+            Assign To <span style={{ color: 'red' }}>*</span>
           </label>
           <select
             className="w-full border border-gray-300 p-2 rounded text-black"

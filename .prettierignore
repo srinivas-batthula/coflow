@@ -1,0 +1,34 @@
+# Ignore build outputs
+.next/
+**/.next/
+**/out/
+**/dist/
+
+# Ignore node modules
+node_modules/
+**/node_modules/
+
+# Ignore lock files
+package-lock.json
+**/package-lock.json
+**/yarn.lock
+**/pnpm-lock.yaml
+
+# Ignore public assets
+public/*.html
+public/*.json
+**/public/*.html
+**/public/*.json
+
+# Ignore Docker + env
+Dockerfile
+.env
+*.env
+**/Dockerfile
+**/.env
+**/*.env
+
+# Ignore coverage + logs
+**/coverage/
+**/logs/
+**/*.log

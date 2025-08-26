@@ -1,5 +1,5 @@
-const { default: mongoose } = require("mongoose");
-const Team = require("../models/TeamModel");
+const { default: mongoose } = require('mongoose');
+const Team = require('../models/TeamModel');
 
 const getTeams = async (req, res) => {
   const userId = req.user._id;
@@ -7,30 +7,30 @@ const getTeams = async (req, res) => {
     const my_teams = await Team.aggregate([
       {
         $match: {
-          members: userId
-        }
+          members: userId,
+        },
       },
       {
         $lookup: {
           from: 'hackpilot_users',
           localField: 'members',
           foreignField: '_id',
-          as: 'member_details'
-        }
+          as: 'member_details',
+        },
       },
       {
         $addFields: {
           member_details: {
             $map: {
-              input: "$member_details",
-              as: "member",
+              input: '$member_details',
+              as: 'member',
               in: {
-                _id: "$$member._id",
-                fullName: "$$member.fullName"
-              }
-            }
-          }
-        }
+                _id: '$$member._id',
+                fullName: '$$member.fullName',
+              },
+            },
+          },
+        },
       },
       {
         $project: {
@@ -42,26 +42,21 @@ const getTeams = async (req, res) => {
           member_details: 1,
           createdAt: 1,
           updatedAt: 1,
-        }
-      }
+        },
+      },
     ]);
 
-    return res
-      .status(200)
-      .json({ success: true, msg: "Fetched Teams!", my_teams });
+    return res.status(200).json({ success: true, msg: 'Fetched Teams!', my_teams });
   } catch (error) {
     console.error(error);
-    return res
-      .status(500)
-      .json({ success: false, msg: "Server error in getTeams!" });
+    return res.status(500).json({ success: false, msg: 'Server error in getTeams!' });
   }
 };
 
 const createTeam = async (req, res) => {
   const { name, project_description, github_repo } = req.body;
   const userId = req.user._id;
-  if (!name)
-    return res.status(400).json({ success: false, msg: "Invalid Inputs!" });
+  if (!name) return res.status(400).json({ success: false, msg: 'Invalid Inputs!' });
   try {
     const finalObj = {
       name,
@@ -71,15 +66,11 @@ const createTeam = async (req, res) => {
       project_description,
     };
     const team = await Team.create(finalObj);
-    team.members = [ { _id: userId, fullName: req.user.fullName } ]
-    return res
-      .status(201)
-      .json({ success: true, msg: "Created a new Team!", team });
+    team.members = [{ _id: userId, fullName: req.user.fullName }];
+    return res.status(201).json({ success: true, msg: 'Created a new Team!', team });
   } catch (error) {
     console.error(error);
-    return res
-      .status(500)
-      .json({ success: false, msg: "Server error in createTeam!" });
+    return res.status(500).json({ success: false, msg: 'Server error in createTeam!' });
   }
 };
 
@@ -89,25 +80,18 @@ const joinTeam = async (req, res) => {
   try {
     // Validate ObjectId before querying
     if (!mongoose.Types.ObjectId.isValid(teamId)) {
-      return res
-        .status(400)
-        .json({ success: false, msg: "Invalid Team-ID format!" });
+      return res.status(400).json({ success: false, msg: 'Invalid Team-ID format!' });
     }
     const team = await Team.findById(teamId);
-    if (!team)
-      return res.status(400).json({ success: false, msg: "Invalid Team-ID!" });
+    if (!team) return res.status(400).json({ success: false, msg: 'Invalid Team-ID!' });
     if (!team.members.includes(userId)) {
       team.members.push(userId);
       await team.save();
     }
-    return res
-      .status(201)
-      .json({ success: true, msg: "Joined a new Team!", team });
+    return res.status(201).json({ success: true, msg: 'Joined a new Team!', team });
   } catch (error) {
     console.error(error);
-    return res
-      .status(500)
-      .json({ success: false, msg: "Server error in joinTeam!" });
+    return res.status(500).json({ success: false, msg: 'Server error in joinTeam!' });
   }
 };
 
@@ -118,18 +102,12 @@ const deleteTeam = async (req, res) => {
     if (team && String(team.leader) === String(req.user._id)) {
       // Only Team `Leaders` can delete the `Team`...
       const deletedTeam = await Team.findByIdAndDelete(teamId);
-      return res
-        .status(200)
-        .json({ success: true, msg: "Deleted a Team!", deletedTeam });
+      return res.status(200).json({ success: true, msg: 'Deleted a Team!', deletedTeam });
     }
-    return res
-      .status(401)
-      .json({ success: false, msg: "You're not allowed to delete this Team!" });
+    return res.status(401).json({ success: false, msg: "You're not allowed to delete this Team!" });
   } catch (error) {
     console.error(error);
-    return res
-      .status(500)
-      .json({ success: false, msg: "Server error in deleteTeam!" });
+    return res.status(500).json({ success: false, msg: 'Server error in deleteTeam!' });
   }
 };
 

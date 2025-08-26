@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const TeamSchema = new mongoose.Schema(
   {
@@ -7,24 +7,24 @@ const TeamSchema = new mongoose.Schema(
     members: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "hackpilot_users",
+        ref: 'hackpilot_users',
         required: true,
       },
     ],
     leader: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "hackpilot_users",
+      ref: 'hackpilot_users',
       required: true,
     },
     github_repo: { type: String, trim: true },
     project_description: {
       type: String,
-      maxlength: [250, "project_description cannot exceed 500 characters"],
+      maxlength: [250, 'project_description cannot exceed 500 characters'],
     },
   },
   { timestamps: true }
 );
 
-const Team = mongoose.model("hackpilot_teams", TeamSchema);
+const Team = mongoose.model('hackpilot_teams', TeamSchema);
 
 module.exports = Team;

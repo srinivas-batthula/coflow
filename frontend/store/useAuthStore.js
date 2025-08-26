@@ -1,5 +1,5 @@
-"use client";
-import { create } from "zustand";
+'use client';
+import { create } from 'zustand';
 
 export const useAuthStore = create((set) => ({
   user: null,
@@ -11,21 +11,17 @@ export const useAuthStore = create((set) => ({
   login: async (email, password) => {
     set({ loading: true, error: null });
     try {
-      const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL+"/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
-        credentials: "include",
+        credentials: 'include',
       });
       const data = await res.json();
-      if (!res.ok || !data.success) throw new Error(data.msg || "Login failed");
+      if (!res.ok || !data.success) throw new Error(data.msg || 'Login failed');
       set({ token: data.token, loading: false });
-      typeof window !== "undefined"
-        ? localStorage.setItem("login", true)
-        : null;
-      typeof window !== "undefined"
-        ? localStorage.setItem("token", data.token)
-        : null;
+      typeof window !== 'undefined' ? localStorage.setItem('login', true) : null;
+      typeof window !== 'undefined' ? localStorage.setItem('token', data.token) : null;
       return true;
     } catch (err) {
       set({ error: err.message, loading: false });
@@ -37,22 +33,17 @@ export const useAuthStore = create((set) => ({
   signup: async (fullName, email, password) => {
     set({ loading: true, error: null });
     try {
-      const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL+"/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ fullName, email, password }),
-        credentials: "include",
+        credentials: 'include',
       });
       const data = await res.json();
-      if (!res.ok || !data.success)
-        throw new Error(data.msg || "Signup failed");
+      if (!res.ok || !data.success) throw new Error(data.msg || 'Signup failed');
       set({ token: data.token, loading: false });
-      typeof window !== "undefined"
-        ? localStorage.setItem("login", true)
-        : null;
-      typeof window !== "undefined"
-        ? localStorage.setItem("token", data.token)
-        : null;
+      typeof window !== 'undefined' ? localStorage.setItem('login', true) : null;
+      typeof window !== 'undefined' ? localStorage.setItem('token', data.token) : null;
       return true;
     } catch (err) {
       set({ error: err.message, loading: false });
@@ -65,20 +56,18 @@ export const useAuthStore = create((set) => ({
     const token = useAuthStore.getState().token;
     set({ loading: true, error: null });
     try {
-      const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL+"/api/auth/logout", {
-        method: "POST",
-        credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-            'Authorization': `Bearer ${token}`,
-          },
+      const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
       });
-      if (!res.ok) throw new Error("Logout failed");
+      if (!res.ok) throw new Error('Logout failed');
       set({ user: null, token: null, loading: false });
-      typeof window !== "undefined"
-        ? localStorage.setItem("login", false)
-        : null;
-      typeof window !== "undefined" ? localStorage.removeItem("token") : null;
+      typeof window !== 'undefined' ? localStorage.setItem('login', false) : null;
+      typeof window !== 'undefined' ? localStorage.removeItem('token') : null;
       return true;
     } catch (err) {
       set({ error: err.message, loading: false });
@@ -91,13 +80,13 @@ export const useAuthStore = create((set) => ({
     set({ loading: true, error: null });
     try {
       const res = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_URL+"/api/auth/validateUser?q=true",
+        process.env.NEXT_PUBLIC_BACKEND_URL + '/api/auth/validateUser?q=true',
         {
-          method: "GET",
-          credentials: "include",
+          method: 'GET',
+          credentials: 'include',
           headers: {
-            "Content-Type": "application/json",
-            'Authorization': `Bearer ${token1}`,
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token1}`,
           },
         }
       );

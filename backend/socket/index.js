@@ -1,10 +1,10 @@
 // socket/index.js
-const {enqueuePush} = require("../services/notifications/push_redis-queue");
-const chatSocket = require("./chatSocket");
-const taskSocket = require("./taskSocket");
+// const { enqueuePush } = require("../services/notifications/push_redis-queue");
+const chatSocket = require('./chatSocket');
+const taskSocket = require('./taskSocket');
 
 module.exports = (io) => {
-  io.on("connection", (socket) => {
+  io.on('connection', (socket) => {
     // console.log("Socket connected:", socket.id, ` ${socket.user.fullName}`);
     // console.log("All rooms:", Array.from(io.sockets.adapter.rooms.keys()));
 
@@ -16,7 +16,7 @@ module.exports = (io) => {
     // Attach team events
     taskSocket(io, socket);
 
-    socket.on("disconnect", () => {
+    socket.on('disconnect', () => {
       socket.broadcast.emit('newUser_offline', { userId: socket.user._id });
 
       socket.rooms.forEach((room) => {
