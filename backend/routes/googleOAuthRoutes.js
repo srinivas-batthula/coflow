@@ -53,7 +53,9 @@ router.get(
             // Redirect back to frontend (sending token in query for client)
             return res
                 .status(201)
-                .redirect(process.env.FRONTEND_URL + `/login?token=${token}oauth=true&type=google`);
+                .redirect(
+                    process.env.FRONTEND_URL + `/login?token=${token}&oauth=true&type=google`
+                );
         } catch (error) {
             console.log(error + '');
             return res.status(500).redirect(process.env.FRONTEND_URL + '/login');
