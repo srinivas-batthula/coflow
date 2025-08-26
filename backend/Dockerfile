@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Copy & install packages
 COPY package*.json ./
-RUN npm install --production
+RUN npm ci --omit=dev
 
 # Copy code
 COPY . .
