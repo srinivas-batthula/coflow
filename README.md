@@ -118,6 +118,8 @@ coflow/
 │ └── .env
 ├── LICENSE
 ├── docker-compose.yml
+├── .prettierrc
+├── eslint.config.mjs
 └── Readme.md
 ```
 
@@ -130,6 +132,12 @@ coflow/
 `Setup '.env' in the root dir 'frontend/' based on '.env.example'`
 
 ### 1. Manual Setup (Without Docker)
+
+#### At Repo-root
+
+```
+1. npm install
+```
 
 #### For backend
 
@@ -172,6 +180,10 @@ coflow/
 ```
 1. docker-compose up --build
 ```
+
+## **_Before Committing your changes to GitHub_**
+
+##### Follow the standards mentioned in [coflow/test_instructions.txt](https://github.com/srinivas-batthula/coflow/blob/main/test_instructions.txt) file for successful CI/CD checks.
 
 ## 📝 License
 

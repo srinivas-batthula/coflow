@@ -7,7 +7,7 @@
 # =========================
 
 ### VisualStudioCode ###
-.vscode/*
+# .vscode/*
 
 # dependencies
 **/node_modules/

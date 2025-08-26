@@ -30,8 +30,8 @@ jobs:
         run: npm ci # Clean install deps
         working-directory: .
 
-      - name: Run Prettier Check (from repo root ./coflow)
-        run: npm run format:check # Enforce code formatting
+      - name: Run Prettier Check (from repo root ./coflow) # To 'fix' any 'issues' related to Formatting(prettier) & Linting(EsLint),
+        run: npm run format:check # Enforce code formatting       # Visit at ``` coflow/test_instructions.txt ```...
 
       - name: Run ESLint (only in ./frontend dir)
         run: npm run lint:check # Lint frontend files
