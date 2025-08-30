@@ -1,5 +1,5 @@
 {
-    "imgUrl": "https://srinivas-batthula.github.io/portfolio/utils/projects/coflow_project.png",
+    "imgUrl": "/utils/projects/coflow_project.png",
     "title": "CoFlow",
     "description": "Real-time MERN app with live hackathons, tasks, chat, push alerts for team projects.",
     "techStack": [
