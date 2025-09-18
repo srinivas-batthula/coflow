@@ -15,6 +15,7 @@ module.exports = (passport) => {
                         : '/api/auth/google/callback', // Dev callback URL
             },
             async (accessToken, refreshToken, profile, done) => {
+                // This function is called by `/api/auth/google/callback` route (To verify the User in DB)...
                 try {
                     // Extract user data from Google profile
                     const data = {
