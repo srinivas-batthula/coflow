@@ -19,22 +19,28 @@ when they’re not online.
 ## ✨ Key Features
 
 - ✅ Create, Join, and Manage hackathon teams
-- 🔐 Authentication with JWT and Google OAuth
+- 🔐 Authentication with JWT and Google & GitHub OAuth
 - 🧑‍💻 Realtime Collaborative Task management and status tracking
 - 💬 Real-time team chat using **Socket.IO**
-- 🕒 Automatically scrape and store recent hackathon listings every 10 hours using **node-cron** &
-  **Playwright**
+- 📲 Push-Notifications for offline-users & an installable, offline-capable **PWA web-app** — ensuring team
+  members stay connected with updates, even in Offline
+- 🕒 Automatically scrape and store recent hackathon listings every 24-hours using **node-cron** &
+  **Playwright** & **GitHub Actions**
 
 ## 🔁 Feature Workflows
 
 #### **1.** Automated Hackathons Sync
 
 ```
-Cron job executes for every 10 hours
+GitHub-Actions workflow (Or node-cron) is triggered every day at 6:30 AM IST
       ⬇
-List of hackathons are Scraped from sites UnStop & Devpost with various filters
+Sends 3-quick-pings to Render-Server (/test) with 5s gap to wake it up (As it is deployed under *free-tier*)
       ⬇
-Scraped hackathon data is stored in MongoDB
+Waits for 1-minute to ensure Server is fully live/up
+      ⬇
+Scrape request sent to `/api/hackathons` to scrape data from UnStop & Devpost with various filters
+      ⬇
+Scraped hackathons data is stored in MongoDB
       ⬇
 If failure → fallback data is stored in JSON file temporarily
 ```
@@ -86,12 +92,16 @@ Sends a Push-Notification to that offline user
 - **Auth:** JWT + Google & GitHub OAuth
 - **Push Notifcations:** Web-Push, Redis Queue
 - **Testing:** Jest, SuperTest
-- **Deployment:** Docker, Render, Netlify, GitHub Actions
+- **Deployment:** Docker, Render, Netlify, GitHub-Actions(CI/CD)
 
 ## 🏗️ Project Structure
 
 ```
 coflow/
+├── .github/workflows/
+│ ├── trigger-scraper.yml
+│ ├── backend-deploy.yml
+│ └── frontend-deploy.yml
 ├── backend/
 │ ├── controllers/
 │ ├── models/

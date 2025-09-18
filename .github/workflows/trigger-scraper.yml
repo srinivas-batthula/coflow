@@ -4,14 +4,14 @@ on:
     schedule:
         # 6:30 AM IST = 1:00 AM UTC
         - cron: '0 1 * * *'
-    workflow_dispatch: # this allows manual trigger from GitHub UI
+    workflow_dispatch: # this allows manual trigger from GitHub UI `Actions`
 
 jobs:
     scrape:
         runs-on: ubuntu-latest
 
         steps:
-            - name: Wake server (3 times with 5s gap)
+            - name: Wake Render-server (3 req's with 5s gap)
               run: |
                   for i in {1..3}; do
                     echo "Ping $i to /test..."
@@ -19,10 +19,10 @@ jobs:
                     sleep 5
                   done
 
-            - name: Wait for 1 minute
+            - name: Wait for 1-min to get the Render-server UP
               run: sleep 60
 
-            - name: Trigger scraper
+            - name: Trigger scraper endpoint to start Scraping
               run: |
                   curl -X POST https://coflow-backend-bcgk.onrender.com/api/hackathons \
                     -H "Content-Type: application/json" \
