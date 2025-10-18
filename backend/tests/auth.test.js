@@ -14,7 +14,7 @@ afterAll(() => {
     jest.restoreAllMocks();
 });
 
-describe('Full-Auth Testing Flow', () => {
+describe('Full-E2E Auth Testing Flow', () => {
     describe('POST /api/auth/login', () => {
         // login test
         it('should return a token for valid credentials', async () => {
