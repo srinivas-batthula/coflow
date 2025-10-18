@@ -50,7 +50,7 @@ jobs:
                   TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
                   TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
                   SEED_MODE: fixtures
-                  BACKEND_ENV: test
+                  BACKEND_ENV: dev
               run: npm test
 
     build-and-deploy: # Job-2

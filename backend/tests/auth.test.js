@@ -23,8 +23,8 @@ describe('Full-Auth Testing Flow', () => {
                 password: process.env.TEST_PASSWORD,
             });
 
-            expect(res.status).toBeGreaterThanOrEqual(200);
-            expect(res.status).toBeLessThan(400);
+            expect(res.statusCode).toBeGreaterThanOrEqual(200);
+            expect(res.statusCode).toBeLessThan(400);
             // expect(res.statusCode).toBe(201);
             expect(res.body.success).toBe(true);
             expect(res.body).toHaveProperty('token');
@@ -50,8 +50,8 @@ describe('Full-Auth Testing Flow', () => {
                 .get('/api/auth/validateUser?q=true')
                 .set('Authorization', `Bearer ${token}`);
 
-            expect(res.status).toBeGreaterThanOrEqual(200);
-            expect(res.status).toBeLessThan(400);
+            expect(res.statusCode).toBeGreaterThanOrEqual(200);
+            expect(res.statusCode).toBeLessThan(400);
             // expect(res.statusCode).toBe(200);
             expect(res.body.success).toBe(true);
             expect(res.body).toHaveProperty('user');
@@ -85,8 +85,8 @@ describe('Full-Auth Testing Flow', () => {
                 .post('/api/auth/logout')
                 .set('Authorization', `Bearer ${token}`); // Setting the token here
 
-            expect(res.status).toBeGreaterThanOrEqual(200);
-            expect(res.status).toBeLessThan(400);
+            expect(res.statusCode).toBeGreaterThanOrEqual(200);
+            expect(res.statusCode).toBeLessThan(400);
             // expect(res.statusCode).toBe(200);
             expect(res.body.success).toBe(true);
             console.log('/logout-1 : ' + res.body.msg || 'No `msg` field in response-obj!');
