@@ -33,7 +33,9 @@ async function seedDatabase() {
             password: process.env.TEST_PASSWORD,
             fullName: 'Srinivas',
         };
-        await User.create(testUser); // uses schema + pre-save hooks
+        const user = new User(testUser);
+        await user.save();
+        // await User.create(testUser); // uses schema + pre-save hooks
 
         await User.find({}).lean();
     } catch (err) {
