@@ -50,15 +50,13 @@ describe('Automated API Tests from Swagger', () => {
 
                 // basic expectations: should return defined response
                 const res = await req;
-                // const expectedCodes = Object.keys(operation.responses);
-                Object.keys(operation.responses);
+                const expectedCodes = Object.keys(operation.responses);
 
-                // if (!expectedCodes.includes(String(res.status))) {       // Logging the false response status codes...
-                //     console.warn(`⚠️ ${method.toUpperCase()} ${routePath} returned ${res.status}, not in spec: [${expectedCodes.join(', ')}m  ]`);
-                // }
-
-                expect(res.status).toBeGreaterThanOrEqual(200);
-                expect(res.status).toBeLessThan(600);
+                if (!expectedCodes.includes(String(res.statusCode))) {
+                    // Logging the false response status codes...
+                    console.warn(`
+                        ⚠️ ${method.toUpperCase()} ${routePath} returned ${res.statusCode}, not in spec: [${expectedCodes.join(', ')}m  ]`);
+                }
 
                 // Validate response against Swagger schema by using `jestOpenAPI`...
                 // expect(res).toSatisfyApiSpec();

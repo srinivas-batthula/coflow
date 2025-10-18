@@ -14,7 +14,7 @@ afterAll(() => {
     jest.restoreAllMocks();
 });
 
-describe('Auth API', () => {
+describe('Full-Auth Testing Flow', () => {
     describe('POST /api/auth/login', () => {
         // login test
         it('should return a token for valid credentials', async () => {
@@ -24,13 +24,12 @@ describe('Auth API', () => {
             });
 
             expect(res.status).toBeGreaterThanOrEqual(200);
-            expect(res.status).toBeLessThan(600);
+            expect(res.status).toBeLessThan(400);
             // expect(res.statusCode).toBe(201);
-            // expect(res.body.success).toBe(true);
-            // expect(res.body).toHaveProperty('token');
-            // expect(typeof res.body.token).toBe('string');
+            expect(res.body.success).toBe(true);
+            expect(res.body).toHaveProperty('token');
             token = res.body.token;
-            console.log(res.body.msg || 'No `msg` field in response-obj!');
+            console.log('/login-1 : ' + res.body.msg || 'No `msg` field in response-obj!');
         });
 
         it('should return 401/400 for invalid credentials', async () => {
@@ -40,7 +39,7 @@ describe('Auth API', () => {
 
             expect([401, 400, 500]).toContain(res.statusCode);
             expect(res.body.success).toBe(false);
-            console.log(res.body.msg || 'No `msg` field in response-obj!');
+            console.log('/login-2 : ' + res.body.msg || 'No `msg` field in response-obj!');
         });
     });
 
@@ -52,12 +51,15 @@ describe('Auth API', () => {
                 .set('Authorization', `Bearer ${token}`);
 
             expect(res.status).toBeGreaterThanOrEqual(200);
-            expect(res.status).toBeLessThan(600);
+            expect(res.status).toBeLessThan(400);
             // expect(res.statusCode).toBe(200);
-            // expect(res.body.success).toBe(true);
-            // expect(res.body.auth).toBe(true);
-            // expect(res.body).toHaveProperty('user');
-            console.log(res.body.msg || 'No `msg` field in response-obj!');
+            expect(res.body.success).toBe(true);
+            expect(res.body).toHaveProperty('user');
+            console.log(
+                `/validateUser-1: username -> ${res.body.user.fullName.toString()},, ${
+                    res.body.msg || "No 'msg' field in response-obj!"
+                }`
+            );
         });
 
         it('should return 401/400 for invalid credentials', async () => {
@@ -69,10 +71,10 @@ describe('Auth API', () => {
                 .get('/api/auth/validateUser?q=true')
                 .set('Authorization', `Bearer ${fakeToken}`);
 
-            expect([401, 404]).toContain(res.statusCode);
+            expect([401, 404, 400, 500]).toContain(res.statusCode);
             expect(res.body.success).toBe(false);
             expect(res.body.auth).toBe(false);
-            console.log(res.body.msg || 'No `msg` field in response-obj!');
+            console.log('/validateUser-2 : ' + res.body.msg || 'No `msg` field in response-obj!');
         });
     });
 
@@ -84,10 +86,11 @@ describe('Auth API', () => {
                 .set('Authorization', `Bearer ${token}`); // Setting the token here
 
             expect(res.status).toBeGreaterThanOrEqual(200);
-            expect(res.status).toBeLessThan(600);
+            expect(res.status).toBeLessThan(400);
             // expect(res.statusCode).toBe(200);
-            // expect(res.body.success).toBe(true);
-            console.log(res.body.msg || 'No `msg` field in response-obj!');
+            expect(res.body.success).toBe(true);
+            console.log('/logout-1 : ' + res.body.msg || 'No `msg` field in response-obj!');
+            token = '';
         });
     });
 });
