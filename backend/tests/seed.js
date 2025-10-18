@@ -33,11 +33,8 @@ async function seedDatabase() {
             password: process.env.TEST_PASSWORD,
             fullName: 'Srinivas',
         };
-        const user = new User(testUser);
-        await user.save();
-        // await User.create(testUser); // uses schema + pre-save hooks
-
-        await User.find({}).lean();
+        const user = await User.create(testUser); // uses schema + pre-save hooks
+        console.log('/seed.js : user -> ', user?.password);
     } catch (err) {
         console.error('Failed to Seed Data to Local-DB : -> ', err);
     }
