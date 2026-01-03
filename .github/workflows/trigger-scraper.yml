@@ -1,9 +1,9 @@
-name: Daily Hackathon Scraper (Starts at 6:30AM & Ends at 6:31:10secs )
+name: Daily Hackathon Scraper (Runs every 3-days at 6:30AM)
 
 on:
     schedule:
-        # 6:30 AM IST = 1:00 AM UTC
-        - cron: '0 1 * * *'
+        # Every 3 days at 6:30 AM IST (1:00 AM UTC)
+        - cron: '0 1 */3 * *'
     workflow_dispatch: # this allows manual trigger from GitHub UI `Actions`
 
 jobs:
