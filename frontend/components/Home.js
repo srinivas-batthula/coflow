@@ -178,6 +178,8 @@ export default function HomePage() {
                     <span>Welcome to</span>
                     <span className="ml-3 inline-flex items-center text-[#2A3BD9] scale-250 mt-4">
                         <Image
+                            width="100"
+                            height="100"
                             src="/textlogo.png"
                             alt="Coflow Logo"
                             className="h-12 md:h-16 object-contain"

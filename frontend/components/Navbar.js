@@ -30,6 +30,8 @@ export default function Navbar() {
                 className="flex items-center gap-3 cursor-pointer select-none"
             >
                 <Image
+                    width="100"
+                    height="100"
                     src="/logosvg.png"
                     alt="Coflow Logo"
                     className="w-32 h-auto md:w-40 object-contain"

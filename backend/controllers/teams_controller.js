@@ -1,13 +1,14 @@
-const { default: mongoose } = require('mongoose');
+const mongoose = require('mongoose');
 const Team = require('../models/TeamModel');
 
 const getTeams = async (req, res) => {
-    const userId = req.user._id;
+    const userId = mongoose.Types.ObjectId.createFromHexString(req.user._id);
+    // console.log(userId, typeof userId, userId instanceof mongoose.Types.ObjectId);
     try {
         const my_teams = await Team.aggregate([
             {
                 $match: {
-                    members: userId,
+                    members: { $in: [userId] },
                 },
             },
             {
