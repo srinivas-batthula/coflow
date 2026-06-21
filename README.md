@@ -1,6 +1,6 @@
 # 🚀 **_CoFlow_**
 
-## Built for Hackathons. Ready for Teams. Powered by Realtime.
+## Built for Hackathons. Ready for Teams. Powered by Realtime  .
 
 **~CoFlow** is a real-time team collaboration tool built for developers and hackathon squads,
 offering live task assignment, group chat and progress tracking. With intelligent scheduling,
